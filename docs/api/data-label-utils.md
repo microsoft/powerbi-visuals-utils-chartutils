@@ -76,4 +76,4 @@ let formatter = formattersCache.getOrCreate(null, labelSettings);
 let formattedValue = formatter.format(value);
 
 // formattedValue == "0.2M"
-```typescript
+```
