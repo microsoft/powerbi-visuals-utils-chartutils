@@ -13,7 +13,11 @@ This method arranges the lables position and visibility on the canvas according 
 
 ```typescript
 function hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform: boolean = false): LabelEnabledDataPoint[];
+```
 
+### Example
+
+```typescript
 let dataLabelManager = new DataLabelManager();
 let filteredData = dataLabelManager.hideCollidedLabels(this.viewport, values, labelLayout, true);
 ```
@@ -24,7 +28,11 @@ This static method checks if provided rectangle is valid(has positive width and 
 
 ```typescript
 function isValid(rect: IRect): boolean;
+```
 
+### Example
+
+```typescript
 let rectangle = {
     left: 150,
     top: 130,
@@ -36,8 +44,6 @@ DataLabelManager.isValid(rectangle);
 
 // returns: true
 ```
-
-### Example
 
 #### The thousand format
 
