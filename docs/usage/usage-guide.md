@@ -3,6 +3,7 @@
 
 This package contains the following classes, interfaces and methods:
 
-* [textMeasurementService](../api/text-measurement-service.md) - helps to measure properties of the text
-* [stringExtensions](../api/string-extensions.md) - helps to manipulate with text and strings
-* [valueFormatter](../api/value-formatter.md) - helps to format number, strings and dates
+* [Axis Helper](../api/axis-helper.md) - provide all necessary methods to maintain chart axes
+* [Legend](../api/legend.md) - helps to manipulate with legend
+* [DataLabelManager](../api/data-label-manager.md) - helps to create and maintain labels
+* [DataLabelUtils](../api/data-label-utils.md) - label manager utils
