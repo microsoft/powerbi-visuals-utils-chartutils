@@ -11,7 +11,12 @@ The ```powerbi.extensibility.utils.chart.dataLabel.DataLabelManager``` class pro
 This method arranges the lables position and visibility on the canvas according to labels sizes and overlapping.
 
 ```typescript
-function hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform: boolean = false): LabelEnabledDataPoint[];
+function hideCollidedLabels(
+    viewport: IViewport, 
+    data: any[],
+    layout: any,
+    addTransform: boolean = false
+): LabelEnabledDataPoint[];
 ```
 
 ### Example
