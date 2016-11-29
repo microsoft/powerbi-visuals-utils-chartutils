@@ -1,30 +1,24 @@
 # DataLabelManager
 > The ```DataLabelManager``` helps to create and maintain labels. It arranges label elements using the anchor point or rectangle. Collisions between elements can be automatically detected and as a result elements can be repositioned or get hidden.
 
-The ```powerbi.extensibility.utils.chart.dataLabel``` module provides the following functions and enumerations:
+The ```powerbi.extensibility.utils.chart.dataLabel``` module provides the following methods:
 
-* [defaultSettings](#defaultsettings)
 * [hideCollidedLabels](#hidecollidedlabels)
-* [create](#create)
-* [getLabelInfo](#getlabelinfo)
-* [ContentPositions](#contentpositions)
-* [RectOrientation](#rectorientation)
-* [OutsidePlacement](#outsideplacement)
-* [IDataLabelSettings](#idatalabelsettings)
+* [IsValid](#isvalid)
+* [hasCollisions](#hascollisions)
 
-## IValueFormatter
+## hideCollidedLabels
 
-This interface describes public methods and properties of the formatter.
+This method arranges the lables position and visibility on the canvas according labels sizes and overlapping.
 
 ```typescript
-interface IValueFormatter {
-    format(value: any): string;
-    displayUnit?: DisplayUnit;
-    options?: ValueFormatterOptions;
-}
+public hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform: boolean = false): LabelEnabledDataPoint[];
+
+let dataLabelManager = new DataLabelManager();
+let filteredData = dataLabelManager.hideCollidedLabels(this.viewport, values, labelLayout, true);
 ```
 
-## IValueFormatter.format
+## getLabelInfo
 
 This method formats the values.
 
