@@ -150,7 +150,7 @@ function isOrdinal( type: ValueTypeDescriptor): boolean;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.isOrdinal(type: ValueTypeDescriptor): boolean;
+axisHelper.isOrdinal(type: ValueTypeDescriptor);
 
 // returns: true
 ```
@@ -168,7 +168,7 @@ function isDateTime(type: ValueTypeDescriptor): boolean;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.isDateTime(type: ValueTypeDescriptor): boolean;
+axisHelper.isDateTime(type: ValueTypeDescriptor);
 
 // returns: true
 ```
