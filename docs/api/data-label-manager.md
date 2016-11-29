@@ -1,12 +1,16 @@
-# valueFormatter
-> The ```valueFormatter``` provides the simplest way to format numbers, strings and dates.
+# DataLabelManager
+> The ```DataLabelManager``` helps to create and maintain labels. It arranges label elements using the anchor point or rectangle. Collisions between elements can be automatically detected and as a result elements can be repositioned or get hidden.
 
-The ```powerbi.extensibility.utils.formatting.valueFormatter``` module provides the following functions, interfaces and classes:
+The ```powerbi.extensibility.utils.chart.dataLabel``` module provides the following functions and enumerations:
 
-* [IValueFormatter](#ivalueformatter)
-  * [format](#ivalueformatterformat)
-* [ValueFormatterOptions](#valueformatteroptions)
+* [defaultSettings](#defaultsettings)
+* [hideCollidedLabels](#hidecollidedlabels)
 * [create](#create)
+* [getLabelInfo](#getlabelinfo)
+* [ContentPositions](#contentpositions)
+* [RectOrientation](#rectorientation)
+* [OutsidePlacement](#outsideplacement)
+* [IDataLabelSettings](#idatalabelsettings)
 
 ## IValueFormatter
 
