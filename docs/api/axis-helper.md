@@ -3,25 +3,23 @@
 
 The ```powerbi.extensibility.utils.chart.axis``` module provides the following functions:
 
-* [getRecommendedNumberOfTicksForXAxis](#getRecommendedNumberOfTicksForXAxis)
-* [getRecommendedNumberOfTicksForYAxis](#getRecommendedNumberOfTicksForYAxis)
-* [getBestNumberOfTicks](#getBestNumberOfTicks)
-* [hasNonIntegerData](#hasNonIntegerData)
-* [getTickLabelMargins](#getTickLabelMargins)
-* [isOrdinal](#isOrdinal)
-* [isDateTime](#isDateTime)
-* [getCategoryThickness](#getCategoryThickness)
-* [invertOrdinalScale](#invertOrdinalScale)
-* [findClosestXAxisIndex](#findClosestXAxisIndex)
-* [diffScaled](#diffScaled)
-* [createDomain](#createDomain)
-* [getCategoryValueType](#getCategoryValueType)
-* [createAxis](#createAxis)
-* [createFormatter](#createFormatter)
-* [applyCustomizedDomain](#applyCustomizedDomain)
-* [combineDomain](#combineDomain)
-* [powerOfTen](#powerOfTen)
-
+* [getRecommendedNumberOfTicksForXAxis](#getrecommendednumberofticksforxaxis)
+* [getRecommendedNumberOfTicksForYAxis](#getrecommendednumberofticksforyaxis)
+* [getBestNumberOfTicks](#getbestnumberofticks)
+* [getTickLabelMargins](#getticklabelmargins)
+* [isOrdinal](#isordinal)
+* [isDateTime](#isdatetime)
+* [getCategoryThickness](#getcategorythickness)
+* [invertOrdinalScale](#invertordinalscale)
+* [findClosestXAxisIndex](#findclosestxaxisindex)
+* [diffScaled](#diffscaled)
+* [createDomain](#createdomain)
+* [getCategoryValueType](#getcategoryvaluetype)
+* [createAxis](#createaxis)
+* [createFormatter](#createformatter)
+* [applyCustomizedDomain](#applycustomizeddomain)
+* [combineDomain](#combinedomain)
+* [powerOfTen](#poweroften)
 
 ## getRecommendedNumberOfTicksForXAxis
 
@@ -47,6 +45,7 @@ This function return recommended amount of ticks according to height of chart.
 
 ```typescript
 function getRecommendedNumberOfTicksForYAxis(availableWidth: number) 
+```
 
 ### Example
 
@@ -62,11 +61,8 @@ axisHelper.getRecommendedNumberOfTicksForYAxis(100);
 
 Get the best number of ticks based on minimum value, maximum value, measure metadata and max tick count;
 
-```typescript function getBestNumberOfTicks(min: number,
-        max: number,
-        valuesMetadata: DataViewMetadataColumn[],
-        maxTickCount: number,
-        isDateTime?: boolean): number;
+```typescript
+function getBestNumberOfTicks(min: number, max: number, valuesMetadata: DataViewMetadataColumn[], maxTickCount: number, isDateTime?: boolean): number;
 ```
 
 ### Example
@@ -102,18 +98,19 @@ axisHelper.contains("Microsoft Power BI Visuals", "Power BI");
 Checks if a string is null or undefined or empty.
 
 ```typescript
-function getTickLabelMargins( viewport: IViewport,
-            yMarginLimit: number,
-            textWidthMeasurer: ITextAsSVGMeasurer,
-            textHeightMeasurer: ITextAsSVGMeasurer,
-            axes: CartesianAxisProperties,
-            bottomMarginLimit: number,
-            properties: TextProperties,
-            scrollbarVisible?: boolean,
-            showOnRight?: boolean,
-            renderXAxis?: boolean,
-            renderY1Axis?: boolean,
-            renderY2Axis?: boolean): TickLabelMargins;
+function getTickLabelMargins(
+    viewport: IViewport,
+    yMarginLimit: number,
+    textWidthMeasurer: ITextAsSVGMeasurer,
+    textHeightMeasurer: ITextAsSVGMeasurer,
+    axes: CartesianAxisProperties,
+    bottomMarginLimit: number,
+    properties: TextProperties,
+    scrollbarVisible?: boolean,
+    showOnRight?: boolean,
+    renderXAxis?: boolean,
+    renderY1Axis?: boolean,
+    renderY2Axis?: boolean): TickLabelMargins;
 ```
 
 ### Example
@@ -121,18 +118,19 @@ function getTickLabelMargins( viewport: IViewport,
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.getTickLabelMargins( plotArea,
-                marginLimits.left,
-                TextMeasurementService.measureSvgTextWidth,
-                TextMeasurementService.estimateSvgTextHeight,
-                axes,
-                marginLimits.bottom,
-                textProperties,
-                /*scrolling*/ false,
-                showY1OnRight,
-                renderXAxis,
-                renderY1Axis,
-                renderY2Axis);
+axisHelper.getTickLabelMargins(
+    plotArea,
+    marginLimits.left,
+    TextMeasurementService.measureSvgTextWidth,
+    TextMeasurementService.estimateSvgTextHeight,
+    axes,
+    marginLimits.bottom,
+    textProperties,
+    /*scrolling*/ false,
+    showY1OnRight,
+    renderXAxis,
+    renderY1Axis,
+    renderY2Axis);
 
 // returns: true
 ```
@@ -142,7 +140,7 @@ axisHelper.getTickLabelMargins( plotArea,
 Checks if a string is null or undefined or empty.
 
 ```typescript
-function isOrdinal( type: ValueTypeDescriptor): boolean;
+function isOrdinal(type: ValueTypeDescriptor): boolean;
 ```
 
 ### Example
@@ -150,7 +148,7 @@ function isOrdinal( type: ValueTypeDescriptor): boolean;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.isOrdinal(type: ValueTypeDescriptor);
+axisHelper.isOrdinal(type);
 
 // returns: true
 ```
@@ -168,7 +166,7 @@ function isDateTime(type: ValueTypeDescriptor): boolean;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.isDateTime(type: ValueTypeDescriptor);
+axisHelper.isDateTime(type);
 
 // returns: true
 ```
@@ -206,8 +204,8 @@ axisHelper.getCategoryThickness(scale: any): number {
 
 ## invertOrdinalScale
 
- Inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
- Otherwise, it returns the greatest item in scale.domain() that's <= x.
+This function inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
+Otherwise, it returns the greatest item in scale.domain() that's <= x.
 
 ```typescript
 function invertOrdinalScale(scale: d3.scale.Ordinal<any, any>, x: number) ;
@@ -217,18 +215,19 @@ function invertOrdinalScale(scale: d3.scale.Ordinal<any, any>, x: number) ;
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
- 	var domain: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    var pixelSpan: number = 100;
-	var ordinalScale: D3.Scale.OrdinalScale = axisHelper.createOrdinalScale(pixelSpan, domain, 0.4);
-    var invertedValue = axisHelper.invertOrdinalScale(ordinalScale, 49);
+
+let domain: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    pixelSpan: number = 100,
+    ordinalScale: D3.Scale.OrdinalScale = axisHelper.createOrdinalScale(pixelSpan, domain, 0.4);
+
+axisHelper.invertOrdinalScale(ordinalScale, 49);
 
 // returns: 4
 ```
 
 ## findClosestXAxisIndex
 
- Inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
- Otherwise, it returns the greatest item in scale.domain() that's <= x.
+This function finds and returns the closest x-axis index.
 
 ```typescript
 function findClosestXAxisIndex(categoryValue: number, categoryAxisValues: AxisHelperCategoryDataPoint[]): number;
@@ -238,38 +237,38 @@ function findClosestXAxisIndex(categoryValue: number, categoryAxisValues: AxisHe
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-		 /**
-         * Finds the index of the category of the given x coordinate given.
-         * pointX is in non-scaled screen-space, and offsetX is in render-space.
-         * offsetX does not need any scaling adjustment.
-         * @param {number} pointX The mouse coordinate in screen-space, without scaling applied
-         * @param {number} offsetX Any left offset in d3.scale render-space
-         * @return {number}
-         */
-        private findIndex(pointX: number, offsetX?: number): number {
-            // we are using mouse coordinates that do not know about any potential CSS transform scale
-            let xScale = this.scaleDetector.getScale().x;
-            if (!Double.equalWithPrecision(xScale, 1.0, 0.00001)) {
-                pointX = pointX / xScale;
-            }
-            if (offsetX) {
-                pointX += offsetX;
-            }
 
-            let index = axisHelper.invertScale(this.xAxisProperties.scale, pointX);
-            if (this.data.isScalar) {
-                // When we have scalar data the inverted scale produces a category value, so we need to search for the closest index.
-                index = axisHelper.findClosestXAxisIndex(index, this.data.categoryData);
-            }
+/**
+ * Finds the index of the category of the given x coordinate given.
+ * pointX is in non-scaled screen-space, and offsetX is in render-space.
+ * offsetX does not need any scaling adjustment.
+ * @param {number} pointX The mouse coordinate in screen-space, without scaling applied
+ * @param {number} offsetX Any left offset in d3.scale render-space
+ * @return {number}
+ */
+private findIndex(pointX: number, offsetX?: number): number {
+    // we are using mouse coordinates that do not know about any potential CSS transform scale
+    let xScale = this.scaleDetector.getScale().x;
+    if (!Double.equalWithPrecision(xScale, 1.0, 0.00001)) {
+        pointX = pointX / xScale;
+    }
+    if (offsetX) {
+        pointX += offsetX;
+    }
 
-            return index;
-        }
+    let index = axisHelper.invertScale(this.xAxisProperties.scale, pointX);
+    if (this.data.isScalar) {
+        // When we have scalar data the inverted scale produces a category value, so we need to search for the closest index.
+        index = axisHelper.findClosestXAxisIndex(index, this.data.categoryData);
+    }
 
+    return index;
+}
 ```
 
 ## diffScaled
 
- scale(value1) - scale(value2) with zero checking and min(+/-1, result)
+This function computes and returns a diff of values in the scale. 
 
 ```typescript
 function diffScaled(scale: d3.scale.Linear<any, any>, value1: any, value2: any): number;
@@ -279,24 +278,23 @@ function diffScaled(scale: d3.scale.Linear<any, any>, value1: any, value2: any):
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
- var scale: D3.Scale.GenericQuantitativeScale<any>;
 
-            beforeEach(() => {
-                var range = [0, 999];
-                var domain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 999];
-                scale = d3.scale.linear()
-                    .range(range)
-                    .domain(domain);
-            });
-  return axisHelper.diffScaled(scale, 0, 0));
+var scale: D3.Scale.GenericQuantitativeScale<any>,
+    range = [0, 999],
+    domain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 999];
 
-  // returns: 0
+scale = d3.scale.linear()
+    .range(range)
+    .domain(domain);
+
+return axisHelper.diffScaled(scale, 0, 0));
+
+// returns: 0
 ```
-
 
 ## createDomain
 
-Create domain of values for axis
+This function creates a domain of values for axis.
 
 ```typescript
 function createDomain(data: any[], axisType: ValueTypeDescriptor, isScalar: boolean, forcedScalarDomain: any[], ensureDomain?: NumberRange): number[];
@@ -306,32 +304,38 @@ function createDomain(data: any[], axisType: ValueTypeDescriptor, isScalar: bool
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-  var cartesianSeries = [
-                {data: [{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,}, {categoryValue: 9,value: 9,categoryIndex: 1,seriesIndex: 0,
-                        }, {categoryValue: 15,value: 6,categoryIndex: 2,seriesIndex: 0,
-                        }, {categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,}]
-                },
-            ];
-            var cartesianSeriesWithHighlights = [
-                {data: [{categoryValue: 7,value: 3,categoryIndex: 0,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 2,seriesIndex: 0,}, 
-                		{categoryValue: 9,value: 9,categoryIndex: 2,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 15,value: 6,categoryIndex: 3,seriesIndex: 0,}, 
-                		{categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,highlight: true,}]
-                },
-            ];
 
-                var domain = axisHelper.createDomain(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+var cartesianSeries = [
+    {
+        data: [{ categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, }, {
+            categoryValue: 9, value: 9, categoryIndex: 1, seriesIndex: 0,
+        }, {
+            categoryValue: 15, value: 6, categoryIndex: 2, seriesIndex: 0,
+        }, { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, }]
+    },
+];
 
-// domain  = [0, 1, 2, 3];
+var cartesianSeriesWithHighlights = [
+    {
+        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
+        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
+        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
+        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
+    },
+];
+
+var domain = axisHelper.createDomain(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+
+// returns: [0, 1, 2, 3]
 ```
 
 ## getCategoryValueType
 
- Gets the ValueType of a category column, defaults to Text if the type is not present.
+This function gets the ValueType of a category column, defaults to Text if the type is not present.
 
 ```typescript
 function getCategoryValueType(data: any[], axisType: ValueTypeDescriptor, isScalar: boolean, forcedScalarDomain: any[], ensureDomain?: NumberRange): number[];
@@ -340,35 +344,39 @@ function getCategoryValueType(data: any[], axisType: ValueTypeDescriptor, isScal
 ### Example
 
 ```typescript
-
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-  var cartesianSeries = [
-                {data: [{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,}, {categoryValue: 9,value: 9,categoryIndex: 1,seriesIndex: 0,
-                        }, {categoryValue: 15,value: 6,categoryIndex: 2,seriesIndex: 0,
-                        }, {categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,}]
-                },
-            ];
-            var cartesianSeriesWithHighlights = [
-                {data: [{categoryValue: 7,value: 3,categoryIndex: 0,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 2,seriesIndex: 0,}, 
-                		{categoryValue: 9,value: 9,categoryIndex: 2,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 15,value: 6,categoryIndex: 3,seriesIndex: 0,}, 
-                		{categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,highlight: true,}]
-                },
-            ];
 
-                var domain = axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+var cartesianSeries = [
+    {
+        data: [{ categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, }, {
+            categoryValue: 9, value: 9, categoryIndex: 1, seriesIndex: 0,
+        }, {
+            categoryValue: 15, value: 6, categoryIndex: 2, seriesIndex: 0,
+        }, { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, }]
+    },
+];
 
-// domain  = [0, 1, 2, 3];
+var cartesianSeriesWithHighlights = [
+    {
+        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
+        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
+        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
+        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
+    },
+];
+
+axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+
+// returns: [0, 1, 2, 3]
 ```
 
 ## createAxis
 
-Create a D3 axis including scale. Can be vertical or horizontal, and either datetime, numeric, or text.
- @param options The properties used to create the axis.
+This function creates a D3 axis including scale. Can be vertical or horizontal, and either datetime, numeric, or text.
 
 ```typescript
 function createAxis(options: CreateAxisOptions): IAxisProperties;
@@ -376,62 +384,67 @@ function createAxis(options: CreateAxisOptions): IAxisProperties;
 ### Example
 
 ```typescript
-
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-  var cartesianSeries = [
-                {data: [{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,}, {categoryValue: 9,value: 9,categoryIndex: 1,seriesIndex: 0,
-                        }, {categoryValue: 15,value: 6,categoryIndex: 2,seriesIndex: 0,
-                        }, {categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,}]
-                },
-            ];
-            var cartesianSeriesWithHighlights = [
-                {data: [{categoryValue: 7,value: 3,categoryIndex: 0,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 0,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 1,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 7,value: 11,categoryIndex: 2,seriesIndex: 0,}, 
-                		{categoryValue: 9,value: 9,categoryIndex: 2,seriesIndex: 0,highlight: true,}, 
-                		{categoryValue: 15,value: 6,categoryIndex: 3,seriesIndex: 0,}, 
-                		{categoryValue: 22,value: 7,categoryIndex: 3,seriesIndex: 0,highlight: true,}]
-                },
-            ];
 
-                var domain = axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+var cartesianSeries = [
+    {
+        data: [{ categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, }, {
+            categoryValue: 9, value: 9, categoryIndex: 1, seriesIndex: 0,
+        }, {
+            categoryValue: 15, value: 6, categoryIndex: 2, seriesIndex: 0,
+        }, { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, }]
+    },
+];
 
-// domain  = [0, 1, 2, 3];
+var cartesianSeriesWithHighlights = [
+    {
+        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
+        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
+        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
+        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
+        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
+        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
+    },
+];
+
+axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
+
+// returns: [0, 1, 2, 3]
 ```
 
 ## createFormatter
 
---
+This function creates and returns an instance of ```IValueFormatter``` in order to format values of the axis.
+
 ```typescript
-function createFormatter(scaleDomain: any[],dataDomain: any[],dataType,isScalar: boolean,formatString: string,bestTickCount: number,tickValues: any[],getValueFn: any,useTickIntervalForDisplayUnits: boolean = false,axisDisplayUnits?: number,axisPrecision?: number): IValueFormatter
+function createFormatter(scaleDomain: any[], dataDomain: any[], dataType,isScalar: boolean, formatString: string, bestTickCount: number, tickValues: any[], getValueFn: any, useTickIntervalForDisplayUnits: boolean = false, axisDisplayUnits?: number, axisPrecision?: number): IValueFormatter
 ```
 
 ### Example
 
 ```typescript
-
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-   let formatter = AxisHelper.createFormatter(
-                scaleDomain,
-                dataDomain,
-                dataType,
-                isScalar,
-                formatString,
-                bestTickCount,
-                tickValues,
-                getValueFn,
-                useTickIntervalForDisplayUnits,
-                axisDisplayUnits,
-                axisPrecision);
 
+AxisHelper.createFormatter(
+    scaleDomain,
+    dataDomain,
+    dataType,
+    isScalar,
+    formatString,
+    bestTickCount,
+    tickValues,
+    getValueFn,
+    useTickIntervalForDisplayUnits,
+    axisDisplayUnits,
+    axisPrecision);
 ```
 
 
 ## applyCustomizedDomain
 
-Set customized domain, but don't change when nothing is set
+This function sets customized domain, but don't change when nothing is set.
 
 ```typescript
 function applyCustomizedDomain(customizedDomain, forcedDomain: any[]): any[];
@@ -440,20 +453,19 @@ function applyCustomizedDomain(customizedDomain, forcedDomain: any[]): any[];
 ### Example
 
 ```typescript
-
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-   var customizedDomain = [undefined, 20];
-            var existingDomain = [0, 10];
-            var newDomain = axisHelper.applyCustomizedDomain(customizedDomain, existingDomain);
 
-// return {0:0, 1:20}
+let customizedDomain = [undefined, 20],
+    existingDomain = [0, 10];
 
+axisHelper.applyCustomizedDomain(customizedDomain, existingDomain);
 
+// returns: {0:0, 1:20}
 ```
 
 ## combineDomain
 
-Combine the forced domain with the actual domain if one of the values was set.
+This function combines the forced domain with the actual domain if one of the values was set.
 The forcedDomain is in 1st priority. Extends the domain if the any reference point requires it.
 
 ```typescript
@@ -464,16 +476,19 @@ function combineDomain(forcedDomain: any[], domain: any[], ensureDomain?: Number
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
- 
- 			var forcedYDomain = this.valueAxisProperties ? [this.valueAxisProperties['secStart'], this.valueAxisProperties['secEnd']] : null;
-            let xDomain = [minX, maxX];
-            let combinedXDomain = AxisHelper.combineDomain(forcedYDomain, xDomain, ensureXDomain);
 
+let forcedYDomain = this.valueAxisProperties
+    ? [this.valueAxisProperties['secStart'], this.valueAxisProperties['secEnd']]
+    : null;
+
+let xDomain = [minX, maxX];
+
+AxisHelper.combineDomain(forcedYDomain, xDomain, ensureXDomain);
 ```
 
 ## powerOfTen
 
-Indicates whether the number is power of 10.
+This function indicates whether the number is power of 10.
 
 ```typescript
 function  powerOfTen(d: any): boolean;
@@ -482,15 +497,9 @@ function  powerOfTen(d: any): boolean;
 ### Example 
 
 ```typescript
-export function powerOfTen(d: any): boolean {
-        let value = Math.abs(d);
-        // formula log2(Y)/log2(10) = log10(Y)
-        // because double issues this won't return exact value
-        // we need to ceil it to nearest number.
-        let log10: number = Math.log(value) / Math.LN10;
-        log10 = Math.ceil(log10 - 1e-12);
+import axis = powerbi.extensibility.utils.chart.axis;
 
-        return value / Math.pow(10, log10) === 1;
-    }
+axis.powerOfTen(10);
 
+// returns: true
 ```

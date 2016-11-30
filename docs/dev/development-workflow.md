@@ -15,13 +15,13 @@ To start development and improvement of the source code you should have the foll
 
 ## Installation
 Firstly, you should clone a copy of the repository by using one of the following commands:
-* HTTPS: ```git clone https://github.com/Microsoft/powerbi-visuals-utils-formattingutils.git```
-* SSH: ```git clone git@github.com:Microsoft/powerbi-visuals-utils-formattingutils.git```
+* HTTPS: ```git clone https://github.com/Microsoft/powerbi-visuals-utils-chartutils.git```
+* SSH: ```git clone git@github.com:Microsoft/powerbi-visuals-utils-chartutils.git```
 
-After that, you should change the current working directory to ```powerbi-visuals-utils-formattingutils``` by using the following command:
+After that, you should change the current working directory to ```powerbi-visuals-utils-chartutils``` by using the following command:
 
 ```bash
-cd powerbi-visuals-utils-formattingutils
+cd powerbi-visuals-utils-chartutils
 ```
 
 After that, you should install dependencies by using the following command:
@@ -54,7 +54,7 @@ We use [TSLint](https://github.com/palantir/tslint) as a linter for TypeScript c
 npm run lint
 ```
 
-This command checks style of TypeScript code and provides a list of problems. Please address all of problems reported by TSLint before sending a pull request to the [repository](https://github.com/Microsoft/powerbi-visuals-utils-formattingutils).
+This command checks style of TypeScript code and provides a list of problems. Please address all of problems reported by TSLint before sending a pull request to the [repository](https://github.com/Microsoft/powerbi-visuals-utils-chartutils).
 
 ## How to run unit tests locally
 We use [Jasmine](https://github.com/jasmine/jasmine) and [Karma](https://github.com/karma-runner/karma) to run unit tests. Please note, Karma requires Google Chrome to run unit tests.

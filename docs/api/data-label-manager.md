@@ -48,5 +48,3 @@ DataLabelManager.isValid(rectangle);
 
 // returns: true
 ```
-
-
