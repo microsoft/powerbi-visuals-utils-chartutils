@@ -20,6 +20,7 @@ npm install powerbi-visuals-utils-chartutils --save
 ```
 
 This command installs the package and adds a package as a dependency to your ```package.json```
+
 After installation of the package, you should install the [typings](https://www.npmjs.com/package/typings) package as a global dependency by using the following command:
 ```bash
 npm install typings -g
@@ -35,9 +36,10 @@ This command installs type declarations to the ```typings``` directory. These de
 ## Including declarations to the build flow
 The package contains ```d.ts``` declarations file, it's necessary for TypeScript compiler and it helps to develop your visuals fast and confident. You should add the following files to the ```files``` property of ```tsconfig.json```:
 * ```typings/index.d.ts```
-* ```node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts```
+* ```node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts```
+* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts```
-* ```node_modules/powerbi-visuals-utils-dataviewutils/lib/index.d.ts```
+* ```node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.d.ts```
 
 As a result you will have the following file structure:
@@ -46,16 +48,17 @@ As a result you will have the following file structure:
   "compilerOptions": {...},
   "files": [
     "typings/index.d.ts",
-    "node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts",
+    "node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts",
+    "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.d.ts",
     "node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts",
-    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.d.ts",
+    "node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts",
     "node_modules/powerbi-visuals-utils-chartutils/lib/index.d.ts"
   ]
 }
 ```
 
 ## Including JavaScript artifacts to the custom visual
-To use the package with your custom visuals your should add the following files to the ```externalJS``` property of ```pbiviz.json``` :
+To use the package with your custom visuals you should add the following files to the ```externalJS``` property of ```pbiviz.json``` :
 * ```node_modules/jquery/dist/jquery.min.js```
 * ```node_modules/d3/d3.min.js```
 * ```node_modules/lodash/lodash.min.js```
@@ -63,7 +66,8 @@ To use the package with your custom visuals your should add the following files 
 * ```node_modules/globalize/lib/cultures/globalize.culture.en-US.js```
 * ```node_modules/powerbi-visuals-utils-typeutils/lib/index.js```
 * ```node_modules/powerbi-visuals-utils-svgutils/lib/index.js```
-* ```node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js```
+* ```node_modules/powerbi-visuals-utils-formattingutils/lib/index.js```
+* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.js```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.js```
 
 As a result you will have the following file structure:
@@ -81,7 +85,8 @@ As a result you will have the following file structure:
     "node_modules/globalize/lib/cultures/globalize.culture.en-US.js",
     "node_modules/powerbi-visuals-utils-typeutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-svgutils/lib/index.js",
-    "node_modules/powerbi-visuals-utils-dataviewutils/lib/index.js",
+    "node_modules/powerbi-visuals-utils-formattingutils/lib/index.js",
+    "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-chartutils/lib/index.js"
   ],
   "style": ...,
@@ -90,15 +95,17 @@ As a result you will have the following file structure:
 ```
 
 ## Including CSS artifacts to the custom visual
-To use the package with your custom visuals you should import the following CSS file to your ```.less``` file:
+To use the package with your custom visuals you should import the following CSS files to your ```.less``` file:
 
+* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.css```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.css```
 
 As a result you will have the following file structure:
 ```less
+@import (less) "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.css";
 @import (less) "node_modules/powerbi-visuals-utils-chartutils/lib/index.css";
 ```
 
-Please note, you should import ```.css``` file as ```.less``` file, because Power BI Visuals Tools wraps the external CSS rules.
+Please note, you should import ```.css``` files as ```.less``` files, because Power BI Visuals Tools wraps the external CSS rules.
 
 That's it. :rocket: :metal: That's a good time to read our [Usage Guide](./usage-guide.md).
