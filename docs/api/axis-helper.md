@@ -23,7 +23,7 @@ The ```powerbi.extensibility.utils.chart.axis``` module provides the following f
 
 ## getRecommendedNumberOfTicksForXAxis
 
-This function return recommended amount of ticks according to width of chart.
+This function returns recommended amount of ticks according to width of chart.
 
 ```typescript
 function getRecommendedNumberOfTicksForXAxis(availableWidth: number): number;
@@ -41,7 +41,7 @@ axisHelper.getRecommendedNumberOfTicksForXAxis(1024);
 
 ## getRecommendedNumberOfTicksForYAxis
 
-This function return recommended amount of ticks according to height of chart.
+This function returns recommended amount of ticks according to height of chart.
 
 ```typescript
 function getRecommendedNumberOfTicksForYAxis(availableWidth: number) 
@@ -59,7 +59,7 @@ axisHelper.getRecommendedNumberOfTicksForYAxis(100);
 
 ## getBestNumberOfTicks
 
-Get the best number of ticks based on minimum value, maximum value, measure metadata and max tick count;
+Gets the optimal number of ticks based on minimum value, maximum value, measure metadata and max tick count;
 
 ```typescript
 function getBestNumberOfTicks(min: number, max: number, valuesMetadata: DataViewMetadataColumn[], maxTickCount: number, isDateTime?: boolean): number;
@@ -69,10 +69,20 @@ function getBestNumberOfTicks(min: number, max: number, valuesMetadata: DataView
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-
-axisHelper.getBestNumberOfTicks("Power BI", "Power");
-
-// returns: true
+  var dataViewMetadataColumnWithIntegersOnly: powerbi.DataViewMetadataColumn[] = [
+                {
+                    displayName: "col1",
+                    isMeasure: true,
+                    type: ValueType.fromDescriptor({ integer: true })
+                },
+                {
+                    displayName: "col2",
+                    isMeasure: true,
+                    type: ValueType.fromDescriptor({ integer: true })
+                }
+            ];
+ var actual = AxisHelper.getBestNumberOfTicks(0, 3, dataViewMetadataColumnWithIntegersOnly, 6);
+// returns: 4
 ```
 
 ## contains
@@ -95,7 +105,7 @@ axisHelper.contains("Microsoft Power BI Visuals", "Power BI");
 
 ## getTickLabelMargins
 
-Checks if a string is null or undefined or empty.
+This function returns the margins for tick labels.
 
 ```typescript
 function getTickLabelMargins(
@@ -132,7 +142,10 @@ axisHelper.getTickLabelMargins(
     renderY1Axis,
     renderY2Axis);
 
-// returns: true
+// returns:  xMax,
+             yLeft,
+             yRight,
+             stackHeigh
 ```
 
 ## isOrdinal
@@ -147,7 +160,7 @@ function isOrdinal(type: ValueTypeDescriptor): boolean;
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
-
+let type = ValueType.fromDescriptor({ misc: { barcode: true } });
 axisHelper.isOrdinal(type);
 
 // returns: true
@@ -155,7 +168,7 @@ axisHelper.isOrdinal(type);
 
 ## isDateTime
 
-Checks if a string is null or undefined or empty.
+Checks if value is of DateTime type.
 
 ```typescript
 function isDateTime(type: ValueTypeDescriptor): boolean;
@@ -166,7 +179,7 @@ function isDateTime(type: ValueTypeDescriptor): boolean;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.isDateTime(type);
+axisHelper.isDateTime(ValueType.fromDescriptor({ dateTime: true }))
 
 // returns: true
 ```
@@ -184,22 +197,10 @@ function getCategoryThickness(scale: any): number;
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-axisHelper.getCategoryThickness(scale: any): number {
-        let leftEdges = scale.range();
-
-        if (leftEdges.length < 2) {
-            // We have 1 item if we don't have 2 edges. If we have 1 item, just use the entire axis length as the thickness.
-            if (isOrdinalScale(scale)) {
-                // We should only hit this if we have an ordinal scale. Other scales should always have 2 items in their range.
-                let rangeExtent = scale.rangeExtent();
-                return rangeExtent[1] - rangeExtent[0];
-            }
-        }
-
-        return leftEdges[1] - leftEdges[0];
-    }
-
-// returns: true
+    let range = [0, 100];
+    let domain = [0, 10];
+    let scale = d3.scale.linear().domain(domain).range(range);
+    let actualThickness = AxisHelper.getCategoryThickness(scale);
 ```
 
 ## invertOrdinalScale
@@ -218,7 +219,7 @@ import axisHelper = powerbi.extensibility.utils.chart.axis;
 
 let domain: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     pixelSpan: number = 100,
-    ordinalScale: D3.Scale.OrdinalScale = axisHelper.createOrdinalScale(pixelSpan, domain, 0.4);
+    ordinalScale: d3.scale.ordinal = axisHelper.createOrdinalScale(pixelSpan, domain, 0.4);
 
 axisHelper.invertOrdinalScale(ordinalScale, 49);
 
@@ -279,7 +280,7 @@ function diffScaled(scale: d3.scale.Linear<any, any>, value1: any, value2: any):
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-var scale: D3.Scale.GenericQuantitativeScale<any>,
+var scale: d3.scale.Linear<number, number>,
     range = [0, 999],
     domain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 999];
 
@@ -315,19 +316,6 @@ var cartesianSeries = [
     },
 ];
 
-var cartesianSeriesWithHighlights = [
-    {
-        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
-        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
-        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
-        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
-    },
-];
-
 var domain = axisHelper.createDomain(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
 
 // returns: [0, 1, 2, 3]
@@ -356,19 +344,6 @@ var cartesianSeries = [
     },
 ];
 
-var cartesianSeriesWithHighlights = [
-    {
-        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
-        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
-        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
-        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
-    },
-];
-
 axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
 
 // returns: [0, 1, 2, 3]
@@ -385,62 +360,34 @@ function createAxis(options: CreateAxisOptions): IAxisProperties;
 
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
+import valueFormatter = powerbi.visuals.valueFormatter;
 
-var cartesianSeries = [
-    {
-        data: [{ categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, }, {
-            categoryValue: 9, value: 9, categoryIndex: 1, seriesIndex: 0,
-        }, {
-            categoryValue: 15, value: 6, categoryIndex: 2, seriesIndex: 0,
-        }, { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, }]
-    },
-];
+var dataPercent = [0.0, 0.33, 0.49];
 
-var cartesianSeriesWithHighlights = [
-    {
-        data: [{ categoryValue: 7, value: 3, categoryIndex: 0, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, },
-        { categoryValue: 7, value: 11, categoryIndex: 1, seriesIndex: 0, highlight: true, },
-        { categoryValue: 7, value: 11, categoryIndex: 2, seriesIndex: 0, },
-        { categoryValue: 9, value: 9, categoryIndex: 2, seriesIndex: 0, highlight: true, },
-        { categoryValue: 15, value: 6, categoryIndex: 3, seriesIndex: 0, },
-        { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, highlight: true, }]
-    },
-];
+            var formatStringProp: powerbi.DataViewObjectPropertyIdentifier = {
+                objectName: 'general',
+                propertyName: 'formatString',
+            };
+            let metaDataColumnPercent: powerbi.DataViewMetadataColumn = {
+                    displayName: 'Column',
+                    type: ValueType.fromDescriptor({ numeric: true }),
+                    objects: {
+                        general: {
+                            formatString: '0 %',
+                        }
+                    }
+                };
 
-axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
-
-// returns: [0, 1, 2, 3]
+                var os = AxisHelper.createAxis({
+                    pixelSpan: 100,
+                    dataDomain: [dataPercent[0], dataPercent[2]],
+                    metaDataColumn: metaDataColumnPercent,
+                    formatString: valueFormatter.getFormatString(metaDataColumnPercent, formatStringProp),
+                    outerPadding: 0.5,
+                    isScalar: true,
+                    isVertical: true,
+                });
 ```
-
-## createFormatter
-
-This function creates and returns an instance of ```IValueFormatter``` in order to format values of the axis.
-
-```typescript
-function createFormatter(scaleDomain: any[], dataDomain: any[], dataType,isScalar: boolean, formatString: string, bestTickCount: number, tickValues: any[], getValueFn: any, useTickIntervalForDisplayUnits: boolean = false, axisDisplayUnits?: number, axisPrecision?: number): IValueFormatter
-```
-
-### Example
-
-```typescript
-import axisHelper = powerbi.extensibility.utils.chart.axis;
-
-AxisHelper.createFormatter(
-    scaleDomain,
-    dataDomain,
-    dataType,
-    isScalar,
-    formatString,
-    bestTickCount,
-    tickValues,
-    getValueFn,
-    useTickIntervalForDisplayUnits,
-    axisDisplayUnits,
-    axisPrecision);
-```
-
 
 ## applyCustomizedDomain
 
