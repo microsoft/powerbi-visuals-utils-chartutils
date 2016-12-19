@@ -645,7 +645,8 @@ module powerbi.extensibility.utils.chart.axis {
             categoryThickness = options.categoryThickness,
             axisDisplayUnits = options.axisDisplayUnits,
             axisPrecision = options.axisPrecision,
-            is100Pct = !!options.is100Pct;
+            is100Pct = !!options.is100Pct,
+            disableNice = options.disableNice;
 
         let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
@@ -770,7 +771,8 @@ module powerbi.extensibility.utils.chart.axis {
             forcedTickCount = options.forcedTickCount,
             categoryThickness = options.categoryThickness,
             shouldClamp = !!options.shouldClamp,
-            maxTickCount = options.maxTickCount;
+            maxTickCount = options.maxTickCount,
+            disableNice = options.disableNice;
 
         let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
@@ -781,6 +783,9 @@ module powerbi.extensibility.utils.chart.axis {
 
         let scalarDomain = dataDomain ? dataDomain.slice() : null;
         let bestTickCount = maxTicks;
+        if (disableNice) {
+            bestTickCount = null;
+        }
         let scale: d3.scale.Ordinal<any, any> | d3.scale.Linear<any, any>;
         let usingDefaultDomain = false;
 
@@ -801,10 +806,11 @@ module powerbi.extensibility.utils.chart.axis {
         }
         else {
             if (isScalar && dataDomain.length > 0) {
-                bestTickCount = forcedTickCount !== undefined
-                    ? (maxTicks !== 0 ? forcedTickCount : 0)
-                    : getBestNumberOfTicks(dataDomain[0], dataDomain[dataDomain.length - 1], [metaDataColumn], maxTicks, dataType.dateTime);
-
+                if (!disableNice) {
+                    bestTickCount = forcedTickCount !== undefined
+                        ? (maxTicks !== 0 ? forcedTickCount : 0)
+                        : getBestNumberOfTicks(dataDomain[0], dataDomain[dataDomain.length - 1], [metaDataColumn], maxTicks, dataType.dateTime);
+                }
                 let normalizedRange = normalizeLinearDomain({ min: dataDomain[0], max: dataDomain[dataDomain.length - 1] });
                 scalarDomain = [normalizedRange.min, normalizedRange.max];
             }
