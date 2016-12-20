@@ -221,6 +221,8 @@ declare module powerbi.extensibility.utils.chart.axis {
         is100Pct?: boolean;
         /** (optional) sets clamping on the D3 scale, useful for drawing column chart rectangles as it simplifies the math during layout */
         shouldClamp?: boolean;
+        /** (optional) Disable "niceing" for numeric axis. It means that if max value is 172 the axis will show 172 but not rounded to upper value 180 */
+        disableNice?: boolean;
     }
     enum AxisOrientation {
         top = 0,
