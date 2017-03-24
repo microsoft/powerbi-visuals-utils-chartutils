@@ -39,12 +39,12 @@ module powerbi.extensibility.utils.chart.dataLabel {
     import textMeasurementService = powerbi.extensibility.utils.formatting.textMeasurementService;
 
     /**
-     * Utility class to speed up the conflict detection by collecting the arranged items in the DataLabelsPanel. 
+     * Utility class to speed up the conflict detection by collecting the arranged items in the DataLabelsPanel.
      */
     export class DataLabelArrangeGrid {
 
         private grid: IArrangeGridElementInfo[][][] = [];
-        // size of a grid cell 
+        // size of a grid cell
         private cellSize: ISize;
         private rowCount: number;
         private colCount: number;
@@ -68,7 +68,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
                 fontWeight: utils.LabelTextProperties.fontWeight,
             };
 
-            // sets the cell size to be twice of the Max with and Max height of the elements 
+            // sets the cell size to be twice of the Max with and Max height of the elements
             this.cellSize = { width: 0, height: 0 };
             for (let i = 0, len = elements.length; i < len; i++) {
                 let child = elements[i];

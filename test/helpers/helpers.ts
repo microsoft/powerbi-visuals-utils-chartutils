@@ -42,7 +42,7 @@ module powerbi.extensibility.utils.chart.test.helpers {
     }
 
     /**
-     * Checks if value is in the given range 
+     * Checks if value is in the given range
      * @val Value to check
      * @min Min value of range
      * @max Max value of range

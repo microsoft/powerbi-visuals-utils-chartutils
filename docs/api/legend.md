@@ -11,7 +11,7 @@ The ```powerbi.visuals``` module provides the following functions and interfaces
 This helper function simplifies PowerBI Custom Visual legends creation.
 
 ```typescript
-function createLegend(legendParentElement: JQuery,          // top visual element, container in which legend will be created
+function createLegend(legendParentElement: HTMLElement,          // top visual element, container in which legend will be created
         interactive: boolean,                               // indicates that legend should be interactive
         interactivityService: IInteractivityService,        // reference to IInteractivityService interface which need to create legend click events
         isScrollable: boolean = false,                      // indicates that legend could be scrollable or not
@@ -21,14 +21,14 @@ function createLegend(legendParentElement: JQuery,          // top visual elemen
 ### Example
 
 ```typescript
-        public init(options: VisualInitOptions) {
+        public init(options: VisualConstructorOptions) {
             this.visualInitOptions = options;
             this.layers = [];
 
             var element = this.element = options.element;
             var viewport = this.currentViewport = options.viewport;
             var hostServices = options.host;
-            
+
             //... some other init calls
 
             if (this.behavior) {
@@ -49,7 +49,7 @@ This Interface implements all methods necessary for legend creation
 export interface ILegend {
         getMargins(): IViewport;
         isVisible(): boolean;
-        changeOrientation(orientation: LegendPosition): void;   // processing legend orientation 
+        changeOrientation(orientation: LegendPosition): void;   // processing legend orientation
         getOrientation(): LegendPosition;                       // get information about current legend orientation
         drawLegend(data: LegendData, viewport: IViewport);      // all legend rendering code is placing here
         /**

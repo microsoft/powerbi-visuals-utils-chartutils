@@ -15,10 +15,10 @@
  *  The above copyright notice and this permission notice shall be included in
  *  all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
@@ -61,11 +61,11 @@ module powerbi.extensibility.utils.chart.axis {
     }
 
     export interface IAxisProperties {
-        /** 
+        /**
          * The D3 Scale object.
          */
         scale: any;
-        /** 
+        /**
          * The D3 Axis object.
          */
         axis: d3.svg.Axis;
@@ -73,7 +73,7 @@ module powerbi.extensibility.utils.chart.axis {
          * An array of the tick values to display for this axis.
          */
         values: any[];
-        /** 
+        /**
          * The ValueType of the column used for this axis.
          */
         axisType: ValueType;
@@ -89,27 +89,27 @@ module powerbi.extensibility.utils.chart.axis {
          * Cartesian axes are either a category or value axis.
          */
         isCategoryAxis: boolean;
-        /** 
+        /**
          * (optional) The max width for category tick label values. used for ellipsis truncation / label rotation.
          */
         xLabelMaxWidth?: number;
-        /** 
+        /**
          * (optional) The max width for each category tick label values. used for ellipsis truncation / label rotation. Used by hierarchy categories that have varying widths.
          */
         xLabelMaxWidths?: number[];
-        /** 
+        /**
          * (optional) The thickness of each category on the axis.
          */
         categoryThickness?: number;
-        /** 
+        /**
          * (optional) The outer padding in pixels applied to the D3 scale.
          */
         outerPadding?: number;
-        /** 
+        /**
          * (optional) Whether we are using a default domain.
          */
         usingDefaultDomain?: boolean;
-        /** 
+        /**
          * (optional) do default d3 axis labels fit?
          */
         willLabelsFit?: boolean;
@@ -117,19 +117,19 @@ module powerbi.extensibility.utils.chart.axis {
          * (optional) word break axis labels
          */
         willLabelsWordBreak?: boolean;
-        /** 
+        /**
          * (optional) Whether log scale is possible on the current domain.
          */
         isLogScaleAllowed?: boolean;
-        /** 
+        /**
          * (optional) Whether domain contains zero value and log scale is enabled.
          */
         hasDisallowedZeroInDomain?: boolean;
-        /** 
+        /**
          *(optional) The original data domain. Linear scales use .nice() to round to cleaner edge values. Keep the original data domain for later.
          */
         dataDomain?: number[];
-        /** 
+        /**
          * (optional) The D3 graphics context for this axis
          */
         graphicsContext?: d3.Selection<any>;
@@ -152,15 +152,15 @@ module powerbi.extensibility.utils.chart.axis {
     export type IStackedAxisValue = PrimitiveValue | IStackedAxisPlaceholder;
 
     export interface IStackedAxisProperties extends IAxisProperties {
-        /** 
+        /**
          * level 0 is the "leaf" level, closest to the plot area.
          */
         levelIndex: number;
-        /** 
+        /**
          * levelSize: height for x-axis (column chart), width for y-axis (bar chart)
          */
         levelSize: number;
-        /** 
+        /**
          * arrays that we can use to bind to D3 using .enter.data(arr) for styling the axis ticks
          */
         lineStyleInfo: IStackedAxisLineStyleInfo[][];
@@ -181,7 +181,7 @@ module powerbi.extensibility.utils.chart.axis {
          * The dimension length for the axis, in pixels.
          */
         pixelSpan: number;
-        /** 
+        /**
          * The data domain. [min, max] for a scalar axis, or [1...n] index array for ordinal.
          */
         dataDomain: number[];
@@ -189,7 +189,7 @@ module powerbi.extensibility.utils.chart.axis {
          * If the scalar number domain is [0,0] use this one instead
          */
         zeroScalarDomain?: number[];
-        /** 
+        /**
          * The DataViewMetadataColumn will be used for dataType and tick value formatting.
          */
         metaDataColumn: DataViewMetadataColumn; // TODO: remove this, we should just be passing in the formatString and the ValueType, not this DataView-specific object
@@ -197,11 +197,11 @@ module powerbi.extensibility.utils.chart.axis {
          * The format string.
          */
         formatString: string;
-        /** 
+        /**
          * outerPadding to be applied to the axis.
          */
         outerPadding: number;
-        /** 
+        /**
          * Indicates if this is the category axis.
          */
         isCategoryAxis?: boolean;
@@ -215,7 +215,7 @@ module powerbi.extensibility.utils.chart.axis {
          * and different optimizations are made for tick labels.
          */
         isVertical?: boolean;
-        /** 
+        /**
          * (optional) For visuals that do not need zero (e.g. column/bar) use tickInterval.
          */
         useTickIntervalForDisplayUnits?: boolean;
@@ -225,15 +225,15 @@ module powerbi.extensibility.utils.chart.axis {
          */
         forcedTickCount?: number;
         /**
-         * (optional) For scalar axis with scalar keys, the number of ticks should never exceed the number of scalar keys, 
+         * (optional) For scalar axis with scalar keys, the number of ticks should never exceed the number of scalar keys,
          * or labeling will look wierd (i.e. level of detail is Year, but month labels are shown between years)
          */
         maxTickCount?: number;
-        /** 
-         * (optional) Callback for looking up actual values from indices, 
-         * used when formatting tick labels. 
+        /**
+         * (optional) Callback for looking up actual values from indices,
+         * used when formatting tick labels.
          */
-        getValueFn?: (index: number, type: ValueType) => any;
+        getValueFn?: (index: number, dataType: ValueType) => any;
         /**
          * (optional) The width/height of each category on the axis.
          */

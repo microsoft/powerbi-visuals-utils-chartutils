@@ -15,10 +15,10 @@
  *  The above copyright notice and this permission notice shall be included in
  *  all copies or substantial portions of the Software.
  *
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+ *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
@@ -91,7 +91,7 @@ module powerbi.extensibility.utils.chart.axis {
     /**
      * Get the best number of ticks based on minimum value, maximum value,
      * measure metadata and max tick count.
-     * 
+     *
      * @param min The minimum of the data domain.
      * @param max The maximum of the data domain.
      * @param valuesMetadata The measure metadata array.
@@ -212,12 +212,12 @@ module powerbi.extensibility.utils.chart.axis {
         return tickLabels;
     }
 
-    /** 
+    /**
      * Round out very small zero tick values (e.g. -1e-33 becomes 0).
-     * 
+     *
      * @param ticks Array of numbers (from d3.scale.ticks([maxTicks])).
      * @param epsilon Max ratio of calculated tick interval which we will recognize as zero.
-     * 
+     *
      * e.g.
      *     ticks = [-2, -1, 1e-10, 3, 4]; epsilon = 1e-5;
      *     closeZero = 1e-5 * | 2 - 1 | = 1e-5
@@ -271,16 +271,6 @@ module powerbi.extensibility.utils.chart.axis {
     }
 
     export function getMargin(availableWidth: number, availableHeight: number, xMargin: number, yMargin: number): IMargin {
-        if (getRecommendedNumberOfTicksForXAxis(availableWidth - xMargin) === 0
-            || getRecommendedNumberOfTicksForYAxis(availableHeight - yMargin) === 0) {
-            return {
-                top: 0,
-                right: xMargin,
-                bottom: yMargin,
-                left: 0
-            };
-        }
-
         return {
             top: 20,
             right: 30,
@@ -330,95 +320,92 @@ module powerbi.extensibility.utils.chart.axis {
         }
 
         let textHeight: number;
-        if (getRecommendedNumberOfTicksForXAxis(viewport.width) !== 0
-            || getRecommendedNumberOfTicksForYAxis(viewport.height) !== 0) {
-            let rotation;
-            if (scrollbarVisible || hasHierarchy)
-                rotation = LabelLayoutStrategy.DefaultRotationWithScrollbar;
-            else
-                rotation = LabelLayoutStrategy.DefaultRotation;
+        let rotation;
+        if (scrollbarVisible || hasHierarchy)
+            rotation = LabelLayoutStrategy.DefaultRotationWithScrollbar;
+        else
+            rotation = LabelLayoutStrategy.DefaultRotation;
 
-            if (renderY1Axis) {
-                for (let i = 0, len = y1Labels.length; i < len; i++) {
-                    properties.text = y1Labels[i];
-                    maxWidthY1 = Math.max(maxWidthY1, textWidthMeasurer(properties));
-                }
+        if (renderY1Axis) {
+            for (let i = 0, len = y1Labels.length; i < len; i++) {
+                properties.text = y1Labels[i];
+                maxWidthY1 = Math.max(maxWidthY1, textWidthMeasurer(properties));
             }
+        }
 
-            if (y2AxisProperties && renderY2Axis) {
-                let y2Labels = y2AxisProperties.values;
-                for (let i = 0, len = y2Labels.length; i < len; i++) {
-                    properties.text = y2Labels[i];
-                    maxWidthY2 = Math.max(maxWidthY2, textWidthMeasurer(properties));
-                }
+        if (y2AxisProperties && renderY2Axis) {
+            let y2Labels = y2AxisProperties.values;
+            for (let i = 0, len = y2Labels.length; i < len; i++) {
+                properties.text = y2Labels[i];
+                maxWidthY2 = Math.max(maxWidthY2, textWidthMeasurer(properties));
             }
+        }
 
-            textHeight = textHeightMeasurer(properties);
-            let maxNumLines = Math.floor(bottomMarginLimit / textHeight);
-            let xScale = xAxisProperties.scale;
-            let xDomain = xScale.domain();
-            if (renderXAxis && xLabels.length > 0) {
-                for (let i = 0, len = xLabels.length; i < len; i++) {
-                    // find the max height of the x-labels, perhaps rotated or wrapped
-                    let height: number;
-                    properties.text = xLabels[i];
-                    let width = textWidthMeasurer(properties);
-                    if (xAxisProperties.willLabelsWordBreak) {
-                        // Split label and count rows
-                        let wordBreaks = wordBreaker.splitByWidth(properties.text, properties, textWidthMeasurer, xAxisProperties.xLabelMaxWidth, maxNumLines);
-                        height = wordBreaks.length * textHeight;
-                        // word wrapping will truncate at xLabelMaxWidth
-                        width = xAxisProperties.xLabelMaxWidth;
-                    }
-                    else if (!xAxisProperties.willLabelsFit && scaleIsOrdinal) {
-                        height = width * rotation.sine;
-                        width = width * rotation.cosine;
-                    }
-                    else {
-                        height = TextHeightConstant;
-                    }
+        textHeight = textHeightMeasurer(properties);
+        let maxNumLines = Math.floor(bottomMarginLimit / textHeight);
+        let xScale = xAxisProperties.scale;
+        let xDomain = xScale.domain();
+        if (renderXAxis && xLabels.length > 0) {
+            for (let i = 0, len = xLabels.length; i < len; i++) {
+                // find the max height of the x-labels, perhaps rotated or wrapped
+                let height: number;
+                properties.text = xLabels[i];
+                let width = textWidthMeasurer(properties);
+                if (xAxisProperties.willLabelsWordBreak) {
+                    // Split label and count rows
+                    let wordBreaks = wordBreaker.splitByWidth(properties.text, properties, textWidthMeasurer, xAxisProperties.xLabelMaxWidth, maxNumLines);
+                    height = wordBreaks.length * textHeight;
+                    // word wrapping will truncate at xLabelMaxWidth
+                    width = xAxisProperties.xLabelMaxWidth;
+                }
+                else if (!xAxisProperties.willLabelsFit && scaleIsOrdinal) {
+                    height = width * rotation.sine;
+                    width = width * rotation.cosine;
+                }
+                else {
+                    height = TextHeightConstant;
+                }
 
-                    // calculate left and right overflow due to wide X labels
-                    // (Note: no right overflow when rotated)
-                    if (i === 0) {
-                        if (scaleIsOrdinal) {
-                            if (!xAxisProperties.willLabelsFit /*rotated text*/)
-                                leftOverflow = width - ordinalLabelOffset - xLabelOuterPadding;
-                            else
-                                leftOverflow = (width / 2) - ordinalLabelOffset - xLabelOuterPadding;
-                            leftOverflow = Math.max(leftOverflow, 0);
-                        }
-                        else if (xDomain.length > 1) {
-                            // Scalar - do some math
-                            let xPos = xScale(xDomain[0]);
-                            // xPos already incorporates xLabelOuterPadding, don't subtract it twice
-                            leftOverflow = (width / 2) - xPos;
-                            leftOverflow = Math.max(leftOverflow, 0);
-                        }
-                    } else if (i === len - 1) {
-                        if (scaleIsOrdinal) {
-                            // if we are rotating text (!willLabelsFit) there won't be any right overflow
-                            if (xAxisProperties.willLabelsFit || xAxisProperties.willLabelsWordBreak) {
-                                // assume this label is placed near the edge
-                                rightOverflow = (width / 2) - ordinalLabelOffset - xLabelOuterPadding;
-                                rightOverflow = Math.max(rightOverflow, 0);
-                            }
-                        }
-                        else if (xDomain.length > 1) {
-                            // Scalar - do some math
-                            let xPos = xScale(xDomain[1]);
-                            // xPos already incorporates xLabelOuterPadding, don't subtract it twice
-                            rightOverflow = (width / 2) - (viewport.width - xPos);
+                // calculate left and right overflow due to wide X labels
+                // (Note: no right overflow when rotated)
+                if (i === 0) {
+                    if (scaleIsOrdinal) {
+                        if (!xAxisProperties.willLabelsFit /*rotated text*/)
+                            leftOverflow = width - ordinalLabelOffset - xLabelOuterPadding;
+                        else
+                            leftOverflow = (width / 2) - ordinalLabelOffset - xLabelOuterPadding;
+                        leftOverflow = Math.max(leftOverflow, 0);
+                    }
+                    else if (xDomain.length > 1) {
+                        // Scalar - do some math
+                        let xPos = xScale(xDomain[0]);
+                        // xPos already incorporates xLabelOuterPadding, don't subtract it twice
+                        leftOverflow = (width / 2) - xPos;
+                        leftOverflow = Math.max(leftOverflow, 0);
+                    }
+                } else if (i === len - 1) {
+                    if (scaleIsOrdinal) {
+                        // if we are rotating text (!willLabelsFit) there won't be any right overflow
+                        if (xAxisProperties.willLabelsFit || xAxisProperties.willLabelsWordBreak) {
+                            // assume this label is placed near the edge
+                            rightOverflow = (width / 2) - ordinalLabelOffset - xLabelOuterPadding;
                             rightOverflow = Math.max(rightOverflow, 0);
                         }
                     }
-
-                    xMax = Math.max(xMax, height);
+                    else if (xDomain.length > 1) {
+                        // Scalar - do some math
+                        let xPos = xScale(xDomain[1]);
+                        // xPos already incorporates xLabelOuterPadding, don't subtract it twice
+                        rightOverflow = (width / 2) - (viewport.width - xPos);
+                        rightOverflow = Math.max(rightOverflow, 0);
+                    }
                 }
-                // trim any actual overflow to the limit
-                leftOverflow = Math.min(leftOverflow, XLabelMaxAllowedOverflow);
-                rightOverflow = Math.min(rightOverflow, XLabelMaxAllowedOverflow);
+
+                xMax = Math.max(xMax, height);
             }
+            // trim any actual overflow to the limit
+            leftOverflow = Math.min(leftOverflow, XLabelMaxAllowedOverflow);
+            rightOverflow = Math.min(rightOverflow, XLabelMaxAllowedOverflow);
         }
 
         let rightMargin = 0,
@@ -454,16 +441,16 @@ module powerbi.extensibility.utils.chart.axis {
         return ValueType.fromDescriptor({ text: true });
     }
 
-    export function isOrdinal(type: ValueTypeDescriptor): boolean {
-        return !!(type && (type.text || type.bool || (type.misc && type.misc.barcode) || (type.geography && type.geography.postalCode)));
+    export function isOrdinal(dataType: ValueTypeDescriptor): boolean {
+        return !!(dataType && (dataType.text || dataType.bool || (dataType.misc && dataType.misc.barcode) || (dataType.geography && dataType.geography.postalCode)));
     }
 
     export function isOrdinalScale(scale: any): scale is d3.scale.Ordinal<any, any> {
         return typeof (<d3.scale.Ordinal<any, any>>scale).rangePoints === "function";
     }
 
-    export function isDateTime(type: ValueTypeDescriptor): boolean {
-        return !!(type && type.dateTime);
+    export function isDateTime(dataType: ValueTypeDescriptor): boolean {
+        return !!(dataType && dataType.dateTime);
     }
 
     export function invertScale(scale: any, x) {
@@ -712,7 +699,7 @@ module powerbi.extensibility.utils.chart.axis {
             xLabelMaxWidth = Math.max(1, categoryThickness - TickLabelPadding * 2);
         }
         else {
-            // When there are 0 or 1 ticks, then xLabelMaxWidth = pixelSpan       
+            // When there are 0 or 1 ticks, then xLabelMaxWidth = pixelSpan
             xLabelMaxWidth = tickValues.length > 1 ? getScalarLabelMaxWidth(scale, tickValues) : pixelSpan;
             xLabelMaxWidth = xLabelMaxWidth - ScalarTickLabelPadding * 2;
         }
@@ -1030,7 +1017,7 @@ module powerbi.extensibility.utils.chart.axis {
         tickValues: any[],
         formatter: IValueFormatter,
         dataType: ValueType,
-        getValueFn?: (index: number, type: ValueType) => any) {
+        getValueFn?: (index: number, dataType: ValueType) => any) {
 
         let formattedTickValues = [];
 
@@ -1079,7 +1066,7 @@ module powerbi.extensibility.utils.chart.axis {
 
     /**
      * Creates a [min,max] from your Cartiesian data values.
-     * 
+     *
      * @param data The series array of CartesianDataPoints.
      * @param includeZero Columns and bars includeZero, line and scatter do not.
      */
