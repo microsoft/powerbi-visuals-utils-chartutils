@@ -100,7 +100,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
     }
 
     /**
-     * Rectangle orientation. Rectangle orientation is used to define vertical or horizontal orientation 
+     * Rectangle orientation. Rectangle orientation is used to define vertical or horizontal orientation
      * and starting/ending side of the rectangle.
      */
     export enum RectOrientation {
@@ -121,7 +121,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
     }
 
     /**
-     * Defines if panel elements are allowed to be positioned 
+     * Defines if panel elements are allowed to be positioned
      * outside of the panel boundaries.
      */
     export enum OutsidePlacement {
@@ -166,7 +166,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
     }
 
     /**
-     * Defines an interface for information needed for label positioning. 
+     * Defines an interface for information needed for label positioning.
      * None of the elements are mandatory, but at least anchorPoint OR anchorRect is needed.
      */
     export interface IDataLabelInfo extends IDataLabelSettings {
@@ -181,7 +181,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
         hideLabel?: boolean;
 
         /**
-         * Defines the visibility rank. This will not be processed by arrange phase, 
+         * Defines the visibility rank. This will not be processed by arrange phase,
          * but can be used for preprocessing the hideLabel value.
          */
         visibilityRank?: number;

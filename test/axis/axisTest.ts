@@ -2,7 +2,7 @@
  *  Power BI Visualizations
  *
  *  Copyright (c) Microsoft Corporation
- *  All rights reserved. 
+ *  All rights reserved.
  *  MIT License
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11,13 +11,13 @@
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
  *  furnished to do so, subject to the following conditions:
- *   
- *  The above copyright notice and this permission notice shall be included in 
+ *
+ *  The above copyright notice and this permission notice shall be included in
  *  all copies or substantial portions of the Software.
- *   
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ *
+ *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -592,7 +592,7 @@ module powerbi.extensibility.utils.chart.axis.test {
 
                 let values = <any>os.values;
                 expect(values).toBeDefined();
-                // TODO: need to verify updated value here because of changed wrong axis prop from axisScale to scaleType 
+                // TODO: need to verify updated value here because of changed wrong axis prop from axisScale to scaleType
                 expect(values.length).toEqual(3);
                 expect(values[1]).toBe("100.00");
             });
@@ -644,7 +644,7 @@ module powerbi.extensibility.utils.chart.axis.test {
 
                 let values = <any>os.values;
                 expect(values).toBeDefined();
-                // TODO: need to verify updated values here because of changed wrong axis prop from axisScale to scaleType 
+                // TODO: need to verify updated values here because of changed wrong axis prop from axisScale to scaleType
                 expect(values.length).toEqual(2);
                 expect(values[1]).toEqual("100.00");
             });

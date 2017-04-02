@@ -2,7 +2,7 @@
  *  Power BI Visualizations
  *
  *  Copyright (c) Microsoft Corporation
- *  All rights reserved. 
+ *  All rights reserved.
  *  MIT License
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11,13 +11,13 @@
  *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
  *  furnished to do so, subject to the following conditions:
- *   
- *  The above copyright notice and this permission notice shall be included in 
+ *
+ *  The above copyright notice and this permission notice shall be included in
  *  all copies or substantial portions of the Software.
- *   
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+ *
+ *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
  *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
@@ -46,8 +46,8 @@ module powerbi.extensibility.utils.chart.legend {
         private legendContainerParent: d3.Selection<any>;
         private legendContainerDiv: d3.Selection<any>;
 
-        constructor(element: JQuery) {
-            this.legendContainerParent = d3.select(element.get(0));
+        constructor(element: HTMLElement) {
+            this.legendContainerParent = d3.select(element);
         }
 
         public getMargins(): IViewport {
@@ -70,13 +70,10 @@ module powerbi.extensibility.utils.chart.legend {
                     return;
                 }
 
-                let divToPrepend = $("<div></div>")
-                    .height(this.getMargins().height)
-                    .addClass(InteractiveLegend.LegendContainerClass);
-
-                // Prepending, as legend should always be on topmost visual.
-                $(this.legendContainerParent[0]).prepend(divToPrepend);
-                legendContainerDiv = d3.select(divToPrepend.get(0));
+                legendContainerDiv = this.legendContainerParent
+                    .insert("div", ":first-child")
+                    .style("height", this.getMargins().height)
+                    .classed(InteractiveLegend.LegendContainerClass, true);
             }
 
             this.legendContainerDiv = legendContainerDiv;
@@ -110,7 +107,7 @@ module powerbi.extensibility.utils.chart.legend {
          * Draw the legend title
          */
         private drawTitle(data: LegendDataPoint[]): void {
-            let titleDiv: d3.Selection<any> = this.legendContainerDiv.selectAll("div." + InteractiveLegend.LegendTitleClass),
+            let titleDiv: d3.Selection<any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
                 item: d3.selection.Update<any> = titleDiv.data([data[0]]);
 
             // Enter
@@ -185,12 +182,12 @@ module powerbi.extensibility.utils.chart.legend {
                 .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label);
 
             legendCells
-                .select("span." + InteractiveLegend.legendItemNameClass)
+                .select(`span.${InteractiveLegend.legendItemNameClass}`)
                 .html((d: LegendDataPoint) => textUtil.removeBreakingSpaces(d.label));
 
             legendCells
-                .select("span." + InteractiveLegend.legendItemMeasureClass)
-                .html((d: LegendDataPoint) => "&nbsp;" + d.measure);
+                .select(`span.${InteractiveLegend.legendItemMeasureClass}`)
+                .html((d: LegendDataPoint) => `&nbsp;${d.measure}`);
 
             legendCells
                 .select("span." + InteractiveLegend.legendIconClass)
@@ -221,7 +218,8 @@ module powerbi.extensibility.utils.chart.legend {
          * Set Horizontal Pan gesture for the legend
          */
         private setPanGestureOnLegend(legendTable: d3.Selection<any>): void {
-            let viewportWidth: number = $(this.legendContainerParent[0]).width();
+            let parentNode = <HTMLElement>this.legendContainerParent.node();
+            let viewportWidth: number = parentNode.getBoundingClientRect().width;
             let xscale: d3.scale.Linear<number, number> = d3.scale.linear()
                 .domain([0, viewportWidth])
                 .range([0, viewportWidth]);

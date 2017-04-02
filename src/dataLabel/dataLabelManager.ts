@@ -37,7 +37,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
 
     /**
     * Arranges label elements using the anchor point or rectangle. Collisions
-    * between elements can be automatically detected and as a result elements 
+    * between elements can be automatically detected and as a result elements
     * can be repositioned or get hidden.
     */
     export class DataLabelManager {
