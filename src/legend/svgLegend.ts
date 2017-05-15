@@ -107,14 +107,12 @@ module powerbi.extensibility.utils.chart.legend {
         private static LegendIconRadius = 5;
         private static LegendIconRadiusFactor = 5;
         private static MaxTextLength = 60;
-        private static MaxTitleLength = 80;
         private static TextAndIconPadding = 5;
         private static TitlePadding = 15;
         private static LegendEdgeMariginWidth = 10;
         private static LegendMaxWidthFactor = 0.3;
         private static TopLegendHeight = 24;
         private static DefaultTextMargin = PixelConverter.fromPointToPixel(SVGLegend.DefaultFontSizeInPt);
-        private static DefaultMaxLegendFactor = SVGLegend.MaxTitleLength / SVGLegend.DefaultTextMargin;
         private static LegendIconYRatio = 0.52;
 
         // Navigation Arrow constants
@@ -420,32 +418,9 @@ module powerbi.extensibility.utils.chart.legend {
                 let isHorizontal = this.isTopOrBottom(this.orientation),
                     maxMeasureLength: number;
 
-                if (isHorizontal) {
-                    let fontSizeMargin = this.legendFontSizeMarginValue > SVGLegend.DefaultTextMargin
-                        ? SVGLegend.TextAndIconPadding + this.legendFontSizeMarginDifference
-                        : SVGLegend.TextAndIconPadding;
-
-                    let fixedHorizontalIconShift = SVGLegend.TextAndIconPadding + SVGLegend.LegendIconRadius;
-                    let fixedHorizontalTextShift = SVGLegend.LegendIconRadius + fontSizeMargin + fixedHorizontalIconShift;
-                    // TODO This can be negative for narrow viewports. May need to rework this logic.
-                    maxMeasureLength = this.parentViewport.width * SVGLegend.LegendMaxWidthFactor - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth;
-                }
-                else {
-                    maxMeasureLength = this.legendFontSizeMarginValue < SVGLegend.DefaultTextMargin ? SVGLegend.MaxTitleLength :
-                        SVGLegend.MaxTitleLength + (SVGLegend.DefaultMaxLegendFactor * this.legendFontSizeMarginDifference);
-                }
-
                 let textProperties = SVGLegend.getTextProperties(true, title, this.data.fontSize);
                 let text = title;
                 width = textMeasurementService.measureSvgTextWidth(textProperties);
-
-                if (width > maxMeasureLength) {
-                    text = textMeasurementService.getTailoredTextOrDefault(textProperties, maxMeasureLength);
-                    textProperties.text = text;
-
-                    // Remeasure the text since its measurement may be different than the max (ex. when the max is negative, the text will be ellipsis, and not have a negative width)
-                    width = textMeasurementService.measureSvgTextWidth(textProperties);
-                };
 
                 if (isHorizontal) {
                     width += SVGLegend.TitlePadding;
