@@ -476,6 +476,26 @@ module powerbi.extensibility.utils.chart.legend.test {
 
                 expect($(".legendItem").length).toBe(1);
                 expect($($(".legendText")[0]).text()).not.toContain("…");
+                expect($($(".legendText")[0]).text()).not.toContain("...");
+            });
+
+            it("Intelligent Layout: Long label must be cut off", () => {
+                let legendData = [{
+                    label: "Really long label, but i haven't the space to show",
+                    color: "red",
+                    icon: LegendIcon.Line,
+                    identity: createSelectionIdentity(1),
+                    selected: false
+                }];
+
+                legend.changeOrientation(LegendPosition.Left);
+                legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 200 });
+
+                flushAllD3Transitions();
+
+                expect($(".legendItem").length).toBe(1);
+                expect($($(".legendText")[0]).text()).toContain("...");
+                expect($($(".legendText")[0]).text().length).toBeGreaterThan(3);
             });
 
             it("Intelligent Layout: Lots of small labels should get compacted in horizontal layout", () => {
