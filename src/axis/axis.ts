@@ -309,7 +309,7 @@ module powerbi.extensibility.utils.chart.axis {
         let ordinalLabelOffset = xAxisProperties.categoryThickness ? xAxisProperties.categoryThickness / 2 : 0;
         let scaleIsOrdinal = isOrdinalScale(xAxisProperties.scale);
 
-        let hasHierarchy = !_.isEmpty(axes.xStack);
+        let hasHierarchy = !arrayIsEmpty(axes.xStack);
 
         let xLabelOuterPadding = 0;
         if (xAxisProperties.outerPadding !== undefined) {
@@ -655,7 +655,7 @@ module powerbi.extensibility.utils.chart.axis {
 
         // Prepare Tick Values for formatting
         let tickValues: any[];
-        if (isScalar && !_.isEmpty(dataDomain) && bestTickCount === 1) {
+        if (isScalar && bestTickCount === 1 && !arrayIsEmpty(dataDomain)) {
             tickValues = [dataDomain[0]];
         }
         else {
@@ -741,7 +741,7 @@ module powerbi.extensibility.utils.chart.axis {
     function getScalarLabelMaxWidth(scale: d3.scale.Linear<any, any>, tickValues: number[]): number {
         // find the distance between two ticks. scalar ticks can be anywhere, such as:
         // |---50----------100--------|
-        if (scale && !_.isEmpty(tickValues)) {
+        if (scale && !arrayIsEmpty(tickValues)) {
             return Math.abs(scale(tickValues[1]) - scale(tickValues[0]));
         }
 
@@ -1085,7 +1085,7 @@ module powerbi.extensibility.utils.chart.axis {
     }
 
     function createOrdinalDomain(data: AxisHelperSeries[]): number[] {
-        if (_.isEmpty(data)) {
+        if (arrayIsEmpty(data)) {
             return [];
         }
 
@@ -1281,7 +1281,7 @@ module powerbi.extensibility.utils.chart.axis {
                             "transform": defaultRotation.transform
                         });
                 } else {
-                    let maxLabelWidth = !_.isEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
+                    let maxLabelWidth = !arrayIsEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
                     let newLabelText = textTruncator(textProperties, maxLabelWidth);
                     if (newLabelText !== labelText)
                         axisLabel.text(newLabelText);
@@ -1532,5 +1532,9 @@ module powerbi.extensibility.utils.chart.axis {
         log10 = Math.ceil(log10 - 1e-12);
 
         return value / Math.pow(10, log10) === 1;
+    }
+
+    function arrayIsEmpty(array: any[]) {
+        return !(array && array.length);
     }
 }
