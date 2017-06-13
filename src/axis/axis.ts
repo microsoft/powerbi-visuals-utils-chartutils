@@ -1534,7 +1534,7 @@ module powerbi.extensibility.utils.chart.axis {
         return value / Math.pow(10, log10) === 1;
     }
 
-    function arrayIsEmpty(array: any[]) {
+    function arrayIsEmpty(array: any[]): boolean {
         return !(array && array.length);
     }
 }
