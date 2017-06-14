@@ -295,12 +295,12 @@ module powerbi.extensibility.utils.chart.legend {
             }
 
             let legendTitle = group
-                .selectAll(SVGLegend.LegendTitle.selector)
+                .selectAll(SVGLegend.LegendTitle.selectorName)
                 .data(titleData);
 
             legendTitle.enter()
                 .append("text")
-                .classed(SVGLegend.LegendTitle.class, true);
+                .classed(SVGLegend.LegendTitle.className, true);
 
             legendTitle
                 .style({
@@ -331,29 +331,29 @@ module powerbi.extensibility.utils.chart.legend {
                 SVGLegend.LegendIconRadius;
 
             let legendItems = group
-                .selectAll(SVGLegend.LegendItem.selector)
+                .selectAll(SVGLegend.LegendItem.selectorName)
                 .data(virtualizedDataPoints, (d: LegendDataPoint) => {
                     return (d.identity as ISelectionId).getKey() + (d.layerNumber != null ? d.layerNumber : "");
                 });
 
             let itemsEnter = legendItems.enter()
                 .append("g")
-                .classed(SVGLegend.LegendItem.class, true);
+                .classed(SVGLegend.LegendItem.className, true);
 
             itemsEnter
                 .append("circle")
-                .classed(SVGLegend.LegendIcon.class, true);
+                .classed(SVGLegend.LegendIcon.className, true);
 
             itemsEnter
                 .append("text")
-                .classed(SVGLegend.LegendText.class, true);
+                .classed(SVGLegend.LegendText.className, true);
 
             itemsEnter
                 .append("title")
                 .text((d: LegendDataPoint) => d.tooltip);
 
             legendItems
-                .select(SVGLegend.LegendIcon.selector)
+                .select(SVGLegend.LegendIcon.selectorName)
                 .attr({
                     "cx": (d: LegendDataPoint, i) => d.glyphPosition.x,
                     "cy": (d: LegendDataPoint) => d.glyphPosition.y,
@@ -373,7 +373,7 @@ module powerbi.extensibility.utils.chart.legend {
                 .text((d: LegendDataPoint) => d.tooltip);
 
             legendItems
-                .select(SVGLegend.LegendText.selector)
+                .select(SVGLegend.LegendText.selectorName)
                 .attr({
                     "x": (d: LegendDataPoint) => d.textPosition.x,
                     "y": (d: LegendDataPoint) => d.textPosition.y,
@@ -385,7 +385,7 @@ module powerbi.extensibility.utils.chart.legend {
                 });
 
             if (this.interactivityService) {
-                let iconsSelection = legendItems.select(SVGLegend.LegendIcon.selector);
+                let iconsSelection = legendItems.select(SVGLegend.LegendIcon.selectorName);
                 let behaviorOptions: LegendBehaviorOptions = {
                     legendItems: legendItems,
                     legendIcons: iconsSelection,
@@ -846,7 +846,7 @@ module powerbi.extensibility.utils.chart.legend {
         }
 
         private drawNavigationArrows(layout: NavigationArrow[]): void {
-            let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selector)
+            let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
                 .data(layout);
 
             arrows
@@ -858,7 +858,7 @@ module powerbi.extensibility.utils.chart.legend {
                         ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                     this.drawLegendInternal(this.data, this.parentViewport, false);
                 })
-                .classed(SVGLegend.NavigationArrow.class, true)
+                .classed(SVGLegend.NavigationArrow.className, true)
                 .append("path");
 
             arrows

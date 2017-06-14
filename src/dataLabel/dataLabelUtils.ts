@@ -233,8 +233,8 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
             return null;
         }
 
-        if (context.select(labelGraphicsContextClass.selector).empty()) {
-            context.append("g").classed(labelGraphicsContextClass.class, true);
+        if (context.select(labelGraphicsContextClass.selectorName).empty()) {
+            context.append("g").classed(labelGraphicsContextClass.className, true);
         }
 
         // line chart ViewModel has a special "key" property for point identification since the "identity" field is set to the series identity
@@ -247,14 +247,14 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
                 : undefined;
 
         let labels = isDonut ?
-            context.select(labelGraphicsContextClass.selector).selectAll(labelsClass.selector).data(filteredData, (d: any) => d.data.identity.getKey())
+            context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, (d: any) => d.data.identity.getKey())
             : getIdentifier != null ?
-                context.select(labelGraphicsContextClass.selector).selectAll(labelsClass.selector).data(filteredData, getIdentifier)
-                : context.select(labelGraphicsContextClass.selector).selectAll(labelsClass.selector).data(filteredData);
+                context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, getIdentifier)
+                : context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData);
 
         let newLabels = labels.enter()
             .append("text")
-            .classed(labelsClass.class, true);
+            .classed(labelsClass.className, true);
 
         if (forAnimation) {
             newLabels.style("opacity", 0);
@@ -265,19 +265,19 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
 
     export function cleanDataLabels(context: d3.Selection<any>, removeLines: boolean = false): void {
         let empty = [],
-            labels = context.selectAll(labelsClass.selector).data(empty);
+            labels = context.selectAll(labelsClass.selectorName).data(empty);
 
         labels
             .exit()
             .remove();
 
         context
-            .selectAll(labelGraphicsContextClass.selector)
+            .selectAll(labelGraphicsContextClass.selectorName)
             .remove();
 
         if (removeLines) {
             let lines = context
-                .selectAll(lineClass.selector)
+                .selectAll(lineClass.selectorName)
                 .data(empty);
 
             lines
@@ -285,14 +285,14 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
                 .remove();
 
             context
-                .selectAll(linesGraphicsContextClass.selector)
+                .selectAll(linesGraphicsContextClass.selectorName)
                 .remove();
         }
     }
 
     export function setHighlightedLabelsOpacity(context: d3.Selection<any>, hasSelection: boolean, hasHighlights: boolean) {
         context
-            .selectAll(labelsClass.selector)
+            .selectAll(labelsClass.selectorName)
             .style("fill-opacity", (d: any) => {
                 let labelOpacity = getFillOpacity(
                     d.selected,
