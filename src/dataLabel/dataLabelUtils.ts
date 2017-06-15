@@ -484,9 +484,9 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
 
     export function isTextWidthOverflows(textWidth, maxTextWidth): boolean {
         return textWidth > maxTextWidth;
-    };
+    }
 
     export function isTextHeightOverflows(textHeight, innerChordLength): boolean {
         return textHeight > innerChordLength;
-    };
+    }
 }

@@ -414,7 +414,7 @@ module powerbi.extensibility.utils.chart.legend {
 
         private calculateTitleLayout(title: string): TitleLayout {
             let width = 0,
-                hasTitle = !_.isEmpty(title);
+                hasTitle = !!title;
 
             if (hasTitle) {
                 let isHorizontal = this.isTopOrBottom(this.orientation),
@@ -445,7 +445,7 @@ module powerbi.extensibility.utils.chart.legend {
 
                     // Remeasure the text since its measurement may be different than the max (ex. when the max is negative, the text will be ellipsis, and not have a negative width)
                     width = textMeasurementService.measureSvgTextWidth(textProperties);
-                };
+                }
 
                 if (isHorizontal) {
                     width += SVGLegend.TitlePadding;
@@ -648,7 +648,7 @@ module powerbi.extensibility.utils.chart.legend {
             }
 
             // If there are items at max width, evenly redistribute the extra space to them
-            let itemsOverMax = _.filter(legendItems, (li) => li.desiredOverMaxWidth);
+            let itemsOverMax = legendItems.filter((li: LegendItem) => li.desiredOverMaxWidth);
             let numItemsOverMax = itemsOverMax.length;
 
             if (numItemsOverMax > 0) {
