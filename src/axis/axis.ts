@@ -759,7 +759,8 @@ module powerbi.extensibility.utils.chart.axis {
             categoryThickness = options.categoryThickness,
             shouldClamp = !!options.shouldClamp,
             maxTickCount = options.maxTickCount,
-            disableNice = options.disableNice;
+            disableNice = options.disableNice,
+            disableNiceOnlyForScale = options.disableNiceOnlyForScale;
 
         let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
@@ -808,7 +809,12 @@ module powerbi.extensibility.utils.chart.axis {
                     scalarDomain[1] = options.zeroScalarDomain[1];
                 }
 
-                scale = createNumericalScale(options.scaleType, pixelSpan, scalarDomain, dataType, outerPadding, bestTickCount, shouldClamp);
+                let bestTickCountForNumericalScale = bestTickCount;
+                if (disableNiceOnlyForScale) {
+                    bestTickCountForNumericalScale = null;
+                }
+
+                scale = createNumericalScale(options.scaleType, pixelSpan, scalarDomain, dataType, outerPadding, bestTickCountForNumericalScale, shouldClamp);
             }
             else if (isScalar && dataType.dateTime) {
                 // Use of a linear scale, instead of a D3.time.scale, is intentional since we want
