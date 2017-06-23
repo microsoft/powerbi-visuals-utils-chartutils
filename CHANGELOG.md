@@ -1,3 +1,7 @@
+## 1.2.0
+* Added 'disableNiceOnlyForScale' to 'CreateAxisOptions' interface
+and added verification with this property to createAxis func
+
 ## 1.1.0
 * Removed `lodash`
 * Updated dependencies

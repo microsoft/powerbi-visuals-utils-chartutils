@@ -250,6 +250,8 @@ module powerbi.extensibility.utils.chart.axis {
         shouldClamp?: boolean;
         /** (optional) Disable "niceing" for numeric axis. It means that if max value is 172 the axis will show 172 but not rounded to upper value 180 */
         disableNice?: boolean;
+        /** (optional) Disable "niceing" for numeric axis. Disabling nice will be applid only when creating scale obj (bestTickCount will be applied to 'ticks' method) */
+        disableNiceOnlyForScale?: boolean;
     }
 
     export enum AxisOrientation {
