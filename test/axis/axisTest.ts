@@ -51,8 +51,8 @@ module powerbi.extensibility.utils.chart.axis.test {
             let powersOf10: number[] = [-10000, 1000000000, 10, 100000000000],
                 length: number = powersOf10.length,
                 numbers: number[] = [2, 5, 2345, 12445067, 122334551, 90, 50, -50, 200, -1223333212, -122333442111],
-                powers = _.filter(powersOf10, (value) => { return axis.powerOfTen(value); }),
-                notPowers = _.filter(numbers, (value) => { return axis.powerOfTen(value); });
+                powers: number[] = powersOf10.filter((value: number) => axis.powerOfTen(value)),
+                notPowers: number[] = numbers.filter((value: number) => axis.powerOfTen(value));
 
             expect(powers.length).toBe(length);
             expect(notPowers.length).toBe(0);

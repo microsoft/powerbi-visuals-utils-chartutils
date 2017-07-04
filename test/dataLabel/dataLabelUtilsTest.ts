@@ -194,8 +194,8 @@ module powerbi.extensibility.utils.chart.dataLabel.utils.test {
 
         describe("Test enumerateDataLabels", () => {
             it("showAll should always be the last property when exists", () => {
-                let labelSettings = dataLabelUtils.getDefaultLabelSettings();
-                let options: VisualDataLabelsSettingsOptions = {
+                const labelSettings: VisualDataLabelsSettings = dataLabelUtils.getDefaultLabelSettings();
+                const options: VisualDataLabelsSettingsOptions = {
                     dataLabelsSettings: labelSettings,
                     displayUnits: true,
                     instances: [],
@@ -214,8 +214,9 @@ module powerbi.extensibility.utils.chart.dataLabel.utils.test {
 
                 expect(options.instances.length).toBe(1);
 
-                let properties = options.instances[0].properties;
-                expect(_.last(Object.keys(properties))).toBe("showAll");
+                const properties: DataViewPropertyValue = options.instances[0].properties;
+                const propArray: string[] = Object.keys(properties);
+                expect(propArray[propArray.length - 1]).toBe("showAll");
             });
         });
 
