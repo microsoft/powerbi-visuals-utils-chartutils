@@ -67,7 +67,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
         }
 
         /** Arranges the lables position and visibility*/
-        public hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform: boolean = false): LabelEnabledDataPoint[] {
+        public hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform: boolean = false, hideCollidedLabels: boolean = true): LabelEnabledDataPoint[] {
 
             // Split size into a grid
             let arrangeGrid = new DataLabelArrangeGrid(viewport, data, layout);
@@ -96,7 +96,7 @@ module powerbi.extensibility.utils.chart.dataLabel {
 
                 let position: IRect = this.calculateContentPosition(info, info.contentPosition, data[i].size, info.anchorMargin);
 
-                if (DataLabelManager.isValid(position) && !this.hasCollisions(arrangeGrid, info, position, viewport)) {
+                if (DataLabelManager.isValid(position) && (!this.hasCollisions(arrangeGrid, info, position, viewport) || !hideCollidedLabels)) {
                     data[i].labelX = position.left - transform.x;
                     data[i].labelY = position.top - transform.y;
 

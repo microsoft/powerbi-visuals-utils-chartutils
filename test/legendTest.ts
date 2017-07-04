@@ -480,7 +480,7 @@ module powerbi.extensibility.utils.chart.legend.test {
             });
 
             it("Intelligent Layout: Long label must be cut off", () => {
-                let legendData = [{
+                let legendData: LegendDataPoint[] = [{
                     label: "Really long label, but i haven't the space to show",
                     color: "red",
                     icon: LegendIcon.Line,
