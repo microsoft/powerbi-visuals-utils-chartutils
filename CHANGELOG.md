@@ -1,3 +1,7 @@
+## 1.4.0
+* Remove width restriction of title in legend
+* Added new option to drawDefaultLabelsForDataPointChart function to control behavior of collided labels
+
 ## 1.3.0
 * Updated packages
 
