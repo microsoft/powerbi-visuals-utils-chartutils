@@ -548,14 +548,12 @@ declare module powerbi.extensibility.utils.chart.legend {
         private static LegendIconRadius;
         private static LegendIconRadiusFactor;
         private static MaxTextLength;
-        private static MaxTitleLength;
         private static TextAndIconPadding;
         private static TitlePadding;
         private static LegendEdgeMariginWidth;
         private static LegendMaxWidthFactor;
         private static TopLegendHeight;
         private static DefaultTextMargin;
-        private static DefaultMaxLegendFactor;
         private static LegendIconYRatio;
         private static LegendArrowOffset;
         private static LegendArrowHeight;
@@ -843,7 +841,7 @@ declare module powerbi.extensibility.utils.chart.dataLabel {
         private defaultDataLabelSettings;
         readonly defaultSettings: IDataLabelSettings;
         /** Arranges the lables position and visibility*/
-        hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform?: boolean): LabelEnabledDataPoint[];
+        hideCollidedLabels(viewport: IViewport, data: any[], layout: any, addTransform?: boolean, hideCollidedLabels?: boolean): LabelEnabledDataPoint[];
         /**
          * Merges the label element info with the panel element info and returns correct label info.
          * @param source The label info.
@@ -937,7 +935,7 @@ declare module powerbi.extensibility.utils.chart.dataLabel.utils {
     function getDefaultColumnLabelSettings(isLabelPositionInside: boolean): VisualDataLabelsSettings;
     function getDefaultPointLabelSettings(): PointDataLabelsSettings;
     function getLabelPrecision(precision: number, format: string): number;
-    function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any>, layout: ILabelLayout, viewport: IViewport, isAnimator?: boolean, animationDuration?: number, hasSelection?: boolean): d3.selection.Update<any>;
+    function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any>, layout: ILabelLayout, viewport: IViewport, isAnimator?: boolean, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels?: boolean): d3.selection.Update<any>;
     function cleanDataLabels(context: d3.Selection<any>, removeLines?: boolean): void;
     function setHighlightedLabelsOpacity(context: d3.Selection<any>, hasSelection: boolean, hasHighlights: boolean): void;
     function getLabelFormattedText(options: LabelFormattedTextOptions): string;
