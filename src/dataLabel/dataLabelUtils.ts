@@ -181,13 +181,13 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
     }
 
     export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any>, layout: ILabelLayout,
-        viewport: IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean): d3.selection.Update<any> {
+        viewport: IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): d3.selection.Update<any> {
 
         // Hide and reposition labels that overlap
-        let dataLabelManager = new DataLabelManager(),
-            filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout),
-            hasAnimation = isAnimator && !!animationDuration,
-            labels = selectLabels(filteredData, context, false, hasAnimation);
+        let dataLabelManager = new DataLabelManager();
+        let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
+        let hasAnimation: boolean = isAnimator && !!animationDuration;
+        let labels: d3.selection.Update<any> = selectLabels(filteredData, context, false, hasAnimation);
 
         if (!labels) {
             return;
