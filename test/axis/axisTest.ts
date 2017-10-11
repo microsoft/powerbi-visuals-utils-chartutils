@@ -296,7 +296,7 @@ module powerbi.extensibility.utils.chart.axis.test {
                 expect(values).toBeDefined();
                 expect(values.length).toEqual(3);
                 expect(values[0]).toBe("Sun");
-                
+
                 // Proves scale is ordinal
                 expect(scale.invert).toBeUndefined();
 
