@@ -54,7 +54,6 @@ module powerbi.extensibility.utils.chart.axis {
 
     const TickLabelPadding: number = 2;
     const MinOrdinalRectThickness: number = 20;
-    const InnerPaddingRatio: number = 0.2;
 
     /**
      * Default ranges are for when we have a field chosen for the axis,
@@ -760,7 +759,9 @@ module powerbi.extensibility.utils.chart.axis {
             shouldClamp = !!options.shouldClamp,
             maxTickCount = options.maxTickCount,
             disableNice = options.disableNice,
-            disableNiceOnlyForScale = options.disableNiceOnlyForScale;
+            disableNiceOnlyForScale = options.disableNiceOnlyForScale,
+            innerPadding = options.innerPadding,
+            useRangePoint = options.useRangePoints;
 
         let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
@@ -786,7 +787,7 @@ module powerbi.extensibility.utils.chart.axis {
                 dataDomain = [];
 
             if (isOrdinal(dataType)) {
-                scale = createOrdinalScale(pixelSpan, dataDomain, categoryThickness ? outerPadding / categoryThickness : 0);
+                scale = createOrdinalScale(pixelSpan, dataDomain, categoryThickness ? outerPadding / categoryThickness : 0, innerPadding, useRangePoint);
             }
             else {
                 scale = createNumericalScale(options.scaleType, pixelSpan, dataDomain, dataType, outerPadding, bestTickCount);
@@ -824,7 +825,7 @@ module powerbi.extensibility.utils.chart.axis {
                 scale = createLinearScale(pixelSpan, scalarDomain, outerPadding, null, shouldClamp); // DO NOT PASS TICKCOUNT
             }
             else if (dataType.text || dataType.dateTime || dataType.numeric || dataType.bool) {
-                scale = createOrdinalScale(pixelSpan, scalarDomain, categoryThickness ? outerPadding / categoryThickness : 0);
+                scale = createOrdinalScale(pixelSpan, scalarDomain, categoryThickness ? outerPadding / categoryThickness : 0, innerPadding, useRangePoint);
                 bestTickCount = maxTicks === 0 ? 0
                     : Math.min(
                         scalarDomain.length,
@@ -1338,10 +1339,16 @@ module powerbi.extensibility.utils.chart.axis {
         }
     }
 
-    export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0): d3.scale.Ordinal<any, any> {
+    export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): d3.scale.Ordinal<any, any> {
+        if (useRangePoints === true) {
+            return d3.scale.ordinal()
+            .rangePoints([0, pixelSpan], outerPaddingRatio)
+            .domain(dataDomain);
+        }
+
         return d3.scale.ordinal()
             /* Avoid using rangeRoundBands here as it is adding some extra padding to the axis*/
-            .rangeBands([0, pixelSpan], InnerPaddingRatio, outerPaddingRatio)
+            .rangeBands([0, pixelSpan], innerPaddingRatio, outerPaddingRatio)
             .domain(dataDomain);
     }
 

@@ -226,6 +226,10 @@ declare module powerbi.extensibility.utils.chart.axis {
         disableNice?: boolean;
         /** (optional) Disable "niceing" for numeric axis. Disabling nice will be applid only when creating scale obj (bestTickCount will be applied to 'ticks' method) */
         disableNiceOnlyForScale?: boolean;
+        /** (optional) InnerPadding to be applied to the axis.*/
+        innerPadding?: number;
+        /** (optioanl) Apply for using of RangePoints function instead of RangeBands inside CreateOrdinal scale function.*/
+        useRangePoints?: boolean;
     }
     enum AxisOrientation {
         top = 0,
@@ -364,7 +368,7 @@ declare module powerbi.extensibility.utils.chart.axis {
         function wordBreak(text: d3.Selection<any>, axisProperties: IAxisProperties, maxHeight: number): void;
         function clip(text: d3.Selection<any>, availableWidth: number, svgEllipsis: (textElement: SVGTextElement, maxWidth: number) => void): void;
     }
-    function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio?: number): d3.scale.Ordinal<any, any>;
+    function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio?: number, innerPaddingRatio?: number, useRangePoints?: boolean): d3.scale.Ordinal<any, any>;
     function isLogScalePossible(domain: any[], axisType?: ValueType): boolean;
     function createNumericalScale(axisScaleType: string, pixelSpan: number, dataDomain: any[], dataType: ValueType, outerPadding?: number, niceCount?: number, shouldClamp?: boolean): d3.scale.Linear<any, any>;
     function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding?: number, niceCount?: number, shouldClamp?: boolean): d3.scale.Linear<any, any>;

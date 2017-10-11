@@ -1,3 +1,6 @@
+## 1.5.0
+* Added two new optional parameters for CreateScale function -- innerPadding and useRangePoint. The first lets set inner padding for scale instead of recieve it from constant. The second lets use rangePoint instead of rangeBands function for creation of ordinal scale.
+
 ## 1.4.0
 * Remove width restriction of title in legend
 * Added new option to drawDefaultLabelsForDataPointChart function to control behavior of collided labels

@@ -218,6 +218,19 @@ module powerbi.extensibility.utils.chart.axis.test.helper {
             return axis.createAxis(axisOptions);
         }
 
+        export function buildAxisPropertiesWithDefinedInnerPadding(): IAxisProperties {
+            let axisOptions = getAxisOptions(metaDataColumnText);
+            axisOptions.innerPadding = 0.5;
+            return axis.createAxis(axisOptions);
+        }
+
+        export function buildAxisPropertiesWithRangePointsUsing(): IAxisProperties {
+            let axisOptions = getAxisOptions(metaDataColumnText);
+            axisOptions.innerPadding = 0.5;
+            axisOptions.useRangePoints = true;
+            return axis.createAxis(axisOptions);
+        }
+
         export function buildAxisPropertiesNumeric(
             dataDomain: any[],
             categoryThickness?: number,
