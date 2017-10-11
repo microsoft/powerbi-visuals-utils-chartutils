@@ -242,7 +242,6 @@ module powerbi.extensibility.utils.chart.axis.test {
             };
 
             // TODO: add a getValueFn mock to provide to createAxis so we can test tickValue generation
-
             it("create ordinal scale - without categoryThickness", () => {
                 let axisProperties = axisPropertiesBuilder.buildAxisPropertiesString();
 
@@ -265,6 +264,46 @@ module powerbi.extensibility.utils.chart.axis.test {
                 let xLabelMaxWidth = <any>axisProperties.xLabelMaxWidth;
                 expect(xLabelMaxWidth).toBeDefined();
                 expect(xLabelMaxWidth).toBeCloseTo(29.7, 1);
+            });
+
+            it("create ordinal scale with defined inner padding", () => {
+                let axisProperties = axisPropertiesBuilder.buildAxisPropertiesWithDefinedInnerPadding();
+
+                let scale = <any>axisProperties.scale;
+                expect(scale).toBeDefined();
+
+                let values = <any>axisProperties.values;
+                expect(values).toBeDefined();
+                expect(values.length).toEqual(3);
+                expect(values[0]).toBe("Sun");
+
+                // Proves scale is ordinal
+                expect(scale.invert).toBeUndefined();
+
+                // x label max width is derived from the scale interval
+                let xLabelMaxWidth = <any>axisProperties.xLabelMaxWidth;
+                expect(xLabelMaxWidth).toBeDefined();
+                expect(xLabelMaxWidth).toBeCloseTo(34, 1);
+            });
+
+            it("create ordinal scale with defined inner padding and using of RangePoints", () => {
+                let axisProperties = axisPropertiesBuilder.buildAxisPropertiesWithRangePointsUsing();
+
+                let scale = <any>axisProperties.scale;
+                expect(scale).toBeDefined();
+
+                let values = <any>axisProperties.values;
+                expect(values).toBeDefined();
+                expect(values.length).toEqual(3);
+                expect(values[0]).toBe("Sun");
+                
+                // Proves scale is ordinal
+                expect(scale.invert).toBeUndefined();
+
+                // x label max width is derived from the scale interval
+                let xLabelMaxWidth = <any>axisProperties.xLabelMaxWidth;
+                expect(xLabelMaxWidth).toBeDefined();
+                expect(xLabelMaxWidth).toBeCloseTo(44, 1);
             });
 
             it("create ordinal scale with linear values", () => {

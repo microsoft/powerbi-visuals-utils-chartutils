@@ -252,6 +252,10 @@ module powerbi.extensibility.utils.chart.axis {
         disableNice?: boolean;
         /** (optional) Disable "niceing" for numeric axis. Disabling nice will be applid only when creating scale obj (bestTickCount will be applied to 'ticks' method) */
         disableNiceOnlyForScale?: boolean;
+        /** (optional) InnerPadding to be applied to the axis.*/
+        innerPadding?: number;
+        /** (optioanl) Apply for using of RangePoints function instead of RangeBands inside CreateOrdinal scale function.*/
+        useRangePoints?: boolean;
     }
 
     export enum AxisOrientation {
