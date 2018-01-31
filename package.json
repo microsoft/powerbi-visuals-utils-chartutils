@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "ChartUtils",
   "main": "lib/index.js",
   "repository": {
@@ -30,8 +30,9 @@
   },
   "devDependencies": {
     "@types/d3": "3.5.38",
-    "@types/jasmine": "2.5.37",
+    "@types/jasmine": "2.5.51",
     "@types/jquery": "2.0.41",
+    "@types/lodash": "4.14.55",
     "coveralls": "2.13.1",
     "jasmine": "2.6.0",
     "jasmine-jquery": "2.1.1",

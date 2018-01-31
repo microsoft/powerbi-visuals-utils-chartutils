@@ -453,7 +453,7 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
                     return this.cache[cacheKey];
                 }
 
-                if (!this.cache.defaultFormatter) {
+                if (!this.cache.defaultFormatter || this.cache.defaultFormatter.displayUnit !== labelSetting.displayUnits) {
                     this.cache.defaultFormatter = valueFormatter.create(getOptionsForLabelFormatter(
                         labelSetting,
                         formatString,
