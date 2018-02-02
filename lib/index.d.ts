@@ -950,3 +950,589 @@ declare module powerbi.extensibility.utils.chart.dataLabel.utils {
     function isTextWidthOverflows(textWidth: any, maxTextWidth: any): boolean;
     function isTextHeightOverflows(textHeight: any, innerChordLength: any): boolean;
 }
+declare namespace powerbi.extensibility.utils.chart.label {
+    module Units {
+        class FontSize {
+            readonly pt: number;
+            readonly px: number;
+            static createFromPt(pt: number): FontSize;
+            static createFromPx(px: number): FontSize;
+            private constructor(pt, px);
+        }
+    }
+}
+declare namespace powerbi.extensibility.utils.chart.label {
+    import Units = powerbi.extensibility.utils.chart.label.Units;
+    interface FontProperties {
+        readonly color?: string;
+        readonly family?: string;
+        readonly lineHeight?: string;
+        readonly size?: Units.FontSize;
+        readonly style?: string;
+        readonly variant?: string;
+        readonly weight?: string;
+        readonly whiteSpace?: string;
+    }
+    interface MutableFontProperties {
+        color?: string;
+        family?: string;
+        lineHeight?: string;
+        size?: Units.FontSize;
+        style?: string;
+        variant?: string;
+        weight?: string;
+        whiteSpace?: string;
+    }
+    module FontProperties {
+        /**
+         * Inherits a `FontProperties` object allowing specific properties to be overriden.
+         * Typically used for changing values on an existing object as all properties are readonly.
+         * @param fontProperties The existing `FontProperties` object
+         * @param newFontProperties The properties to override
+         * @returns A new object inherited from `fontProperties`.
+         */
+        function inherit(fontProperties: FontProperties, newFontProperties: FontProperties): FontProperties;
+    }
+}
+declare namespace powerbi.extensibility.utils.chart.label {
+    module Font {
+        const FamilyDelimiter = ", ";
+        class FamilyInfo {
+            families: string[];
+            constructor(families: string[]);
+            /**
+             * Gets the font-families joined by FamilyDelimiter.
+             */
+            readonly family: string;
+            /**
+            * Gets the font-families joined by FamilyDelimiter.
+            */
+            getFamily(): string;
+            /**
+             * Gets the CSS string for the "font-family" CSS attribute.
+             */
+            readonly css: string;
+            /**
+             * Gets the CSS string for the "font-family" CSS attribute.
+             */
+            getCSS(): string;
+        }
+        let Family: {
+            light: FamilyInfo;
+            semilight: FamilyInfo;
+            regular: FamilyInfo;
+            semibold: FamilyInfo;
+            bold: FamilyInfo;
+            lightSecondary: FamilyInfo;
+            regularSecondary: FamilyInfo;
+            boldSecondary: FamilyInfo;
+            glyphs: FamilyInfo;
+        };
+    }
+}
+declare namespace powerbi.extensibility.utils.chart.label {
+    module Prototype {
+        function inherit<T>(obj: T, extension?: (inherited: T) => void): T;
+    }
+}
+declare namespace powerbi.extensibility.utils.chart.label {
+    import ClassAndSelector = powerbi.extensibility.utils.svg.CssConstants.ClassAndSelector;
+    interface VisualDataLabelsSettings {
+        show: boolean;
+        fontProperties: FontProperties;
+        showLabelPerSeries?: boolean;
+        labelOrientation?: LabelOrientation;
+        isSeriesExpanded?: boolean;
+        displayUnits?: number;
+        showCategory?: boolean;
+        position?: any;
+        precision?: number;
+        percentagePrecision?: number;
+        categoryLabelColor?: string;
+        labelStyle?: any;
+        minFontSize?: number;
+        maxFontSize?: number;
+        labelOverflow?: boolean;
+        enableBackground?: boolean;
+        backgroundColor?: string;
+        backgroundTransparency?: number;
+    }
+    interface LabelEnabledDataPoint {
+        labelX?: number;
+        labelY?: number;
+        labelFill?: string;
+        labeltext?: string;
+        labelFormatString?: string;
+        isLabelInside?: boolean;
+        labelFontSize?: number;
+    }
+    const enum CartesianChartType {
+        Line = 0,
+        Area = 1,
+        StackedArea = 2,
+        ClusteredColumn = 3,
+        StackedColumn = 4,
+        ClusteredBar = 5,
+        StackedBar = 6,
+        HundredPercentStackedBar = 7,
+        HundredPercentStackedColumn = 8,
+        RibbonChart = 9,
+        Scatter = 10,
+        ComboChart = 11,
+        DataDot = 12,
+        Waterfall = 13,
+        LineClusteredColumnCombo = 14,
+        LineStackedColumnCombo = 15,
+        DataDotClusteredColumnCombo = 16,
+        DataDotStackedColumnCombo = 17,
+        RealTimeLineChart = 18,
+    }
+    module LabelUtils {
+        const DefaultFontSizeInPt = 9;
+        const DefaultLabelFontFamily: string;
+        const defaultFontProperties: FontProperties;
+        const horizontalLabelBackgroundPadding = 4;
+        const verticalLabelBackgroundPadding = 2;
+        let labelGraphicsContextClass: ClassAndSelector;
+        let labelBackgroundGraphicsContextClass: ClassAndSelector;
+        function downgradeToOldLabels(labels: Label[]): LabelOld[];
+        function drawDefaultLabels(context: d3.Selection<any>, dataLabels: Label[], numeric?: boolean, twoRows?: boolean, hasTooltip?: boolean): d3.selection.Update<any>;
+        function getDataLabelLayoutOptions(chartType: CartesianChartType): DataLabelLayoutOptions;
+        function getNumberOfLabelsToRender(viewportWidth: number, labelDensity: number, minimumLabelsToRender: number, estimatedLabelWidth: number): number;
+    }
+}
+declare namespace powerbi.extensibility.utils.chart.label {
+    import IPoint = powerbi.extensibility.utils.svg.shapes.IPoint;
+    import IRect = powerbi.extensibility.utils.svg.IRect;
+    import ISize = powerbi.extensibility.utils.svg.shapes.ISize;
+    import SelectableDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
+    import ISelectionId = powerbi.visuals.ISelectionId;
+    enum LabelOrientation {
+        Vertical = 0,
+        Horizontal = 1,
+    }
+    interface LabelParentPolygon {
+        /** The point this data label belongs to */
+        polygon: powerbi.extensibility.utils.svg.shapes.IPolygon;
+        /** Valid positions to place the label ordered by preference */
+        validPositions: NewPointLabelPosition[];
+    }
+    /**
+     * Defines possible data label positions relative to rectangles
+     */
+    const enum RectLabelPosition {
+        /** Position is not defined. */
+        None = 0,
+        /** Content is placed inside the parent rectangle in the center. */
+        InsideCenter = 1,
+        /** Content is placed inside the parent rectangle at the base. */
+        InsideBase = 2,
+        /** Content is placed inside the parent rectangle at the end. */
+        InsideEnd = 4,
+        /** Content is placed outside the parent rectangle at the base. */
+        OutsideBase = 8,
+        /** Content is placed outside the parent rectangle at the end. */
+        OutsideEnd = 16,
+        /** Content overflows from the inside of the parent rectangle in the center. */
+        OverflowInsideCenter = 32,
+        /** Content overflows from the inside of the parent rectangle at the base. */
+        OverflowInsideBase = 64,
+        /** Content overflows from the inside of the parent rectangle at the end. */
+        OverflowInsideEnd = 128,
+        /** Content supports all possible positions. */
+        All = 255,
+        /** Content supports positions inside the rectangle */
+        InsideAll = 7,
+        /** Content supports overflow positions */
+        OverflowAll = 224,
+    }
+    /**
+     * Defines possible data label positions relative to points or circles
+     */
+    const enum NewPointLabelPosition {
+        /** Position is not defined. */
+        None = 0,
+        Above = 1,
+        Below = 2,
+        Left = 4,
+        Right = 8,
+        BelowRight = 16,
+        BelowLeft = 32,
+        AboveRight = 64,
+        AboveLeft = 128,
+        Center = 256,
+        All = 511,
+    }
+    /**
+     * Rectangle orientation, defined by vertical vs horizontal and which direction
+     * the "base" is at.
+     */
+    const enum NewRectOrientation {
+        /** Rectangle with no specific orientation. */
+        None = 0,
+        /** Vertical rectangle with base at the bottom. */
+        VerticalBottomBased = 1,
+        /** Vertical rectangle with base at the top. */
+        VerticalTopBased = 2,
+        /** Horizontal rectangle with base at the left. */
+        HorizontalLeftBased = 3,
+        /** Horizontal rectangle with base at the right. */
+        HorizontalRightBased = 4,
+    }
+    const enum LabelDataPointParentType {
+        Point = 0,
+        Rectangle = 1,
+        Polygon = 2,
+    }
+    interface LabelParentRect {
+        /** The rectangle this data label belongs to */
+        rect: IRect;
+        /** The orientation of the parent rectangle */
+        orientation: NewRectOrientation;
+        /** Valid positions to place the label ordered by preference */
+        validPositions: RectLabelPosition[];
+    }
+    interface LabelParentPoint {
+        /** The point this data label belongs to */
+        point: IPoint;
+        /** The radius of the point to be added to the offset (for circular geometry) */
+        radius: number;
+        /** Valid positions to place the label ordered by preference */
+        validPositions: NewPointLabelPosition[];
+    }
+    interface LabelDataPoint {
+        /** The measured size of the text */
+        textSize: ISize;
+        /** Is data label preferred? Preferred labels will be rendered first */
+        isPreferred: boolean;
+        /** Whether the parent type is a rectangle, point or polygon */
+        parentType: LabelDataPointParentType;
+        /** The parent geometry for the data label */
+        parentShape: LabelParentRect | LabelParentPoint | LabelParentPolygon;
+        /** Whether or not the label has a background */
+        hasBackground?: boolean;
+        /** Text to be displayed in the label */
+        text: string;
+        /** A text that represent the label tooltip */
+        tooltip?: string;
+        /** Color to use for the data label if drawn inside */
+        insideFill: string;
+        /** Color to use for the data label if drawn outside */
+        outsideFill: string;
+        /** The identity of the data point associated with the data label */
+        identity: ISelectionId;
+        /** The key of the data point associated with the data label (used if identity is not unique to each expected label) */
+        key?: string;
+        /** The font properties of the data point associated with the data label */
+        fontProperties: FontProperties;
+        /** Second row of text to be displayed in the label, for additional information */
+        secondRowText?: string;
+        /** The calculated weight of the data point associated with the data label */
+        weight?: number;
+        backgroundColor?: string;
+        backgroundTransparency?: number;
+    }
+    interface LabelDataPointOld {
+        /** The measured size of the text */
+        textSize: ISize;
+        /** Is data label preferred? Preferred labels will be rendered first */
+        isPreferred: boolean;
+        /** Whether the parent type is a rectangle, point or polygon */
+        parentType: LabelDataPointParentType;
+        /** The parent geometry for the data label */
+        parentShape: LabelParentRect | LabelParentPoint | LabelParentPolygon;
+        /** Whether or not the label has a background */
+        hasBackground?: boolean;
+        /** Text to be displayed in the label */
+        text: string;
+        /** A text that represent the label tooltip */
+        tooltip?: string;
+        /** Color to use for the data label if drawn inside */
+        insideFill: string;
+        /** Color to use for the data label if drawn outside */
+        outsideFill: string;
+        /** The identity of the data point associated with the data label */
+        identity: ISelectionId;
+        /** The key of the data point associated with the data label (used if identity is not unique to each expected label) */
+        key?: string;
+        /** The font size of the data point associated with the data label */
+        fontSize?: number;
+        /** The font family of the data point associated with the data label */
+        fontFamily?: number;
+        /** Second row of text to be displayed in the label, for additional information */
+        secondRowText?: string;
+        /** The calculated weight of the data point associated with the data label */
+        weight?: number;
+        backgroundColor?: string;
+        backgroundTransparency?: number;
+    }
+    interface LabelDataPointLayoutInfo {
+        labelDataPoint: LabelDataPoint;
+        /** Whether or not the data label has been rendered */
+        hasBeenRendered?: boolean;
+        /** Size of the label adjusted for the background, if necessary */
+        labelSize?: ISize;
+    }
+    interface LabelDataPointGroup<TLabelDataPoint> {
+        labelDataPoints: TLabelDataPoint;
+        maxNumberOfLabels: number;
+        labelOrientation?: LabelOrientation;
+    }
+    interface Label extends SelectableDataPoint {
+        /** Text to be displayed in the label */
+        text: string;
+        /** Second row of text to be displayed in the label */
+        secondRowText?: string;
+        /** The bounding box for the label */
+        boundingBox: IRect;
+        /** Whether or not the data label should be rendered */
+        isVisible: boolean;
+        /** A unique key for data points (used if key cannot be obtained from the identity) */
+        key?: string;
+        /** The font properties of the data label */
+        fontProperties: FontProperties;
+        /** A text anchor used to override the default label text-anchor (middle) */
+        textAnchor?: string;
+        /** points for reference line rendering */
+        leaderLinePoints?: number[][];
+        /** Whether or not the label has a background (and text position needs to be adjusted to take that into account) */
+        hasBackground: boolean;
+        /** A text that represent the label tooltip */
+        tooltip?: string;
+        /** The orientation for label, vertical or horizontal */
+        labelOrientation?: LabelOrientation;
+        backgroundColor?: string;
+        backgroundTransparency?: number;
+    }
+    interface LabelOld extends SelectableDataPoint {
+        /** Text to be displayed in the label */
+        text: string;
+        /** Second row of text to be displayed in the label */
+        secondRowText?: string;
+        /** The bounding box for the label */
+        boundingBox: IRect;
+        /** Whether or not the data label should be rendered */
+        isVisible: boolean;
+        /** The fill color of the data label */
+        fill: string;
+        /** A unique key for data points (used if key cannot be obtained from the identity) */
+        key?: string;
+        /** The text size of the data label */
+        fontSize?: number;
+        /** The font family of the data label */
+        fontFamily?: string;
+        /** A text anchor used to override the default label text-anchor (middle) */
+        textAnchor?: string;
+        /** points for reference line rendering */
+        leaderLinePoints?: number[][];
+        /** Whether or not the label has a background (and text position needs to be adjusted to take that into account) */
+        hasBackground: boolean;
+        /** A text that represent the label tooltip */
+        tooltip?: string;
+        /** The orientation for label, vertical or horizontal */
+        labelOrientation?: LabelOrientation;
+        backgroundColor?: string;
+        backgroundTransparency?: number;
+    }
+    interface GridSubsection {
+        xMin: number;
+        xMax: number;
+        yMin: number;
+        yMax: number;
+    }
+    class LabelArrangeGrid {
+        private grid;
+        private viewport;
+        private cellSize;
+        private columnCount;
+        private rowCount;
+        /**
+         * A multiplier applied to the largest width height to attempt to balance # of
+         * labels in each cell and number of cells each label belongs to
+         */
+        private static cellSizeMultiplier;
+        constructor(labelDataPointGroups: LabelDataPointGroup<LabelDataPointLayoutInfo[]>[], viewport: IViewport);
+        /**
+         * Add a rectangle to check collision against
+         */
+        add(rect: IRect): void;
+        /**
+         * Check whether the rect conflicts with the grid, either bleeding outside the
+         * viewport or colliding with another rect added to the grid.
+         */
+        hasConflict(rect: IRect): boolean;
+        /**
+         * Attempt to position the given rect within the viewport.  Returns
+         * the adjusted rectangle or null if the rectangle couldn't fit,
+         * conflicts with the viewport, or is too far outside the viewport
+         */
+        tryPositionInViewport(rect: IRect): IRect;
+        /**
+         * Checks for a collision between the given rect and others in the grid.
+         * Returns true if there is a collision.
+         */
+        private hasCollision(rect);
+        /**
+         * Check to see if the given rect is inside the grid's viewport
+         */
+        private isWithinGridViewport(rect);
+        /**
+         * Checks to see if the rect is close enough to the viewport to be moved inside.
+         * "Close" here is determined by the distance between the edge of the viewport
+         * and the closest edge of the rect; if that distance is less than the appropriate
+         * dimension of the rect, we will reposition the rect.
+         */
+        private isCloseToGridViewport(rect);
+        /**
+         * Attempt to move the rect inside the grid's viewport.  Returns the resulting
+         * rectangle with the same width/height adjusted to be inside the viewport or
+         * null if it couldn't fit regardless.
+         */
+        private tryMoveInsideViewport(rect);
+        private getContainingGridSubsection(rect);
+        private static getCellCount(step, length, minCount, maxCount);
+        private static bound(value, min, max);
+    }
+    interface DataLabelLayoutOptions {
+        /** The amount of offset to start with when the data label is not centered */
+        startingOffset: number;
+        /** Maximum distance labels will be offset by */
+        maximumOffset: number;
+        /** The amount to increase the offset each attempt while laying out labels */
+        offsetIterationDelta?: number;
+        /** Horizontal padding used for checking whether a label is inside a parent shape */
+        horizontalPadding?: number;
+        /** Vertical padding used for checking whether a label is inside a parent shape */
+        verticalPadding?: number;
+        /** Should we draw reference lines in case the label offset is greater then the default */
+        allowLeaderLines?: boolean;
+        /** Should the layout system attempt to move the label inside the viewport when it outside, but close */
+        attemptToMoveLabelsIntoViewport?: boolean;
+    }
+    class LabelLayout {
+        /** Maximum distance labels will be offset by */
+        private maximumOffset;
+        /** The amount to increase the offset each attempt while laying out labels */
+        private offsetIterationDelta;
+        /** The amount of offset to start with when the data label is not centered */
+        private startingOffset;
+        /** Padding used for checking whether a label is inside a parent shape */
+        private horizontalPadding;
+        /** Padding used for checking whether a label is inside a parent shape */
+        private verticalPadding;
+        /** Should we draw leader lines in case the label offset is greater then the default */
+        private allowLeaderLines;
+        /** Should the layout system attempt to move the label inside the viewport when it outside, but close */
+        private attemptToMoveLabelsIntoViewport;
+        private static defaultOffsetIterationDelta;
+        private static defaultHorizontalPadding;
+        private static defaultVerticalPadding;
+        constructor(options: DataLabelLayoutOptions);
+        /**
+         * Arrange takes a set of data labels and lays them out in order, assuming that
+         * the given array has already been sorted with the most preferred labels at the
+         * front, taking into considiration a maximum number of labels that are alowed
+         * to display.
+         *
+         * Details:
+         * - We iterate over offsets from the target position, increasing from 0 while
+         *      verifiying the maximum number of labels to display hasn't been reached
+         * - For each offset, we iterate over each data label
+         * - For each data label, we iterate over each position that is valid for
+         *     both the specific label and this layout
+         * - When a valid position is found, we position the label there and no longer
+         *     reposition it.
+         * - This prioritizes the earlier labels to be positioned closer to their
+         *     target points in the position they prefer.
+         * - This prioritizes putting data labels close to a valid position over
+         *     placing them at their preferred position (it will place it at a less
+         *     preferred position if it will be a smaller offset)
+         */
+        layout(labelDataPointsGroups: LabelDataPointGroup<LabelDataPoint[]>[], viewport: IViewport): Label[];
+        layout(labelDataPointsGroups: LabelDataPointGroup<LabelDataPointOld[]>[], viewport: IViewport): LabelOld[];
+        private positionDataLabels(labelDataPointsLayoutInfo, viewport, grid, maxLabelsToRender, labelOrientation, hasMultipleDataSeries);
+        private tryPositionForRectPositions(labelDataPointLayoutInfo, grid, currentLabelOffset, currentCenteredLabelOffset, labelOrientation, hasMultipleDataSeries);
+        /**
+         * Tests a particular position/offset combination for the given data label.
+         * If the label can be placed, returns the resulting bounding box for the data
+         * label.  If not, returns null.
+         */
+        private static tryPositionRect(grid, position, labelDataPointLayoutInfo, offset, centerOffset, adjustForViewport);
+        private tryPositionForPointPositions(labelDataPointLayoutInfo, grid, currentLabelOffset, drawLeaderLines, labelOrientation);
+        private static tryPositionPoint(grid, position, labelDataPointLayoutInfo, offset, adjustForViewport);
+        private isOldLabelDataPoint(labelDataPoint);
+        private isOldLabelDataPointGroups(labelDataPointGroups);
+        upgradeToNewLabelDataPointsGroups(labelDataPointsGroups: LabelDataPointGroup<LabelDataPointOld[]>[]): LabelDataPointGroup<LabelDataPoint[]>[];
+    }
+    /**
+     * (Private) Contains methods for calculating the bounding box of a data label
+     */
+    module DataLabelRectPositioner {
+        namespace LabelOverflowingConsts {
+            const equalityPrecision = 0.09;
+            const minIntersectionRatio = 0.2;
+            const parentToLabelOverflowRatioThreshold: number;
+        }
+        function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, position: RectLabelPosition, offset: number): IRect;
+        function canFitWithinParent(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, horizontalPadding: number, verticalPadding: number): boolean;
+        function isLabelWithinParent(labelRect: IRect, labelPoint: LabelDataPoint, horizontalPadding: number, verticalPadding: number): boolean;
+        function isValidLabelOverflowing(labelRect: IRect, labelPoint: LabelDataPoint, hasMultipleDataSeries: boolean): boolean;
+        function maximalIntersectionRatio(labelRect: IRect, parentRect: IRect): number;
+        function topInside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function bottomInside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function rightInside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function leftInside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function topOutside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function bottomOutside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function rightOutside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function leftOutside(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function middleHorizontal(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+        function middleVertical(labelSize: ISize, parentRect: IRect, offset: number): IRect;
+    }
+    module DataLabelPointPositioner {
+        const cos45: number;
+        const sin45: number;
+        function getLabelRect(labelSize: ISize, parentPoint: LabelParentPoint, position: NewPointLabelPosition, offset: number): IRect;
+        function above(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function below(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function left(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function right(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function belowLeft(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function belowRight(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function aboveLeft(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function aboveRight(labelSize: ISize, parentPoint: IPoint, offset: number): IRect;
+        function center(labelSize: ISize, parentPoint: IPoint): IRect;
+        function getLabelLeaderLineEndingPoint(boundingBox: IRect, position: NewPointLabelPosition, parentShape: LabelParentPoint): number[][];
+    }
+}
+declare module powerbi.extensibility.utils.chart.label {
+    module NewDataLabelUtils {
+        const DefaultLabelFontSizeInPt = 9;
+        let startingLabelOffset: number;
+        let maxLabelOffset: number;
+        const horizontalLabelBackgroundPadding = 4;
+        const verticalLabelBackgroundPadding = 2;
+        function drawDefaultLabels(context: d3.Selection<any>, dataLabels: LabelOld[], numeric?: boolean, twoRows?: boolean, hasTooltip?: boolean): d3.selection.Update<any>;
+        interface DataLabelLayoutOptions {
+            /** The amount of offset to start with when the data label is not centered */
+            startingOffset: number;
+            /** Maximum distance labels will be offset by */
+            maximumOffset: number;
+            /** The amount to increase the offset each attempt while laying out labels */
+            offsetIterationDelta?: number;
+            /** Horizontal padding used for checking whether a label is inside a parent shape */
+            horizontalPadding?: number;
+            /** Vertical padding used for checking whether a label is inside a parent shape */
+            verticalPadding?: number;
+            /** Should we draw reference lines in case the label offset is greater then the default */
+            allowLeaderLines?: boolean;
+            /** Should the layout system attempt to move the label inside the viewport when it outside, but close */
+            attemptToMoveLabelsIntoViewport?: boolean;
+        }
+        let dataLabelLayoutStartingOffset: number;
+        let dataLabelLayoutOffsetIterationDelta: number;
+        let dataLabelLayoutMaximumOffset: number;
+        function getDataLabelLayoutOptions(chartType: CartesianChartType): DataLabelLayoutOptions;
+        function getNumberOfLabelsToRender(viewportWidth: number, labelDensity: number, minimumLabelsToRender: number, estimatedLabelWidth: number): number;
+    }
+}
