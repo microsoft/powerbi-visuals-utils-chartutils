@@ -28,6 +28,13 @@
         "src/dataLabel/locationConverter.ts",
         "src/dataLabel/dataLabelManager.ts",
         "src/dataLabel/dataLabelArrangeGrid.ts",
-        "src/dataLabel/dataLabelUtils.ts"
+        "src/dataLabel/dataLabelUtils.ts",        
+        "src/label/units.ts",
+        "src/label/fontProperties.ts",
+        "src/label/familyInfo.ts",
+        "src/label/prototype.ts",
+        "src/label/labelUtils.ts",
+        "src/label/labelLayout.ts",
+        "src/label/newDataLabelUtils.ts"
     ]
 }

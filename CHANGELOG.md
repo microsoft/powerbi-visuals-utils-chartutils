@@ -1,3 +1,6 @@
+## 1.6.0
+* Added types and functionality for the API version of Power KPI
+
 ## 1.5.1
 * FIX: Was removed a wrong instruction from auto generated code that impacted on tests in visuals
 
