@@ -1,8 +1,9 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "ChartUtils",
-  "main": "lib/index.js",
+  "main": "lib/index",
+  "types": "lib/index",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Microsoft/powerbi-visuals-utils-chartutils.git"
@@ -29,7 +30,7 @@
     "lessc": "lessc src/styles/style.less lib/index.css"
   },
   "devDependencies": {
-    "@types/d3": "3.5.38",
+    "@types/powerbi-visuals-tools": "https://github.com/zBritva/-types-powerbi-visuals-tools",
     "@types/jasmine": "2.5.37",
     "@types/jquery": "2.0.41",
     "coveralls": "2.13.1",
@@ -54,11 +55,14 @@
     "typescript": "2.1.4"
   },
   "dependencies": {
-    "d3": "3.5.5",
+    "d3-selection": "^1.2.0",
+    "d3-array": "1.2.1",
+    "d3-svg": "0.2.2",
+    "d3-scale": "2.0.0",
     "globalize": "0.1.0-a2",
-    "powerbi-visuals-utils-typeutils": "^1.0.0",
-    "powerbi-visuals-utils-svgutils": "^1.0.0",
-    "powerbi-visuals-utils-formattingutils": "^2.0.0",
-    "powerbi-visuals-utils-interactivityutils": "^1.0.0"
+    "powerbi-visuals-utils-typeutils": "zBritva/powerbi-visuals-utils-typeutils#es2015",
+    "powerbi-visuals-utils-svgutils": "zBritva/powerbi-visuals-utils-svgutils#es2015",
+    "powerbi-visuals-utils-formattingutils": "zBritva/powerbi-visuals-utils-formattingutils#es2015",
+    "powerbi-visuals-utils-interactivityutils": "zBritva/powerbi-visuals-utils-interactivityutils#es2015"
   }
 }
