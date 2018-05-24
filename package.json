@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "ChartUtils",
   "main": "lib/index",
   "types": "lib/index",
@@ -30,7 +30,7 @@
     "lessc": "lessc src/styles/style.less lib/index.css"
   },
   "devDependencies": {
-    "@types/powerbi-visuals-tools": "https://github.com/zBritva/-types-powerbi-visuals-tools",
+    "@types/powerbi-visuals-tools": "1.11.0",
     "@types/jasmine": "2.5.37",
     "@types/jquery": "2.0.41",
     "coveralls": "2.13.1",
