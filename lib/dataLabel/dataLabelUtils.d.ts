@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import TextProperties = formatting.textMeasurementService.TextProperties;
 import ValueFormatterOptions = formatting.valueFormatter.ValueFormatterOptions;

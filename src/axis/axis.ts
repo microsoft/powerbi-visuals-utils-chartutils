@@ -28,6 +28,7 @@ import { Selection, select } from "d3-selection";
 import { bisect, max, min } from "d3-array";
 import { scale } from "d3-scale";
 import * as d3svg from "d3-svg";
+import powerbi from "powerbi-visuals-tools";
 
 // powerbi.extensibility.utils.type
 import { double as Double, valueType, arrayExtensions } from "powerbi-visuals-utils-typeutils";
@@ -1439,12 +1440,12 @@ export function getRangeForColumn(sizeColumn: powerbi.DataViewValueColumn): powe
     let result: powerbi.NumberRange = {};
 
     if (sizeColumn) {
-        result.min = <number>(sizeColumn.min == null
-            ? sizeColumn.minLocal == null ? min(sizeColumn.values as number[]) : sizeColumn.minLocal
-            : sizeColumn.min);
-        result.max = <number>(sizeColumn.max == null
-            ? sizeColumn.maxLocal == null ? max(sizeColumn.values as number[]) : sizeColumn.maxLocal
-            : sizeColumn.max);
+        result.min = <number>((<any>sizeColumn).min == null
+            ? (<any>sizeColumn).minLocal == null ? min(sizeColumn.values as number[]) : (<any>sizeColumn).minLocal
+            : (<any>sizeColumn).min);
+        result.max = <number>((<any>sizeColumn).max == null
+            ? (<any>sizeColumn).maxLocal == null ? max(sizeColumn.values as number[]) : (<any>sizeColumn).maxLocal
+            : (<any>sizeColumn).max);
     }
 
     return result;

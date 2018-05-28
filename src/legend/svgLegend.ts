@@ -23,6 +23,7 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
+import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";

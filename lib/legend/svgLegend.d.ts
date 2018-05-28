@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";

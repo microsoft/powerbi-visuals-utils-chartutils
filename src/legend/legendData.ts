@@ -24,6 +24,7 @@
 *  THE SOFTWARE.
 */
 
+import powerbi from "powerbi-visuals-tools";
 import { legendProps, LegendData } from "./legendInterfaces";
 import * as position from "./legendPosition";
 
