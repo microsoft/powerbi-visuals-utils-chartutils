@@ -24,6 +24,7 @@
 *  THE SOFTWARE.
 */
 
+import powerbi from "powerbi-visuals-tools";
 import { shapesInterfaces, Rect, IRect } from "powerbi-visuals-utils-svgutils";
 
 import ISize = shapesInterfaces.ISize;

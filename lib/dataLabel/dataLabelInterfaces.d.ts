@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import { shapesInterfaces, IRect } from "powerbi-visuals-utils-svgutils";
 import IPoint = shapesInterfaces.IPoint;
 import ISize = shapesInterfaces.ISize;

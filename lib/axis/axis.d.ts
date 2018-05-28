@@ -2,6 +2,7 @@
 import { Selection } from "d3-selection";
 import { scale } from "d3-scale";
 import * as d3svg from "d3-svg";
+import powerbi from "powerbi-visuals-tools";
 import { valueType } from "powerbi-visuals-utils-typeutils";
 import ValueType = valueType.ValueType;
 import { AxisHelperCategoryDataPoint, AxisHelperSeries, CartesianAxisProperties, CreateAxisOptions, CreateScaleResult, CreateStackedAxisOptions, IAxisProperties, IMargin, TickLabelMargins } from "./axisInterfaces";

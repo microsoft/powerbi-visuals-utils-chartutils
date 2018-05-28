@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import { IRect } from "powerbi-visuals-utils-svgutils";
 import { IDataLabelSettings, IDataLabelInfo, LabelEnabledDataPoint } from "./dataLabelInterfaces";
 /**

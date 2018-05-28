@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import { ILegend, LegendData, LegendPosition } from "./legendInterfaces";
 export declare class InteractiveLegend implements ILegend {
     private static LegendHeight;

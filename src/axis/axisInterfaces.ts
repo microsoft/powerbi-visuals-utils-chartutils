@@ -27,6 +27,7 @@ import { Selection, select } from "d3-selection";
 import { bisect, max, min } from "d3-array";
 import { scale } from "d3-scale";
 import * as d3svg from "d3-svg";
+import powerbi from "powerbi-visuals-tools";
 // powerbi
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
 

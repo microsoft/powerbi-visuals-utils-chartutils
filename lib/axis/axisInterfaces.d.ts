@@ -2,6 +2,7 @@
 import { Selection } from "d3-selection";
 import { scale } from "d3-scale";
 import * as d3svg from "d3-svg";
+import powerbi from "powerbi-visuals-tools";
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
 import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
 import IValueFormatter = valueFormatter.IValueFormatter;

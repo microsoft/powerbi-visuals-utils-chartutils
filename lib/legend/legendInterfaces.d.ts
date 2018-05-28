@@ -1,4 +1,5 @@
 /// <reference types="powerbi-visuals-tools" />
+import powerbi from "powerbi-visuals-tools";
 import { Point } from "powerbi-visuals-utils-svgutils";
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
 import SelectableDataPoint = interactivityService.SelectableDataPoint;

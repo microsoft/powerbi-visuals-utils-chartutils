@@ -23,6 +23,7 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
+import powerbi from "powerbi-visuals-tools";
 
 // powerbi.extensibility.utils.svg
 import  { shapesInterfaces, IRect } from "powerbi-visuals-utils-svgutils";

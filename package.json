@@ -30,9 +30,9 @@
     "lessc": "lessc src/styles/style.less lib/index.css"
   },
   "devDependencies": {
-    "@types/powerbi-visuals-tools": "1.11.0",
     "@types/jasmine": "2.5.37",
     "@types/jquery": "2.0.41",
+    "@types/powerbi-visuals-tools": "^1.11.0",
     "coveralls": "2.13.1",
     "jasmine": "2.6.0",
     "jasmine-jquery": "2.1.1",
@@ -60,9 +60,9 @@
     "d3-svg": "0.2.2",
     "d3-scale": "2.0.0",
     "globalize": "0.1.0-a2",
-    "powerbi-visuals-utils-typeutils": "zBritva/powerbi-visuals-utils-typeutils#es2015",
-    "powerbi-visuals-utils-svgutils": "zBritva/powerbi-visuals-utils-svgutils#es2015",
-    "powerbi-visuals-utils-formattingutils": "zBritva/powerbi-visuals-utils-formattingutils#es2015",
+    "powerbi-visuals-utils-typeutils": "beta",
+    "powerbi-visuals-utils-svgutils": "beta",
+    "powerbi-visuals-utils-formattingutils": "beta",
     "powerbi-visuals-utils-interactivityutils": "zBritva/powerbi-visuals-utils-interactivityutils#es2015"
   }
 }
