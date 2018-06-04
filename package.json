@@ -59,6 +59,7 @@
     "d3-array": "1.2.1",
     "d3-svg": "0.2.2",
     "d3-scale": "2.0.0",
+    "d3-axis": "1.0.8",
     "globalize": "0.1.0-a2",
     "powerbi-visuals-utils-typeutils": "beta",
     "powerbi-visuals-utils-svgutils": "beta",

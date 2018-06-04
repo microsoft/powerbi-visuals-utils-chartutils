@@ -28,6 +28,7 @@ import { Selection, select } from "d3-selection";
 import { bisect, max, min } from "d3-array";
 import { scaleLinear, scaleLog } from "d3-scale";
 import * as d3svg from "d3-svg";
+import * as d3axis from "d3-axis";
 import powerbi from "powerbi-visuals-tools";
 
 // powerbi.extensibility.utils.type
@@ -706,10 +707,10 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
 
     // sets default orientation only, cartesianChart will fix y2 for comboChart
     // tickSize(pixelSpan) is used to create gridLines
-    let axis = d3svg.axis()
+    let axisFunction = isVertical ? d3axis.axisLeft : d3axis.axisBottom;
+    let axis = axisFunction()
         .scale(scale)
         .tickSize(6, 0)
-        .orient(isVertical ? "left" : "bottom")
         .ticks(bestTickCount)
         .tickValues(tickValues);
 
