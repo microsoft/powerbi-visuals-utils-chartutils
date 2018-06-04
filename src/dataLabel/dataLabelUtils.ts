@@ -221,10 +221,12 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
             .duration(animationDuration)
             .style(layout.style as any)
             .style("opacity", (hasSelection ? (d: SelectableDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
-            .attr({
-                x: (d: LabelEnabledDataPoint) => d.labelX,
-                y: (d: LabelEnabledDataPoint) => d.labelY
-            });
+            .attr(
+                "x", (d: LabelEnabledDataPoint) => d.labelX
+            )
+            .attr(
+                "y", (d: LabelEnabledDataPoint) => d.labelY
+            );
 
         labels
             .exit()
@@ -235,7 +237,12 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
     }
     else {
         labels
-            .attr({ x: (d: LabelEnabledDataPoint) => d.labelX, y: (d: LabelEnabledDataPoint) => d.labelY })
+            .attr(
+                "x", (d: LabelEnabledDataPoint) => d.labelX
+            )
+            .attr(
+                "y", (d: LabelEnabledDataPoint) => d.labelY
+            )
             .text((d: LabelEnabledDataPoint) => d.labeltext)
             .style(layout.style as any);
 
