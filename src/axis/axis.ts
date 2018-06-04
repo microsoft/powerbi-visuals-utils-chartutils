@@ -1416,7 +1416,7 @@ export function createNumericalScale(
 }
 
 function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): scaleLog.Linear<any, any> {
-    let logScale = scaleLog.log()
+    let logScale = scaleLog()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(true);
@@ -1430,7 +1430,7 @@ function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: numb
 
 // NOTE: export only for testing, do not access directly
 export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): scaleLinear.Linear<any, any> {
-    let linearScale = scaleLinear.linear()
+    let linearScale = scaleLinear()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(shouldClamp);
