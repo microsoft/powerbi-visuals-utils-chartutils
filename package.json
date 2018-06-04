@@ -63,7 +63,7 @@
     "globalize": "0.1.0-a2",
     "powerbi-visuals-utils-typeutils": "beta",
     "powerbi-visuals-utils-svgutils": "beta",
-    "powerbi-visuals-utils-formattingutils": "beta",
+    "powerbi-visuals-utils-formattingutils": "zBritva/powerbi-visuals-utils-formattingutils#es2015",
     "powerbi-visuals-utils-interactivityutils": "zBritva/powerbi-visuals-utils-interactivityutils#es2015"
   }
 }
