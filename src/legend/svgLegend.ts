@@ -309,20 +309,12 @@ export class SVGLegend implements ILegend {
             .classed(SVGLegend.LegendTitle.className, true);
 
         dataLegendTitle
-            .style(
-                "fill", data.labelColor)
-            .style(
-                "font-size", PixelConverter.fromPoint(data.fontSize))
-            .style(
-                "font-family", SVGLegend.DefaultTitleFontFamily
-            )
+            .style("fill", data.labelColor)
+            .style("font-size", PixelConverter.fromPoint(data.fontSize))
+            .style("font-family", SVGLegend.DefaultTitleFontFamily)
             .text((d: TitleLayout) => d.text)
-            .attr(
-                "x", (d: TitleLayout) => d.x
-            )
-            .attr(
-                "y", (d: TitleLayout) => d.y
-            )
+            .attr("x", (d: TitleLayout) => d.x)
+            .attr("y", (d: TitleLayout) => d.y)
             .append("title")
             .text(data.title);
 
@@ -388,18 +380,11 @@ export class SVGLegend implements ILegend {
 
         legendItems
             .select(SVGLegend.LegendText.selectorName)
-            .attr(
-                "x", (d: LegendDataPoint) => d.textPosition.x)
-            .attr(
-                "y", (d: LegendDataPoint) => d.textPosition.y,
-            )
+            .attr("x", (d: LegendDataPoint) => d.textPosition.x)
+            .attr("y", (d: LegendDataPoint) => d.textPosition.y)
             .text((d: LegendDataPoint) => d.label)
-            .style(
-                "fill", data.labelColor
-            )
-            .style(
-                "font-size", PixelConverter.fromPoint(data.fontSize)
-            );
+            .style("fill", data.labelColor)
+            .style("font-size", PixelConverter.fromPoint(data.fontSize));
 
         if (this.interactivityService) {
             let iconsSelection = legendItems.select(SVGLegend.LegendIcon.selectorName);
@@ -858,11 +843,8 @@ export class SVGLegend implements ILegend {
         arrows
             .attr("transform", (d: NavigationArrow) => translate(d.x, d.y))
             .select("path")
-            .attr(
-                "d", (d: NavigationArrow) => d.path)
-            .attr(
-                "transform", (d: NavigationArrow) => d.rotateTransform
-            );
+            .attr("d", (d: NavigationArrow) => d.path)
+            .attr("transform", (d: NavigationArrow) => d.rotateTransform);
 
         arrows
             .exit()

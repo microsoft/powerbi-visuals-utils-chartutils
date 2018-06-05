@@ -1308,13 +1308,9 @@ export module LabelLayoutStrategy {
                 // NOTE: see note above - rotation only lines up with default d3 tickSize(6,0)
                 // TODO don't do these rotations if we already did them
                 axisLabel.style("text-anchor", "end")
-                    .attr(
-                        "dx", "-0.5em")
-                    .attr(
-                        "dy", defaultRotation.dy)
-                    .attr(
-                        "transform", defaultRotation.transform
-                    );
+                    .attr("dx", "-0.5em")
+                    .attr("dy", defaultRotation.dy)
+                    .attr("transform", defaultRotation.transform);
             } else {
                 let maxLabelWidth = !arrayIsEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
                 let newLabelText = textTruncator(textProperties, maxLabelWidth);
@@ -1322,15 +1318,9 @@ export module LabelLayoutStrategy {
                     axisLabel.text(newLabelText);
                 // TODO don't do these rotations if we already did them
                 axisLabel.style("text-anchor", "middle")
-                    .attr(
-                        "dx", "0em"
-                    )
-                    .attr(
-                        "dy", "1em"
-                    )
-                    .attr(
-                        "transform", "rotate(0)"
-                    );
+                    .attr("dx", "0em")
+                    .attr("dy", "1em")
+                    .attr("transform", "rotate(0)");
             }
         });
     }
@@ -1348,14 +1338,9 @@ export module LabelLayoutStrategy {
             // Reset style of text node
             node
                 .style("text-anchor", "middle")
-                .attr(
-                    "dx", "0em")
-                .attr(
-                    "dy", "1em"
-                )
-                .attr(
-                    "transform", "rotate(0)"
-                );
+                .attr("dx", "0em")
+                .attr("dy", "1em")
+                .attr("transform", "rotate(0)");
 
             textMeasurementService.wordBreak(this, allowedLength, maxHeight);
         });
