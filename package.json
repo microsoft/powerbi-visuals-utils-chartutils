@@ -55,14 +55,15 @@
     "typescript": "2.1.4"
   },
   "dependencies": {
-    "d3-selection": "^1.2.0",
+    "d3-selection": "1.0.1",
     "d3-array": "1.2.1",
     "d3-svg": "0.2.2",
     "d3-scale": "2.0.0",
+    "d3-axis": "1.0.8",
     "globalize": "0.1.0-a2",
     "powerbi-visuals-utils-typeutils": "beta",
     "powerbi-visuals-utils-svgutils": "beta",
-    "powerbi-visuals-utils-formattingutils": "beta",
+    "powerbi-visuals-utils-formattingutils": "zBritva/powerbi-visuals-utils-formattingutils#es2015",
     "powerbi-visuals-utils-interactivityutils": "zBritva/powerbi-visuals-utils-interactivityutils#es2015"
   }
 }

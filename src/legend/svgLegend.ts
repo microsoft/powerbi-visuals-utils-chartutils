@@ -29,7 +29,6 @@ import { pixelConverter as PixelConverter, prototype as Prototype } from "powerb
 import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
 import { Selection, Update, select, Enter, Zoom, zoom } from "d3-selection";
-import { linear, Linear } from "d3-scale";
 import { LegendBehavior, LegendBehaviorOptions } from "./legendBehavior";
 
 import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
@@ -168,18 +167,22 @@ export class SVGLegend implements ILegend {
         let legendViewport = this.viewport;
         let orientation = this.orientation;
 
-        this.svg.attr({
-            "height": legendViewport.height || (orientation === LegendPosition.None ? 0 : this.parentViewport.height),
-            "width": legendViewport.width || (orientation === LegendPosition.None ? 0 : this.parentViewport.width)
-        });
+        this.svg.attr(
+            "height", legendViewport.height || (orientation === LegendPosition.None ? 0 : this.parentViewport.height)
+        );
+        this.svg.attr(
+            "width", legendViewport.width || (orientation === LegendPosition.None ? 0 : this.parentViewport.width)
+        );
 
         let isRight = orientation === LegendPosition.Right || orientation === LegendPosition.RightCenter,
             isBottom = orientation === LegendPosition.Bottom || orientation === LegendPosition.BottomCenter;
 
-        this.svg.style({
-            "margin-left": isRight ? (this.parentViewport.width - legendViewport.width) + "px" : null,
-            "margin-top": isBottom ? (this.parentViewport.height - legendViewport.height) + "px" : null,
-        });
+        this.svg.style(
+            "margin-left", isRight ? (this.parentViewport.width - legendViewport.width) + "px" : null
+        );
+        this.svg.style(
+            "margin-top", isBottom ? (this.parentViewport.height - legendViewport.height) + "px" : null,
+        );
     }
 
     private calculateViewport(): void {
@@ -301,21 +304,17 @@ export class SVGLegend implements ILegend {
             .selectAll(SVGLegend.LegendTitle.selectorName)
             .data(titleData);
 
-        legendTitle.enter()
+        let dataLegendTitle = legendTitle.enter()
             .append("text")
             .classed(SVGLegend.LegendTitle.className, true);
 
-        legendTitle
-            .style({
-                "fill": data.labelColor,
-                "font-size": PixelConverter.fromPoint(data.fontSize),
-                "font-family": SVGLegend.DefaultTitleFontFamily
-            })
+        dataLegendTitle
+            .style("fill", data.labelColor)
+            .style("font-size", PixelConverter.fromPoint(data.fontSize))
+            .style("font-family", SVGLegend.DefaultTitleFontFamily)
             .text((d: TitleLayout) => d.text)
-            .attr({
-                "x": (d: TitleLayout) => d.x,
-                "y": (d: TitleLayout) => d.y
-            })
+            .attr("x", (d: TitleLayout) => d.x)
+            .attr("y", (d: TitleLayout) => d.y)
             .append("title")
             .text(data.title);
 
@@ -357,19 +356,23 @@ export class SVGLegend implements ILegend {
 
         legendItems
             .select(SVGLegend.LegendIcon.selectorName)
-            .attr({
-                "cx": (d: LegendDataPoint, i) => d.glyphPosition.x,
-                "cy": (d: LegendDataPoint) => d.glyphPosition.y,
-                "r": iconRadius,
-            })
-            .style({
-                "fill": (d: LegendDataPoint) => {
+            .attr(
+                "cx", (d: LegendDataPoint, i) => d.glyphPosition.x
+            )
+            .attr(
+                "cy", (d: LegendDataPoint) => d.glyphPosition.y
+            )
+            .attr(
+                "r", iconRadius,
+            )
+            .style(
+                "fill", (d: LegendDataPoint) => {
                     if (hasSelection && !d.selected)
                         return LegendBehavior.dimmedLegendColor;
                     else
                         return d.color;
                 }
-            });
+            );
 
         legendItems
             .select("title")
@@ -377,15 +380,11 @@ export class SVGLegend implements ILegend {
 
         legendItems
             .select(SVGLegend.LegendText.selectorName)
-            .attr({
-                "x": (d: LegendDataPoint) => d.textPosition.x,
-                "y": (d: LegendDataPoint) => d.textPosition.y,
-            })
+            .attr("x", (d: LegendDataPoint) => d.textPosition.x)
+            .attr("y", (d: LegendDataPoint) => d.textPosition.y)
             .text((d: LegendDataPoint) => d.label)
-            .style({
-                "fill": data.labelColor,
-                "font-size": PixelConverter.fromPoint(data.fontSize)
-            });
+            .style("fill", data.labelColor)
+            .style("font-size", PixelConverter.fromPoint(data.fontSize));
 
         if (this.interactivityService) {
             let iconsSelection = legendItems.select(SVGLegend.LegendIcon.selectorName);
@@ -844,10 +843,8 @@ export class SVGLegend implements ILegend {
         arrows
             .attr("transform", (d: NavigationArrow) => translate(d.x, d.y))
             .select("path")
-            .attr({
-                "d": (d: NavigationArrow) => d.path,
-                "transform": (d: NavigationArrow) => d.rotateTransform
-            });
+            .attr("d", (d: NavigationArrow) => d.path)
+            .attr("transform", (d: NavigationArrow) => d.rotateTransform);
 
         arrows
             .exit()

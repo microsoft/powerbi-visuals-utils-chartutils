@@ -25,7 +25,7 @@
 */
 import { Selection, select } from "d3-selection";
 import { bisect, max, min } from "d3-array";
-import { scale } from "d3-scale";
+import { linear } from "d3-scale";
 import * as d3svg from "d3-svg";
 import powerbi from "powerbi-visuals-tools";
 // powerbi
@@ -273,7 +273,7 @@ export enum AxisOrientation {
 
 export interface CreateStackedAxisOptions {
     axis: d3svg.Axis;
-    scale: scale.Linear<any, any>;
+    scale: linear.Linear<any, any>;
     innerTickSize?: number;
     outerTickSize?: number;
     orient?: AxisOrientation;
@@ -281,7 +281,7 @@ export interface CreateStackedAxisOptions {
 }
 
 export interface CreateScaleResult {
-    scale: scale.Linear<any, any>;
+    scale: linear.Linear<any, any>;
     bestTickCount: number;
     usingDefaultDomain?: boolean;
 }

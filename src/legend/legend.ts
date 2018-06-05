@@ -68,12 +68,14 @@ export function positionChartArea(chartArea: Selection<any>, legend: ILegend): v
     let legendMargins = legend.getMargins(),
         legendOrientation = legend.getOrientation();
 
-    chartArea.style({
-        "margin-left": isLeft(legendOrientation)
+    chartArea.style(
+        "margin-left", isLeft(legendOrientation)
             ? legendMargins.width + "px"
-            : null,
-        "margin-top": isTop(legendOrientation)
+            : null
+    );
+    chartArea.style(
+        "margin-top", isTop(legendOrientation)
             ? legendMargins.height + "px"
             : null,
-    });
+    );
 }

@@ -26,8 +26,9 @@
 
 import { Selection, select } from "d3-selection";
 import { bisect, max, min } from "d3-array";
-import { scale } from "d3-scale";
+import { scaleLinear, scaleLog } from "d3-scale";
 import * as d3svg from "d3-svg";
+import * as d3axis from "d3-axis";
 import powerbi from "powerbi-visuals-tools";
 
 // powerbi.extensibility.utils.type
@@ -167,7 +168,7 @@ export function hasNonIntegerData(valuesMetadata: powerbi.DataViewMetadataColumn
 }
 
 export function getRecommendedTickValues(maxTicks: number,
-    scale: scale.Linear<number, number> | scale.Ordinal<any, any>,
+    scale: scaleLinear.Linear<number, number> | scaleLinear.Ordinal<any, any>,
     axisType: ValueType,
     isScalar: boolean,
     minTickInterval?: number): any[] {
@@ -176,10 +177,10 @@ export function getRecommendedTickValues(maxTicks: number,
         return getRecommendedTickValuesForAnOrdinalRange(maxTicks, scale.domain() as any);
     }
     else if (isDateTime(axisType)) {
-        return getRecommendedTickValuesForADateTimeRange(maxTicks, (scale as scale.Linear<number, number>).domain());
+        return getRecommendedTickValuesForADateTimeRange(maxTicks, (scale as scaleLinear.Linear<number, number>).domain());
     }
 
-    return getRecommendedTickValuesForAQuantitativeRange(maxTicks, (scale as scale.Linear<number, number>), minTickInterval);
+    return getRecommendedTickValuesForAQuantitativeRange(maxTicks, (scale as scaleLinear.Linear<number, number>), minTickInterval);
 }
 
 export function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labels: string[]): string[] {
@@ -199,14 +200,14 @@ export function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labe
     return tickLabels;
 }
 
-export function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: scale.Linear<any, any>, minInterval?: number): number[] {
+export function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: scaleLinear.Linear<any, any>, minInterval?: number): number[] {
     let tickLabels: number[] = [];
 
     // if maxticks is zero return none
     if (maxTicks === 0)
         return tickLabels;
 
-    let quantitiveScale = <scale.Linear<any, any>>scale;
+    let quantitiveScale = <scaleLinear.Linear<any, any>>scale;
     if (quantitiveScale.ticks) {
         tickLabels = quantitiveScale.ticks(maxTicks);
         if (tickLabels.length > maxTicks && maxTicks > 1)
@@ -469,8 +470,8 @@ export function isOrdinal(dataType: powerbi.ValueTypeDescriptor): boolean {
     return !!(dataType && (dataType.text || dataType.bool || (dataType.misc && dataType.misc.barcode) || (dataType.geography && dataType.geography.postalCode)));
 }
 
-export function isOrdinalScale(scale: any): scale is scale.Ordinal<any, any> {
-    return typeof (<scale.Ordinal<any, any>>scale).rangePoints === "function";
+export function isOrdinalScale(scale: any): scale is scaleLinear.Ordinal<any, any> {
+    return typeof (<scaleLinear.Ordinal<any, any>>scale).rangePoints === "function";
 }
 
 export function isDateTime(dataType: powerbi.ValueTypeDescriptor): boolean {
@@ -517,7 +518,7 @@ export function getCategoryThickness(scale: any): number {
  * Inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
  * Otherwise, it returns the greatest item in scale.domain() that's <= x.
  */
-export function invertOrdinalScale(scale: scale.Ordinal<any, any>, x: number) {
+export function invertOrdinalScale(scale: scaleLinear.Ordinal<any, any>, x: number) {
     let leftEdges = scale.range();
     if (leftEdges.length < 2) {
         return 0;
@@ -557,7 +558,7 @@ export function findClosestXAxisIndex(categoryValue: number, categoryAxisValues:
     return closestValueIndex;
 }
 
-export function lookupOrdinalIndex(scale: scale.Ordinal<any, any>, pixelValue: number): number {
+export function lookupOrdinalIndex(scale: scaleLinear.Ordinal<any, any>, pixelValue: number): number {
     let closestValueIndex: number = -1;
     let minDistance = Number.MAX_VALUE;
     let domain = scale.domain();
@@ -584,7 +585,7 @@ export function lookupOrdinalIndex(scale: scale.Ordinal<any, any>, pixelValue: n
 
 /** scale(value1) - scale(value2) with zero checking and min(+/-1, result) */
 export function diffScaled(
-    scale: scale.Linear<any, any>,
+    scale: scaleLinear.Linear<any, any>,
     value1: any,
     value2: any): number {
 
@@ -706,10 +707,10 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
 
     // sets default orientation only, cartesianChart will fix y2 for comboChart
     // tickSize(pixelSpan) is used to create gridLines
-    let axis = d3svg.axis()
+    let axisFunction = isVertical ? d3axis.axisLeft : d3axis.axisBottom;
+    let axis = axisFunction()
         .scale(scale)
         .tickSize(6, 0)
-        .orient(isVertical ? "left" : "bottom")
         .ticks(bestTickCount)
         .tickValues(tickValues);
 
@@ -762,7 +763,7 @@ export function createStackedAxis(options: CreateStackedAxisOptions): d3svg.Axis
         .tickFormat(options.tickFormat);
 }
 
-function getScalarLabelMaxWidth(scale: scale.Linear<any, any>, tickValues: number[]): number {
+function getScalarLabelMaxWidth(scale: scaleLinear.Linear<any, any>, tickValues: number[]): number {
     // find the distance between two ticks. scalar ticks can be anywhere, such as:
     // |---50----------100--------|
     if (scale && !arrayIsEmpty(tickValues)) {
@@ -800,7 +801,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
     if (disableNice) {
         bestTickCount = null;
     }
-    let scale: scale.Ordinal<any, any> | scale.Linear<any, any>;
+    let scale: scaleLinear.Ordinal<any, any> | scaleLinear.Linear<any, any>;
     let usingDefaultDomain = false;
 
     if (dataDomain == null || (dataDomain.length === 2 && dataDomain[0] == null && dataDomain[1] == null) || (dataDomain.length !== 2 && isScalar)) {
@@ -863,7 +864,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
         scale.range(scale.range().reverse());
     }
 
-    normalizeInfinityInScale(scale as scale.Linear<any, any>);
+    normalizeInfinityInScale(scale as scaleLinear.Linear<any, any>);
 
     return {
         scale: scale as any,
@@ -872,7 +873,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
     };
 }
 
-export function normalizeInfinityInScale(scale: scale.Linear<any, any>): void {
+export function normalizeInfinityInScale(scale: scaleLinear.Linear<any, any>): void {
     // When large values (eg Number.MAX_VALUE) are involved, a call to scale.nice occasionally
     // results in infinite values being included in the domain. To correct for that, we need to
     // re-normalize the domain now to not include infinities.
@@ -1307,11 +1308,9 @@ export module LabelLayoutStrategy {
                 // NOTE: see note above - rotation only lines up with default d3 tickSize(6,0)
                 // TODO don't do these rotations if we already did them
                 axisLabel.style("text-anchor", "end")
-                    .attr({
-                        "dx": "-0.5em",
-                        "dy": defaultRotation.dy,
-                        "transform": defaultRotation.transform
-                    });
+                    .attr("dx", "-0.5em")
+                    .attr("dy", defaultRotation.dy)
+                    .attr("transform", defaultRotation.transform);
             } else {
                 let maxLabelWidth = !arrayIsEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
                 let newLabelText = textTruncator(textProperties, maxLabelWidth);
@@ -1319,12 +1318,9 @@ export module LabelLayoutStrategy {
                     axisLabel.text(newLabelText);
                 // TODO don't do these rotations if we already did them
                 axisLabel.style("text-anchor", "middle")
-                    .attr(
-                    {
-                        "dx": "0em",
-                        "dy": "1em",
-                        "transform": "rotate(0)"
-                    });
+                    .attr("dx", "0em")
+                    .attr("dy", "1em")
+                    .attr("transform", "rotate(0)");
             }
         });
     }
@@ -1342,11 +1338,9 @@ export module LabelLayoutStrategy {
             // Reset style of text node
             node
                 .style("text-anchor", "middle")
-                .attr({
-                    "dx": "0em",
-                    "dy": "1em",
-                    "transform": "rotate(0)"
-                });
+                .attr("dx", "0em")
+                .attr("dy", "1em")
+                .attr("transform", "rotate(0)");
 
             textMeasurementService.wordBreak(this, allowedLength, maxHeight);
         });
@@ -1364,14 +1358,14 @@ export module LabelLayoutStrategy {
     }
 }
 
-export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): scale.Ordinal<any, any> {
+export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): scaleLinear.Ordinal<any, any> {
     if (useRangePoints === true) {
-        return scale.ordinal()
+        return scaleLinear.ordinal()
         .rangePoints([0, pixelSpan], outerPaddingRatio)
         .domain(dataDomain);
     }
 
-    return scale.ordinal()
+    return scaleLinear.ordinal()
         /* Avoid using rangeRoundBands here as it is adding some extra padding to the axis*/
         .rangeBands([0, pixelSpan], innerPaddingRatio, outerPaddingRatio)
         .domain(dataDomain);
@@ -1398,7 +1392,7 @@ export function createNumericalScale(
     dataType: ValueType,
     outerPadding: number = 0,
     niceCount?: number,
-    shouldClamp?: boolean): scale.Linear<any, any> {
+    shouldClamp?: boolean): scaleLinear.Linear<any, any> {
 
     if (axisScaleType === axisScale.log && isLogScalePossible(dataDomain, dataType)) {
         return createLogScale(pixelSpan, dataDomain, outerPadding, niceCount);
@@ -1407,22 +1401,22 @@ export function createNumericalScale(
     return createLinearScale(pixelSpan, dataDomain, outerPadding, niceCount, shouldClamp);
 }
 
-function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): scale.Linear<any, any> {
-    let logScale = scale.log()
+function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): scaleLog.Linear<any, any> {
+    let logScale = scaleLog()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(true);
 
     if (niceCount) {
-        (logScale as scale.Linear<any, any>).nice(niceCount);
+        (logScale as scaleLog.Linear<any, any>).nice(niceCount);
     }
 
     return logScale;
 }
 
 // NOTE: export only for testing, do not access directly
-export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): scale.Linear<any, any> {
-    let linearScale = scale.linear()
+export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): scaleLinear.Linear<any, any> {
+    let linearScale = scaleLinear()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(shouldClamp);

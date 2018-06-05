@@ -167,10 +167,12 @@ export class InteractiveLegend implements ILegend {
             .html(InteractiveLegend.legendPlaceSelector)
             .attr("class", InteractiveLegend.legendIconClass)
             .attr("white-space", "nowrap")
-            .style({
-                "font-size": "20px", // this creates a circle of 10px
-                "margin-bottom": "7px"
-            });
+            .style(
+                "font-size", "20px" // this creates a circle of 10px
+            )
+            .style(
+                "margin-bottom", "7px"
+            );
 
         cellSpanEnter
             .append("span")

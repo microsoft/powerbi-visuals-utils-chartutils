@@ -1,6 +1,6 @@
 /// <reference types="powerbi-visuals-tools" />
 import { Selection } from "d3-selection";
-import { scale } from "d3-scale";
+import { linear } from "d3-scale";
 import * as d3svg from "d3-svg";
 import powerbi from "powerbi-visuals-tools";
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
@@ -227,14 +227,14 @@ export declare enum AxisOrientation {
 }
 export interface CreateStackedAxisOptions {
     axis: d3svg.Axis;
-    scale: scale.Linear<any, any>;
+    scale: linear.Linear<any, any>;
     innerTickSize?: number;
     outerTickSize?: number;
     orient?: AxisOrientation;
     tickFormat: (datumIndex: number) => any;
 }
 export interface CreateScaleResult {
-    scale: scale.Linear<any, any>;
+    scale: linear.Linear<any, any>;
     bestTickCount: number;
     usingDefaultDomain?: boolean;
 }
