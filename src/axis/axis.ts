@@ -1353,7 +1353,7 @@ export module LabelLayoutStrategy {
 
         text.each(function () {
             let text = select(this);
-            svgEllipsis(text[0][0] as any, availableWidth);
+            svgEllipsis(text.node() as any, availableWidth);
         });
     }
 }
