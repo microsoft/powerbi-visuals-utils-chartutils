@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import { shapesInterfaces, IRect } from "powerbi-visuals-utils-svgutils";
 import IPoint = shapesInterfaces.IPoint;
@@ -38,7 +37,7 @@ export declare enum ContentPositions {
     /** Content is placed outside the bounding rectangle at the end. */
     OutsideEnd = 8192,
     /** Content supports all possible positions. */
-    All = 16383,
+    All = 16383
 }
 /**
  * Rectangle orientation. Rectangle orientation is used to define vertical or horizontal orientation
@@ -54,7 +53,7 @@ export declare enum RectOrientation {
     /** Horizontal rectangle with base at the left. */
     HorizontalLeftRight = 3,
     /** Horizontal rectangle with base at the right. */
-    HorizontalRightLeft = 4,
+    HorizontalRightLeft = 4
 }
 /**
  * Defines if panel elements are allowed to be positioned
@@ -66,7 +65,7 @@ export declare enum OutsidePlacement {
     /** Elements can not be positioned outside of the panel. */
     Disallowed = 1,
     /** Elements can be partially outside of the panel. */
-    Partial = 2,
+    Partial = 2
 }
 /**
  * Defines an interface for information needed for default label positioning. Used in DataLabelsPanel.
@@ -133,7 +132,7 @@ export declare module labelStyle {
 }
 export declare enum PointLabelPosition {
     Above = 0,
-    Below = 1,
+    Below = 1
 }
 export interface PointDataLabelsSettings extends VisualDataLabelsSettings {
     position: PointLabelPosition;

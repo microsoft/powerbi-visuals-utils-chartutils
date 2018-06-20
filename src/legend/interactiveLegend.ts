@@ -29,9 +29,7 @@ import powerbi from "powerbi-visuals-tools";
 import { textUtil } from "powerbi-visuals-utils-formattingutils";
 import { manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
-import { Selection, Update, select, Enter, Zoom, zoom } from "d3-selection";
-import { linear, Linear } from "d3-scale";
-
+import * as d3 from "d3";
 // powerbi.extensibility.utils.svg
 import translateXWithPixels = manipulation.translateXWithPixels;
 
@@ -47,11 +45,11 @@ export class InteractiveLegend implements ILegend {
     private static legendItemNameClass = "itemName";
     private static legendItemMeasureClass = "itemMeasure";
 
-    private legendContainerParent: Selection<any>;
-    private legendContainerDiv: Selection<any>;
+    private legendContainerParent: d3.Selection<any, any, any, any>;
+    private legendContainerDiv: d3.Selection<any, any, any, any>;
 
     constructor(element: HTMLElement) {
-        this.legendContainerParent = select(element);
+        this.legendContainerParent = d3.select(element);
     }
 
     public getMargins(): powerbi.IViewport {
@@ -111,12 +109,12 @@ export class InteractiveLegend implements ILegend {
      * Draw the legend title
      */
     private drawTitle(data: LegendDataPoint[]): void {
-        let titleDiv: Selection<any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
-            item: Update<any> = titleDiv.data([data[0]]);
+        let titleDiv: d3.Selection<any, any, any, any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
+            item: d3.Selection<any, any, any, any> = titleDiv.data([data[0]]);
 
         // Enter
-        let itemEnter: Enter<any> = item.enter(),
-            titleDivEnter: Selection<any> = itemEnter
+        let itemEnter: d3.Selection<any, any, any, any> = item.enter(),
+            titleDivEnter: d3.Selection<any, any, any, any> = itemEnter
                 .append("div")
                 .attr("class", InteractiveLegend.LegendTitleClass);
 
@@ -130,10 +128,14 @@ export class InteractiveLegend implements ILegend {
 
         // Update
         item.filter((d: LegendDataPoint) => d.iconOnlyOnLabel)
+            .merge(itemEnter)
             .select("span." + InteractiveLegend.legendIconClass)
             .style(InteractiveLegend.legendColorCss, (d: LegendDataPoint) => d.color);
 
-        item.select("span:last-child").text((d: LegendDataPoint) => d.category);
+        item
+        .merge(itemEnter)
+        .select("span:last-child")
+        .text((d: LegendDataPoint) => d.category);
     }
 
     /**
@@ -144,23 +146,23 @@ export class InteractiveLegend implements ILegend {
         this.ensureLegendTableCreated();
 
         let dataPointsMatrix: LegendDataPoint[][] = [data];
-        let legendItemsContainer: Update<any> = this.legendContainerDiv
+        let legendItemsContainer: d3.Selection<any, any, any, any> = this.legendContainerDiv
             .select("tbody")
             .selectAll("tr")
             .data(dataPointsMatrix);
 
         // Enter
-        let legendItemsEnter: Enter<any> = legendItemsContainer.enter(),
-            rowEnter: Selection<any> = legendItemsEnter.append("tr");
+        let legendItemsEnter: d3.Selection<any, any, any, any> = legendItemsContainer.enter(),
+            rowEnter: d3.Selection<any, any, any, any> = legendItemsEnter.append("tr");
 
-        let cellEnter: Selection<any> = rowEnter
+        let cellEnter: d3.Selection<any, any, any, any> = rowEnter
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label)
             .enter()
             .append("td")
             .attr("class", InteractiveLegend.LegendItem);
 
-        let cellSpanEnter: Selection<any> = cellEnter.append("span");
+        let cellSpanEnter: d3.Selection<any, any, any, any> = cellEnter.append("span");
 
         cellSpanEnter.filter((d: LegendDataPoint) => !d.iconOnlyOnLabel)
             .append("span")
@@ -183,19 +185,23 @@ export class InteractiveLegend implements ILegend {
             .attr("class", InteractiveLegend.legendItemMeasureClass);
 
         // Update
-        let legendCells: Update<any> = legendItemsContainer
+        let legendCells: d3.Selection<any, any, any, any> = legendItemsContainer
+            .merge(legendItemsEnter)
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label);
 
         legendCells
+            .merge(legendItemsEnter)
             .select(`span.${InteractiveLegend.legendItemNameClass}`)
             .html((d: LegendDataPoint) => textUtil.removeBreakingSpaces(d.label));
 
         legendCells
+            .merge(legendItemsEnter)
             .select(`span.${InteractiveLegend.legendItemMeasureClass}`)
             .html((d: LegendDataPoint) => `&nbsp;${d.measure}`);
 
         legendCells
+            .merge(legendItemsEnter)
             .select("span." + InteractiveLegend.legendIconClass)
             .style("color", (d: LegendDataPoint) => d.color);
 
@@ -210,58 +216,60 @@ export class InteractiveLegend implements ILegend {
      */
     private ensureLegendTableCreated(): void {
         if (this.legendContainerDiv.select("div table").empty()) {
-            let legendTable: Selection<any> = this.legendContainerDiv
+            let legendTable: d3.Selection<any, any, any, any> = this.legendContainerDiv
                 .append("div")
                 .append("table");
 
             legendTable.style("table-layout", "fixed").append("tbody");
             // Setup Pan Gestures of the legend
-            this.setPanGestureOnLegend(legendTable);
+
+            // this.setPanGestureOnLegend(legendTable);
         }
     }
 
     /**
      * Set Horizontal Pan gesture for the legend
      */
-    private setPanGestureOnLegend(legendTable: Selection<any>): void {
-        let parentNode = <HTMLElement>this.legendContainerParent.node();
-        let viewportWidth: number = parentNode.getBoundingClientRect().width;
-        let xscale: Linear<number, number> = linear()
-            .domain([0, viewportWidth])
-            .range([0, viewportWidth]);
+    private setPanGestureOnLegend(legendTable: d3.Selection<any, any, any, any>): void {
+        throw "Not implmented";
+        // let parentNode = <HTMLElement>this.legendContainerParent.node();
+        // let viewportWidth: number = parentNode.getBoundingClientRect().width;
+        // let xscale: d3.ScaleLinear<number, number> = d3.scaleLinear()
+        //     .domain([0, viewportWidth])
+        //     .range([0, viewportWidth]);
 
-        let legendZoom: Zoom<any> = zoom()
-            .scaleExtent([1, 1]) // disable scaling
-            .x(xscale)
-            .on("zoom", () => {
-                // horizontal pan is valid only in case the legend items width are bigger than the viewport width
-                if ($(legendTable[0]).width() > viewportWidth) {
-                    let t: number[] = legendZoom.translate();
-                    let tx: number = t[0];
-                    let ty: number = t[1];
+        // let legendZoom: d3.ZoomBehavior<any, any> = d3.zoom()
+        //     .scaleExtent([1, 1]) // disable scaling
+        //     // .x(xscale) ? ? ?
+        //     .on("zoom", () => {
+        //         // horizontal pan is valid only in case the legend items width are bigger than the viewport width
+        //         if ($(legendTable[0]).width() > viewportWidth) {
+        //             let t: number[] = legendZoom;
+        //             let tx: number = t[0];
+        //             let ty: number = t[1];
 
-                    tx = Math.min(tx, 0);
-                    tx = Math.max(tx, viewportWidth - $(legendTable[0]).width());
-                    legendZoom.translate([tx, ty]);
+        //             tx = Math.min(tx, 0);
+        //             tx = Math.max(tx, viewportWidth - $(legendTable[0]).width());
+        //             legendZoom.translate([tx, ty]);
 
-                    legendTable.style("-ms-transform", () => { /* IE 9 */
-                        return translateXWithPixels(tx);
-                    });
+        //             legendTable.style("-ms-transform", () => { /* IE 9 */
+        //                 return translateXWithPixels(tx);
+        //             });
 
-                    legendTable.style("-webkit-transform", () => { /* Safari */
-                        return translateXWithPixels(tx);
-                    });
+        //             legendTable.style("-webkit-transform", () => { /* Safari */
+        //                 return translateXWithPixels(tx);
+        //             });
 
-                    legendTable.style("transform", () => {
-                        return translateXWithPixels(tx);
-                    });
-                }
-            });
+        //             legendTable.style("transform", () => {
+        //                 return translateXWithPixels(tx);
+        //             });
+        //         }
+        //     });
 
-        if (this.legendContainerDiv) {
-            this.legendContainerDiv.call(legendZoom);
-        } else {
-            legendTable.call(legendZoom);
-        }
+        // if (this.legendContainerDiv) {
+        //     this.legendContainerDiv.call(legendZoom);
+        // } else {
+        //     legendTable.call(legendZoom);
+        // }
     }
 }

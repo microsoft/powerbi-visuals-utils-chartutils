@@ -36,11 +36,11 @@ export declare class DataLabelArrangeGrid {
      * @param maxCount is the maximum allowed size
      * @return the number of grid rows or columns
      */
-    private getGridRowColCount(step, length, minCount, maxCount);
+    private getGridRowColCount;
     /**
      * Returns the grid index of a given recangle
      * @param rect The rectengle to check.
      * @return grid index as a thickness object.
      */
-    private getGridIndexRect(rect);
+    private getGridIndexRect;
 }

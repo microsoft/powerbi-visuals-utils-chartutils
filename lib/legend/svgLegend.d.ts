@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
@@ -14,7 +13,7 @@ export interface TitleLayout {
 }
 export declare const enum NavigationArrowType {
     Increase = 0,
-    Decrease = 1,
+    Decrease = 1
 }
 export interface NavigationArrow {
     x: number;
@@ -75,31 +74,31 @@ export declare class SVGLegend implements ILegend {
     private static LegendTitle;
     private static NavigationArrow;
     constructor(element: HTMLElement, legendPosition: LegendPosition, interactivityService: IInteractivityService, isScrollable: boolean);
-    private updateLayout();
-    private calculateViewport();
+    private updateLayout;
+    private calculateViewport;
     getMargins(): powerbi.IViewport;
     isVisible(): boolean;
     changeOrientation(orientation: LegendPosition): void;
     getOrientation(): LegendPosition;
     drawLegend(data: LegendData, viewport: powerbi.IViewport): void;
     drawLegendInternal(data: LegendData, viewport: powerbi.IViewport, autoWidth: boolean): void;
-    private normalizePosition(points);
-    private calculateTitleLayout(title);
+    private normalizePosition;
+    private calculateTitleLayout;
     /** Performs layout offline for optimal perfomance */
-    private calculateLayout(data, autoWidth);
-    private updateNavigationArrowLayout(navigationArrows, remainingDataLength, visibleDataLength);
-    private calculateHorizontalNavigationArrowsLayout(title);
-    private calculateVerticalNavigationArrowsLayout(title);
+    private calculateLayout;
+    private updateNavigationArrowLayout;
+    private calculateHorizontalNavigationArrowsLayout;
+    private calculateVerticalNavigationArrowsLayout;
     /**
      * Calculates the widths for each horizontal legend item.
      */
-    private static calculateHorizontalLegendItemsWidths(dataPoints, availableWidth, iconPadding, fontSize);
-    private calculateHorizontalLayout(dataPoints, title, navigationArrows);
-    private calculateVerticalLayout(dataPoints, title, navigationArrows, autoWidth);
-    private drawNavigationArrows(layout);
-    private isTopOrBottom(orientation);
-    private isCentered(orientation);
+    private static calculateHorizontalLegendItemsWidths;
+    private calculateHorizontalLayout;
+    private calculateVerticalLayout;
+    private drawNavigationArrows;
+    private isTopOrBottom;
+    private isCentered;
     reset(): void;
-    private static getTextProperties(isTitle, text?, fontSize?);
-    private setTooltipToLegendItems(data);
+    private static getTextProperties;
+    private setTooltipToLegendItems;
 }
