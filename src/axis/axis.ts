@@ -531,8 +531,7 @@ export function invertOrdinalScale(scale: d3.ScaleBand<any>, x: number) {
     leftEdges[0] = range[0];
     leftEdges[1] = range[range.length - 1];
 
-    // let width = scale.bandwidth();
-    let halfInnerPadding = 0; // (leftEdges[1] - leftEdges[0] - width) / 2 * 0;
+    let halfInnerPadding = 0;
 
     // If x is less than the range, just return the 1st item in the domain
     if (range[0] > x) {

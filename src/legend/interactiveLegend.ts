@@ -231,7 +231,7 @@ export class InteractiveLegend implements ILegend {
      * Set Horizontal Pan gesture for the legend
      */
     private setPanGestureOnLegend(legendTable: d3.Selection<any, any, any, any>): void {
-        throw "Not implmented";
+        throw "Not implemented";
         // let parentNode = <HTMLElement>this.legendContainerParent.node();
         // let viewportWidth: number = parentNode.getBoundingClientRect().width;
         // let xscale: d3.ScaleLinear<number, number> = d3.scaleLinear()
