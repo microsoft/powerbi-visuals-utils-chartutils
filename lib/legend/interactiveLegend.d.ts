@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import { ILegend, LegendData, LegendPosition } from "./legendInterfaces";
 export declare class InteractiveLegend implements ILegend {
@@ -27,17 +26,17 @@ export declare class InteractiveLegend implements ILegend {
     /**
      * Draw the legend title
      */
-    private drawTitle(data);
+    private drawTitle;
     /**
      * Draw the legend items
      */
-    private drawLegendItems(data);
+    private drawLegendItems;
     /**
      * Ensure legend table is created and set horizontal pan gestures on it
      */
-    private ensureLegendTableCreated();
+    private ensureLegendTableCreated;
     /**
      * Set Horizontal Pan gesture for the legend
      */
-    private setPanGestureOnLegend(legendTable);
+    private setPanGestureOnLegend;
 }

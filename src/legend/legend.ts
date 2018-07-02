@@ -64,7 +64,7 @@ export function isTop(orientation: LegendPosition): boolean {
     }
 }
 
-export function positionChartArea(chartArea: Selection<any>, legend: ILegend): void {
+export function positionChartArea(chartArea: d3.Selection<any, any, any, any>, legend: ILegend): void {
     let legendMargins = legend.getMargins(),
         legendOrientation = legend.getOrientation();
 

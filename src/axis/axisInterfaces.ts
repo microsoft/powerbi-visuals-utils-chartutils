@@ -23,10 +23,7 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
-import { Selection, select } from "d3-selection";
-import { bisect, max, min } from "d3-array";
-import { linear } from "d3-scale";
-import * as d3svg from "d3-svg";
+import * as d3 from "d3";
 import powerbi from "powerbi-visuals-tools";
 // powerbi
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
@@ -73,7 +70,7 @@ export interface IAxisProperties {
     /**
      * The D3 Axis object.
      */
-    axis: d3svg.Axis;
+    axis: d3.Axis<any>;
     /**
      * An array of the tick values to display for this axis.
      */
@@ -137,7 +134,7 @@ export interface IAxisProperties {
     /**
      * (optional) The D3 graphics context for this axis
      */
-    graphicsContext?: Selection<any, any, any, any>;
+    graphicsContext?: d3.Selection<any, any, any, any>;
 }
 
 export interface IStackedAxisLineStyleInfo {
@@ -272,8 +269,8 @@ export enum AxisOrientation {
 }
 
 export interface CreateStackedAxisOptions {
-    axis: d3svg.Axis;
-    scale: linear.Linear<any, any>;
+    axis: d3.Axis<any>;
+    scale: d3.ScaleLinear<any, any>;
     innerTickSize?: number;
     outerTickSize?: number;
     orient?: AxisOrientation;
@@ -281,7 +278,7 @@ export interface CreateStackedAxisOptions {
 }
 
 export interface CreateScaleResult {
-    scale: linear.Linear<any, any>;
+    scale: d3.ScaleLinear<any, any>;
     bestTickCount: number;
     usingDefaultDomain?: boolean;
 }

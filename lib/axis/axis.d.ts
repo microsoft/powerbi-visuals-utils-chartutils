@@ -1,7 +1,4 @@
-/// <reference types="powerbi-visuals-tools" />
-import { Selection } from "d3-selection";
-import { scaleLinear } from "d3-scale";
-import * as d3svg from "d3-svg";
+import * as d3 from "d3";
 import powerbi from "powerbi-visuals-tools";
 import { valueType } from "powerbi-visuals-utils-typeutils";
 import ValueType = valueType.ValueType;
@@ -30,18 +27,18 @@ export declare function getRecommendedNumberOfTicksForYAxis(availableWidth: numb
  */
 export declare function getBestNumberOfTicks(min: number, max: number, valuesMetadata: powerbi.DataViewMetadataColumn[], maxTickCount: number, isDateTime?: boolean): number;
 export declare function hasNonIntegerData(valuesMetadata: powerbi.DataViewMetadataColumn[]): boolean;
-export declare function getRecommendedTickValues(maxTicks: number, scale: scaleLinear.Linear<number, number> | scaleLinear.Ordinal<any, any>, axisType: ValueType, isScalar: boolean, minTickInterval?: number): any[];
+export declare function getRecommendedTickValues(maxTicks: number, scale: d3.ScaleLinear<number, number> | d3.ScaleOrdinal<any, any>, axisType: ValueType, isScalar: boolean, minTickInterval?: number): any[];
 export declare function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labels: string[]): string[];
-export declare function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: scaleLinear.Linear<any, any>, minInterval?: number): number[];
+export declare function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: d3.ScaleLinear<any, any>, minInterval?: number): number[];
 export declare function getMargin(availableWidth: number, availableHeight: number, xMargin: number, yMargin: number): IMargin;
 export declare function getTickLabelMargins(viewport: powerbi.IViewport, yMarginLimit: number, textWidthMeasurer: ITextAsSVGMeasurer, textHeightMeasurer: ITextAsSVGMeasurer, axes: CartesianAxisProperties, bottomMarginLimit: number, properties: TextProperties, scrollbarVisible?: boolean, showOnRight?: boolean, renderXAxis?: boolean, renderY1Axis?: boolean, renderY2Axis?: boolean): TickLabelMargins;
 export declare function columnDataTypeHasValue(dataType: powerbi.ValueTypeDescriptor): boolean;
 export declare function createOrdinalType(): ValueType;
 export declare function isOrdinal(dataType: powerbi.ValueTypeDescriptor): boolean;
-export declare function isOrdinalScale(scale: any): scale is scaleLinear.Ordinal<any, any>;
+export declare function isOrdinalScale(scale: any): scale is d3.ScaleOrdinal<any, any> | d3.ScaleBand<any> | d3.ScalePoint<any>;
 export declare function isDateTime(dataType: powerbi.ValueTypeDescriptor): boolean;
 export declare function invertScale(scale: any, x: any): any;
-export declare function extent(scale: any): number[];
+export declare function extent(scale: d3.ScaleBand<any> | d3.ScaleOrdinal<any, any> | d3.ScalePoint<any> | d3.ScaleLinear<any, any> | d3.ScaleLogarithmic<any, any> | d3.ScaleBand<any>): number[];
 /**
  * Uses the D3 scale to get the actual category thickness.
  * @return The difference between the 1st and 2nd items in the range if there are 2 or more items in the range.
@@ -52,11 +49,11 @@ export declare function getCategoryThickness(scale: any): number;
  * Inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
  * Otherwise, it returns the greatest item in scale.domain() that's <= x.
  */
-export declare function invertOrdinalScale(scale: scaleLinear.Ordinal<any, any>, x: number): any;
+export declare function invertOrdinalScale(scale: d3.ScaleBand<any>, x: number): any;
 export declare function findClosestXAxisIndex(categoryValue: number, categoryAxisValues: AxisHelperCategoryDataPoint[]): number;
-export declare function lookupOrdinalIndex(scale: scaleLinear.Ordinal<any, any>, pixelValue: number): number;
+export declare function lookupOrdinalIndex(scale: d3.ScaleOrdinal<any, any>, pixelValue: number): number;
 /** scale(value1) - scale(value2) with zero checking and min(+/-1, result) */
-export declare function diffScaled(scale: scaleLinear.Linear<any, any>, value1: any, value2: any): number;
+export declare function diffScaled(scale: d3.ScaleLinear<any, any>, value1: any, value2: any): number;
 export declare function createDomain(data: any[], axisType: powerbi.ValueTypeDescriptor, isScalar: boolean, forcedScalarDomain: any[], ensureDomain?: powerbi.NumberRange): number[];
 export declare function ensureValuesInRange(values: number[], min: number, max: number): number[];
 /**
@@ -72,9 +69,9 @@ export declare function createAxis(options: CreateAxisOptions): IAxisProperties;
  * Creates a D3 axis for stacked axis usage. `options.innerTickSize` and `options.outerTickSize` will be defaulted to 0 if not set.
  * `options.orientation` will be defaulted to "bottom" if not specified.
  */
-export declare function createStackedAxis(options: CreateStackedAxisOptions): d3svg.Axis;
+export declare function createStackedAxis(options: CreateStackedAxisOptions): d3.Axis<any>;
 export declare function createScale(options: CreateAxisOptions): CreateScaleResult;
-export declare function normalizeInfinityInScale(scale: scaleLinear.Linear<any, any>): void;
+export declare function normalizeInfinityInScale(scale: d3.ScaleLinear<any, any>): void;
 export declare function createFormatter(scaleDomain: any[], dataDomain: any[], dataType: any, isScalar: boolean, formatString: string, bestTickCount: number, tickValues: any[], getValueFn: any, useTickIntervalForDisplayUnits?: boolean, axisDisplayUnits?: number, axisPrecision?: number): IValueFormatter;
 export declare function calculateAxisPrecision(tickValue0: number, tickValue1: number, axisDisplayUnits: number, formatString?: string): number;
 export declare function getMinTickValueInterval(formatString: string, columnType: ValueType, is100Pct?: boolean): number;
@@ -112,14 +109,15 @@ export declare module LabelLayoutStrategy {
     /**
      * Perform rotation and/or truncation of axis tick labels (SVG text) with ellipsis
      */
-    function rotate(labelSelection: Selection<any>, maxBottomMargin: number, textTruncator: (properties: TextProperties, maxWidth: number) => string, textProperties: TextProperties, needRotate: boolean, needEllipsis: boolean, axisProperties: IAxisProperties, margin: IMargin, scrollbarVisible: boolean): void;
-    function wordBreak(text: Selection<any, any, any, any>, axisProperties: IAxisProperties, maxHeight: number): void;
-    function clip(text: Selection<any, any, any, any>, availableWidth: number, svgEllipsis: (textElement: SVGTextElement, maxWidth: number) => void): void;
+    function rotate(labelSelection: d3.Selection<any, any, any, any>, maxBottomMargin: number, textTruncator: (properties: TextProperties, maxWidth: number) => string, textProperties: TextProperties, needRotate: boolean, needEllipsis: boolean, axisProperties: IAxisProperties, margin: IMargin, scrollbarVisible: boolean): void;
+    function wordBreak(text: d3.Selection<any, any, any, any>, axisProperties: IAxisProperties, maxHeight: number): void;
+    function clip(text: d3.Selection<any, any, any, any>, availableWidth: number, svgEllipsis: (textElement: SVGTextElement, maxWidth: number) => void): void;
 }
-export declare function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio?: number, innerPaddingRatio?: number, useRangePoints?: boolean): scaleLinear.Ordinal<any, any>;
+export declare function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio?: number, innerPaddingRatio?: number, useRangePoints?: boolean): d3.ScalePoint<any>;
+export declare function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio?: number, innerPaddingRatio?: number, useRangePoints?: boolean): d3.ScaleOrdinal<any, any> | d3.ScalePoint<any>;
 export declare function isLogScalePossible(domain: any[], axisType?: ValueType): boolean;
-export declare function createNumericalScale(axisScaleType: string, pixelSpan: number, dataDomain: any[], dataType: ValueType, outerPadding?: number, niceCount?: number, shouldClamp?: boolean): scaleLinear.Linear<any, any>;
-export declare function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding?: number, niceCount?: number, shouldClamp?: boolean): scaleLinear.Linear<any, any>;
+export declare function createNumericalScale(axisScaleType: string, pixelSpan: number, dataDomain: any[], dataType: ValueType, outerPadding?: number, niceCount?: number, shouldClamp?: boolean): d3.ScaleLinear<any, any>;
+export declare function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding?: number, niceCount?: number, shouldClamp?: boolean): d3.ScaleLinear<any, any>;
 export declare function getRangeForColumn(sizeColumn: powerbi.DataViewValueColumn): powerbi.NumberRange;
 /**
  * Set customized domain, but don't change when nothing is set

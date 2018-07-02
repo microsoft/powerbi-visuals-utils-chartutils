@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import { LegendData } from "./legendInterfaces";
 export declare const DefaultLegendLabelFillColor: string;

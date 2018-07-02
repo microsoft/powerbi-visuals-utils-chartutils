@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import { Point } from "powerbi-visuals-utils-svgutils";
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
@@ -6,7 +5,7 @@ import SelectableDataPoint = interactivityService.SelectableDataPoint;
 export declare enum LegendIcon {
     Box = 0,
     Circle = 1,
-    Line = 2,
+    Line = 2
 }
 export declare enum LegendPosition {
     Top = 0,
@@ -17,7 +16,7 @@ export declare enum LegendPosition {
     TopCenter = 5,
     BottomCenter = 6,
     RightCenter = 7,
-    LeftCenter = 8,
+    LeftCenter = 8
 }
 export interface LegendPosition2D {
     textPosition?: Point;

@@ -23,12 +23,13 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
+
+import * as d3 from "d3";
 import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
-import { Selection, Update, select, Enter, Zoom, zoom } from "d3-selection";
 import { LegendBehavior, LegendBehaviorOptions } from "./legendBehavior";
 
 import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
@@ -91,9 +92,9 @@ export class SVGLegend implements ILegend {
     private orientation: LegendPosition;
     private viewport: powerbi.IViewport;
     private parentViewport: powerbi.IViewport;
-    private svg: Selection<any>;
-    private group: Selection<any>;
-    private clearCatcher: Selection<any>;
+    private svg: d3.Selection<any, any, any, any>;
+    private group: d3.Selection<any, any, any, any>;
+    private clearCatcher: d3.Selection<any, any, any, any>;
     private element: HTMLElement;
     private interactivityService: IInteractivityService;
     private legendDataStartIndex = 0;
@@ -139,7 +140,7 @@ export class SVGLegend implements ILegend {
         interactivityService: IInteractivityService,
         isScrollable: boolean) {
 
-        this.svg = select(element)
+        this.svg = d3.select(element)
             .append("svg")
             .style("position", "absolute");
 
@@ -301,14 +302,17 @@ export class SVGLegend implements ILegend {
         }
 
         let legendTitle = group
-            .selectAll(SVGLegend.LegendTitle.selectorName)
-            .data(titleData);
+            .selectAll(SVGLegend.LegendTitle.selectorName);
 
-        let dataLegendTitle = legendTitle.enter()
+        let legendTitleData = legendTitle.data(titleData);
+
+        let enteredLegendTitle = legendTitleData
+            .enter()
             .append("text")
             .classed(SVGLegend.LegendTitle.className, true);
 
-        dataLegendTitle
+        legendTitleData
+            .merge(enteredLegendTitle)
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize))
             .style("font-family", SVGLegend.DefaultTitleFontFamily)
@@ -318,7 +322,7 @@ export class SVGLegend implements ILegend {
             .append("title")
             .text(data.title);
 
-        legendTitle
+        legendTitleData
             .exit()
             .remove();
 
@@ -355,6 +359,7 @@ export class SVGLegend implements ILegend {
             .text((d: LegendDataPoint) => d.tooltip);
 
         legendItems
+            .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
             .attr(
                 "cx", (d: LegendDataPoint, i) => d.glyphPosition.x
@@ -375,10 +380,12 @@ export class SVGLegend implements ILegend {
             );
 
         legendItems
+            .merge(itemsEnter)
             .select("title")
             .text((d: LegendDataPoint) => d.tooltip);
 
         legendItems
+            .merge(itemsEnter)
             .select(SVGLegend.LegendText.selectorName)
             .attr("x", (d: LegendDataPoint) => d.textPosition.x)
             .attr("y", (d: LegendDataPoint) => d.textPosition.y)
@@ -828,8 +835,10 @@ export class SVGLegend implements ILegend {
         let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
             .data(layout);
 
-        arrows
-            .enter()
+        let enteredArrows = arrows
+            .enter();
+
+        enteredArrows
             .append("g")
             .on("click", (d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;

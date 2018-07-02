@@ -1,4 +1,3 @@
-/// <reference types="powerbi-visuals-tools" />
 import powerbi from "powerbi-visuals-tools";
 import { IRect } from "powerbi-visuals-utils-svgutils";
 import { IDataLabelSettings, IDataLabelInfo, LabelEnabledDataPoint } from "./dataLabelInterfaces";
@@ -26,22 +25,22 @@ export declare class DataLabelManager {
     /**
     * (Private) Calculates element position using anchor point..
     */
-    private calculateContentPositionFromPoint(anchorPoint, contentPosition, contentSize, offset);
+    private calculateContentPositionFromPoint;
     /** (Private) Calculates element position using anchor rect. */
-    private calculateContentPositionFromRect(anchorRect, anchorRectOrientation, contentPosition, contentSize, offset);
+    private calculateContentPositionFromRect;
     /** (Private) Calculates element inside center position using anchor rect. */
-    private handleInsideCenterPosition(anchorRectOrientation, contentSize, anchorRect, offset);
+    private handleInsideCenterPosition;
     /** (Private) Calculates element inside end position using anchor rect. */
-    private handleInsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset);
+    private handleInsideEndPosition;
     /** (Private) Calculates element inside base position using anchor rect. */
-    private handleInsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset);
+    private handleInsideBasePosition;
     /** (Private) Calculates element outside end position using anchor rect. */
-    private handleOutsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset);
+    private handleOutsideEndPosition;
     /** (Private) Calculates element outside base position using anchor rect. */
-    private handleOutsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset);
+    private handleOutsideBasePosition;
     /**  (Private) Calculates element position. */
-    private calculateContentPosition(anchoredElementInfo, contentPosition, contentSize, offset);
+    private calculateContentPosition;
     /** (Private) Check for collisions. */
-    private hasCollisions(arrangeGrid, info, position, size);
+    private hasCollisions;
     static isValid(rect: IRect): boolean;
 }

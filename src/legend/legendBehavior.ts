@@ -30,12 +30,11 @@ import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-
 import IInteractivityService = interactivityService.IInteractivityService;
 import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
 import ISelectionHandler = interactivityService.ISelectionHandler;
-import { Selection } from "d3-selection";
 
 export interface LegendBehaviorOptions {
-    legendItems: Selection<any>;
-    legendIcons: Selection<any>;
-    clearCatcher: Selection<any>;
+    legendItems: d3.Selection<any, any, any, any>;
+    legendIcons: d3.Selection<any, any, any, any>;
+    clearCatcher: d3.Selection<any, any, any, any>;
 }
 
 export class LegendBehavior implements IInteractiveBehavior {
