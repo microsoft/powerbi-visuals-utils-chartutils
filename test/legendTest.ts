@@ -29,7 +29,7 @@ import powerbi from "powerbi-visuals-tools";
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 
 // powerbi.extensibility.utils.svg
-import { shapes, shapesInterfaces, manipulation, Rect }  from "powerbi-visuals-utils-svgutils";
+import { manipulation, Rect }  from "powerbi-visuals-utils-svgutils";
 import flushAllD3Transitions = manipulation.flushAllD3Transitions;
 
 // powerbi.extensibility.utils.interactivity
@@ -54,19 +54,15 @@ enum ClickEventType {
 }
 
 // powerbi.extensibility.utils.chart
-import { } from "./../src/legend/interactiveLegend";
 import { createLegend } from "./../src/legend/legend";
 import { update } from "./../src/legend/legendData";
-import {} from "./../src/legend/legendBehavior";
 import { LegendData, LegendPosition, legendProps, LegendIcon, ILegend, LegendDataPoint } from "./../src/legend/legendInterfaces";
 import * as legendPosition from "./../src/legend/legendPosition";
-import {} from "./../src/legend/svgLegend";
 
 import { assertColorsMatch, findElementTitle } from  "./helpers/helpers";
 import MockBehavior from  "./mocks/mockBehavior";
 
 import * as d3scale from "d3-scale";
-import * as d3selection from "d3-selection";
 
 describe("legend", () => {
     describe("DOM validation", () => {

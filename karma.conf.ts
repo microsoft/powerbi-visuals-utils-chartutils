@@ -47,6 +47,7 @@ module.exports = (config: Config) => {
     }
 
     config.set(<ConfigOptions>{
+        browserNoActivityTimeout: 100000,
         customLaunchers: {
             ChromeTravisCI: {
                 base: "Chrome",
@@ -61,7 +62,8 @@ module.exports = (config: Config) => {
             "coverage",
             "karma-remap-istanbul"
         ],
-        singleRun: false,
+        singleRun: true,
+        autoWatch: true,
         plugins: [
             "karma-remap-istanbul",
             "karma-coverage",

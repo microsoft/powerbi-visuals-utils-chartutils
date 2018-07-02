@@ -1,4 +1,4 @@
-import * as d3 from "d3";
+import { Selection } from "d3";
 import powerbi from "powerbi-visuals-tools";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import TextProperties = formatting.textMeasurementService.TextProperties;
@@ -21,9 +21,9 @@ export declare function getDefaultLabelSettings(show?: boolean, labelColor?: str
 export declare function getDefaultColumnLabelSettings(isLabelPositionInside: boolean): dataLabelInterfaces.VisualDataLabelsSettings;
 export declare function getDefaultPointLabelSettings(): dataLabelInterfaces.PointDataLabelsSettings;
 export declare function getLabelPrecision(precision: number, format: string): number;
-export declare function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout, viewport: powerbi.IViewport, isAnimator?: boolean, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels?: boolean): d3.Selection<any, any, any, any>;
-export declare function cleanDataLabels(context: d3.Selection<any, any, any, any>, removeLines?: boolean): void;
-export declare function setHighlightedLabelsOpacity(context: d3.Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean): void;
+export declare function drawDefaultLabelsForDataPointChart(data: any[], context: Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout, viewport: powerbi.IViewport, isAnimator?: boolean, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels?: boolean): Selection<any, any, any, any>;
+export declare function cleanDataLabels(context: Selection<any, any, any, any>, removeLines?: boolean): void;
+export declare function setHighlightedLabelsOpacity(context: Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean): void;
 export declare function getLabelFormattedText(options: LabelFormattedTextOptions): string;
 export declare function enumerateDataLabels(options: dataLabelInterfaces.VisualDataLabelsSettingsOptions): powerbi.VisualObjectInstance;
 export declare function enumerateCategoryLabels(enumeration: powerbi.VisualObjectInstanceEnumerationObject, dataLabelsSettings: VisualDataLabelsSettings, withFill: boolean, isShowCategory?: boolean, fontSize?: number): void;

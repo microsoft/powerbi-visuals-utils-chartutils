@@ -51,7 +51,6 @@ import { axisPropertiesBuilder } from "./helpers/axisPropertiesBuilder";
 import { AxisTickLabelBuilder } from "./helpers/axisTickLabelBuilder";
 
 import { isInRange } from "./../helpers/helpers";
-import { range } from "d3";
 
 describe("axis", () => {
     it("powerOfTen test", () => {
