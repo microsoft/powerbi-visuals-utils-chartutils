@@ -37,8 +37,8 @@ const testRecursivePath = "test/**/*.ts"
     , srcCssRecursivePath = "lib/**/*.css"
     , coverageFolder = "coverage";
 
+process.env.CHROME_BIN = require("puppeteer").executablePath();
 module.exports = (config: Config) => {
-    process.env.CHROME_BIN = require("puppeteer").executablePath();
 
     config.set(<ConfigOptions>{
         browserNoActivityTimeout: 100000,
