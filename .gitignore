@@ -3,3 +3,5 @@ node_modules
 lib/*.map
 /typings
 /coverage
+/lib
+/.tmp

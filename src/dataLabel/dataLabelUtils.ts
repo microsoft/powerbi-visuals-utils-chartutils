@@ -221,7 +221,8 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
                 "y", (d: LabelEnabledDataPoint) => d.labelY
             );
 
-        (<any>layout.style).forEach(style => labels = labels.style(style, layout.style[style]));
+        layout && layout.style && Object.keys(layout.style).forEach(style => labels = labels.style(style, layout.style[style]));
+
 
         labels
             .exit()
@@ -240,6 +241,8 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
             )
             .text((d: LabelEnabledDataPoint) => d.labeltext)
             .style(layout.style as any);
+
+        layout && layout.style && Object.keys(layout.style).forEach(style => labels = labels.style(style, layout.style[style]));
 
         labels
             .exit()
@@ -283,7 +286,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
         newLabels.style("opacity", 0);
     }
 
-    return labels;
+    return labels.merge(<any>newLabels);
 }
 
 export function cleanDataLabels(context: Selection<any, any, any, any>, removeLines: boolean = false): void {
