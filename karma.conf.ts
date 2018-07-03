@@ -38,13 +38,7 @@ const testRecursivePath = "test/**/*.ts"
     , coverageFolder = "coverage";
 
 module.exports = (config: Config) => {
-    let browsers = [];
-
-    if (process.env.TRAVIS) {
-        browsers.push("ChromeTravisCI");
-    } else {
-        browsers.push("Chrome");
-    }
+    process.env.CHROME_BIN = require("puppeteer").executablePath();
 
     config.set(<ConfigOptions>{
         browserNoActivityTimeout: 100000,
@@ -54,7 +48,7 @@ module.exports = (config: Config) => {
                 flags: ["--no-sandbox"]
             }
         },
-        browsers: browsers,
+        browsers: ["ChromeHeadless"],
         colors: true,
         frameworks: ["jasmine"],
         reporters: [
