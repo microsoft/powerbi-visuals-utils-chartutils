@@ -357,14 +357,17 @@ module powerbi.extensibility.utils.chart.legend {
                     "cy": (d: LegendDataPoint) => d.glyphPosition.y,
                     "r": iconRadius,
                 })
-                .style({
-                    "fill": (d: LegendDataPoint) => {
-                        if (hasSelection && !d.selected)
-                            return LegendBehavior.dimmedLegendColor;
-                        else
-                            return d.color;
-                    }
-                });
+                .style(
+                    "fill", (d: LegendDataPoint) => {
+                        return d.color;
+                    })
+                .style("fill-opacity", (d: LegendDataPoint) => {
+                    if (hasSelection && !d.selected)
+                        return LegendBehavior.dimmedOpacity;
+                    else
+                        return LegendBehavior.defaultOpacity;
+                }
+                );
 
             legendItems
                 .select("title")

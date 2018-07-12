@@ -37,7 +37,8 @@ module powerbi.extensibility.utils.chart.legend {
     }
 
     export class LegendBehavior implements IInteractiveBehavior {
-        public static dimmedLegendColor = "#A6A6A6";
+        public static dimmedOpacity: number = 0.4;
+        public static defaultOpacity: number = 1;
         private legendIcons;
 
         public bindEvents(options: LegendBehaviorOptions, selectionHandler: ISelectionHandler): void {
@@ -54,23 +55,26 @@ module powerbi.extensibility.utils.chart.legend {
 
         public renderSelection(hasSelection: boolean): void {
             if (hasSelection) {
-                this.legendIcons.style({
-                    "fill": (d: LegendDataPoint) => {
+                this.legendIcons.style(
+                    "fill", (d: LegendDataPoint) => {
+                        return d.color;
+                    })
+                    .style("fill-opacity", (d: LegendDataPoint) => {
                         if (!d.selected) {
-                            return LegendBehavior.dimmedLegendColor;
+                            return LegendBehavior.dimmedOpacity;
                         }
                         else {
-                            return d.color;
+                            return LegendBehavior.defaultOpacity;
                         }
                     }
-                });
+                    );
             }
             else {
-                this.legendIcons.style({
-                    "fill": (d: LegendDataPoint) => {
+                this.legendIcons.style(
+                    "fill", (d: LegendDataPoint) => {
                         return d.color;
-                    }
-                });
+                    })
+                    .style("fill-opacity", LegendBehavior.defaultOpacity);
             }
         }
     }
