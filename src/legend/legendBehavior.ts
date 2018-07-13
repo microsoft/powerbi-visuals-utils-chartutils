@@ -54,26 +54,23 @@ module powerbi.extensibility.utils.chart.legend {
 
         public renderSelection(hasSelection: boolean): void {
             if (hasSelection) {
-                this.legendIcons.style(
-                    "fill", (d: LegendDataPoint) => {
-                        return d.color;
-                    })
-                    .style("fill-opacity", (d: LegendDataPoint) => {
+                this.legendIcons.style({
+                    "fill": (d: LegendDataPoint) => {
                         if (!d.selected) {
-                            return LegendBehavior.dimmedOpacity;
+                            return LegendBehavior.dimmedLegendColor;
                         }
                         else {
-                            return LegendBehavior.defaultOpacity;
+                            return d.color;
                         }
                     }
-                    );
+                });
             }
             else {
-                this.legendIcons.style(
-                    "fill", (d: LegendDataPoint) => {
+                this.legendIcons.style({
+                    "fill": (d: LegendDataPoint) => {
                         return d.color;
-                    })
-                    .style("fill-opacity", LegendBehavior.defaultOpacity);
+                    }
+                });
             }
         }
     }
