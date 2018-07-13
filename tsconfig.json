@@ -19,6 +19,7 @@
         "src/axis/axis.ts",
         "src/legend/legendInterfaces.ts",
         "src/legend/legendBehavior.ts",
+        "src/legend/opacityLegendBehavior.ts",
         "src/legend/legendPosition.ts",
         "src/legend/legend.ts",
         "src/legend/legendData.ts",

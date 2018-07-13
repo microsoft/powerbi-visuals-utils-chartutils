@@ -25,53 +25,34 @@
  */
 
 module powerbi.extensibility.utils.chart.legend {
-    // powerbi.extensibility.utils.interactivity
-    import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
-    import ISelectionHandler = powerbi.extensibility.utils.interactivity.ISelectionHandler;
-    import interactivityUtils = powerbi.extensibility.utils.interactivity.interactivityUtils;
 
-    export interface LegendBehaviorOptions {
-        legendItems: d3.Selection<any>;
-        legendIcons: d3.Selection<any>;
-        clearCatcher: d3.Selection<any>;
-    }
-
-    export class LegendBehavior implements IInteractiveBehavior {
-        public static dimmedLegendColor = "#A6A6A6";
-        protected legendIcons;
-
-        public bindEvents(options: LegendBehaviorOptions, selectionHandler: ISelectionHandler): void {
-            let legendItems = options.legendItems;
-            this.legendIcons = options.legendIcons;
-            let clearCatcher = options.clearCatcher;
-
-            interactivityUtils.registerStandardSelectionHandler(legendItems, selectionHandler);
-
-            clearCatcher.on("click", () => {
-                selectionHandler.handleClearSelection();
-            });
-        }
+    export class OpacityLegendBehavior extends LegendBehavior {
+        public static dimmedOpacity: number = 0.4;
+        public static defaultOpacity: number = 1;
 
         public renderSelection(hasSelection: boolean): void {
             if (hasSelection) {
-                this.legendIcons.style({
-                    "fill": (d: LegendDataPoint) => {
+                this.legendIcons.style(
+                    "fill", (d: LegendDataPoint) => {
+                        return d.color;
+                    })
+                .style(
+                    "fill-opacity", (d: LegendDataPoint) => {
                         if (!d.selected) {
-                            return LegendBehavior.dimmedLegendColor;
+                            return OpacityLegendBehavior.dimmedOpacity;
                         }
                         else {
-                            return d.color;
+                            return OpacityLegendBehavior.defaultOpacity;
                         }
-                    }
-                });
+                    });
             }
             else {
-                this.legendIcons.style({
-                    "fill": (d: LegendDataPoint) => {
+                this.legendIcons.style(
+                    "fill", (d: LegendDataPoint) => {
                         return d.color;
-                    }
-                });
+                    })
+                    .style("fill-opacity", OpacityLegendBehavior.defaultOpacity);
             }
         }
-    }
+    } 
 }
