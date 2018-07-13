@@ -357,17 +357,24 @@ module powerbi.extensibility.utils.chart.legend {
                     "cy": (d: LegendDataPoint) => d.glyphPosition.y,
                     "r": iconRadius,
                 })
-                .style(
-                    "fill", (d: LegendDataPoint) => {
-                        return d.color;
-                    })
-                .style("fill-opacity", (d: LegendDataPoint) => {
+                .style({
+                    "fill": (d: LegendDataPoint) => {
+                        if (hasSelection && !d.selected && !data.opacityOnNotSelected)
+                            return LegendBehavior.dimmedLegendColor;
+                        else
+                            return d.color;
+                    }
+                });
+
+            if (data.opacityOnNotSelected) {
+                legendItems.style("fill-opacity", (d: LegendDataPoint) => {
                     if (hasSelection && !d.selected)
-                        return LegendBehavior.dimmedOpacity;
-                    else
-                        return LegendBehavior.defaultOpacity;
-                }
-                );
+                        return OpacityLegendBehavior.dimmedOpacity;
+                    else 
+                        return OpacityLegendBehavior.defaultOpacity;
+                });
+            }
+
 
             legendItems
                 .select("title")
@@ -393,7 +400,9 @@ module powerbi.extensibility.utils.chart.legend {
                     clearCatcher: this.clearCatcher,
                 };
 
-                this.interactivityService.bind(data.dataPoints, new LegendBehavior(), behaviorOptions, { isLegend: true });
+                const legendBehavior: LegendBehavior = (data.opacityOnNotSelected) ? new OpacityLegendBehavior() : new LegendBehavior();
+
+                this.interactivityService.bind(data.dataPoints, legendBehavior, behaviorOptions, { isLegend: true });
             }
 
             legendItems.exit().remove();
