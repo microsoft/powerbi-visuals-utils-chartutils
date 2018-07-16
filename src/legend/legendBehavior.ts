@@ -38,7 +38,7 @@ module powerbi.extensibility.utils.chart.legend {
 
     export class LegendBehavior implements IInteractiveBehavior {
         public static dimmedLegendColor = "#A6A6A6";
-        private legendIcons;
+        protected legendIcons;
 
         public bindEvents(options: LegendBehaviorOptions, selectionHandler: ISelectionHandler): void {
             let legendItems = options.legendItems;

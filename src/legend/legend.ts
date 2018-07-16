@@ -26,17 +26,21 @@
 
 module powerbi.extensibility.utils.chart.legend {
     import IInteractivityService = powerbi.extensibility.utils.interactivity.IInteractivityService;
-    export function createLegend(legendParentElement: HTMLElement,
+    import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
+
+    export function createLegend(
+        legendParentElement: HTMLElement,
         interactive: boolean,
         interactivityService: IInteractivityService,
         isScrollable: boolean = false,
-        legendPosition: LegendPosition = LegendPosition.Top): ILegend {
+        legendPosition: LegendPosition = LegendPosition.Top,
+        interactiveBehavior?: IInteractiveBehavior): ILegend {
 
         if (interactive) {
             return new InteractiveLegend(legendParentElement);
         }
 
-        return new SVGLegend(legendParentElement, legendPosition, interactivityService, isScrollable);
+        return new SVGLegend(legendParentElement, legendPosition, interactivityService, interactiveBehavior, isScrollable);
     }
 
     export function isLeft(orientation: LegendPosition): boolean {
