@@ -135,8 +135,9 @@ module powerbi.extensibility.utils.chart.legend {
             element: HTMLElement,
             legendPosition: LegendPosition,
             interactivityService: IInteractivityService,
-            interactiveBehavior: IInteractiveBehavior,
-            isScrollable: boolean) {
+            isScrollable: boolean,
+            interactiveBehavior?: IInteractiveBehavior,
+        ) {
 
             this.svg = d3.select(element)
                 .append("svg")
