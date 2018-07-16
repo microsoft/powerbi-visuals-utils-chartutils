@@ -71,7 +71,6 @@ module powerbi.extensibility.utils.chart.legend {
         grouped?: boolean;
         labelColor?: string;
         fontSize?: number;
-        opacityOnNotSelected?: boolean;
     }
 
     export const legendProps = {
