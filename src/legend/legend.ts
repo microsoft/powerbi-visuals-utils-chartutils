@@ -24,24 +24,26 @@
 *  THE SOFTWARE.
 */
 
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
+import { interactivityService, interfaces as interactivityServiceInterfaces } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityService.IInteractivityService;
+import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
 import { ILegend, LegendPosition } from  "./legendInterfaces";
 import { InteractiveLegend } from  "./interactiveLegend";
 import { SVGLegend } from  "./svgLegend";
-import { Selection } from "d3-selection";
 
 export function createLegend(legendParentElement: HTMLElement,
     interactive: boolean,
     interactivityService: IInteractivityService,
     isScrollable: boolean = false,
-    legendPosition: LegendPosition = LegendPosition.Top): ILegend {
+    legendPosition: LegendPosition = LegendPosition.Top,
+    interactiveBehavior?: IInteractiveBehavior
+    ): ILegend {
 
     if (interactive) {
         return new InteractiveLegend(legendParentElement);
     }
 
-    return new SVGLegend(legendParentElement, legendPosition, interactivityService, isScrollable);
+    return new SVGLegend(legendParentElement, legendPosition, interactivityService, isScrollable, interactiveBehavior);
 }
 
 export function isLeft(orientation: LegendPosition): boolean {
