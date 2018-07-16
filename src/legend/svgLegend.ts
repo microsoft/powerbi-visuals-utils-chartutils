@@ -93,7 +93,7 @@ module powerbi.extensibility.utils.chart.legend {
         private clearCatcher: d3.Selection<any>;
         private element: HTMLElement;
         private interactivityService: IInteractivityService;
-        private interactiveBehavior: IInteractiveBehavior;
+        private interactiveBehavior?: IInteractiveBehavior;
         private legendDataStartIndex = 0;
         private arrowPosWindow = 1;
         private data: LegendData;

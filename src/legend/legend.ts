@@ -32,9 +32,9 @@ module powerbi.extensibility.utils.chart.legend {
         legendParentElement: HTMLElement,
         interactive: boolean,
         interactivityService: IInteractivityService,
-        interactiveBehavior?: IInteractiveBehavior,
         isScrollable: boolean = false,
-        legendPosition: LegendPosition = LegendPosition.Top): ILegend {
+        legendPosition: LegendPosition = LegendPosition.Top,
+        interactiveBehavior?: IInteractiveBehavior): ILegend {
 
         if (interactive) {
             return new InteractiveLegend(legendParentElement);

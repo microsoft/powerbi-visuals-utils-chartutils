@@ -82,7 +82,7 @@ module powerbi.extensibility.utils.chart.legend.test {
                 hostServices = createVisualHost();
 
                 interactivityService = createInteractivityService(hostServices);
-                legend = createLegend(element.get(0), false, interactivityService, null, true);
+                legend = createLegend(element.get(0), false, interactivityService, true);
 
                 viewport = {
                     height: element.height(),
