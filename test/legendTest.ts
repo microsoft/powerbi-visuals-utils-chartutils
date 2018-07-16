@@ -24,7 +24,7 @@
 *  THE SOFTWARE.
 */
 
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.visual
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 

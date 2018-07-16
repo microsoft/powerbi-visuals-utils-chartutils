@@ -24,7 +24,7 @@
 *  THE SOFTWARE.
 */
 
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
 import DataViewObjectPropertyIdentifier = powerbi.DataViewObjectPropertyIdentifier;
 // powerbi.extensibility.utils.type

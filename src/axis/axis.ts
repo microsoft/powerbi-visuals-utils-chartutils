@@ -25,7 +25,7 @@
 */
 
 import * as d3 from "d3";
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 
 import scaleLinear = d3.scaleLinear;
 import scaleLog = d3.scaleLog;
