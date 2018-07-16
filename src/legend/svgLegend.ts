@@ -25,7 +25,7 @@
 */
 
 import * as d3 from "d3";
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";

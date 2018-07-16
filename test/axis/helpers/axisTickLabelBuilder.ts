@@ -25,7 +25,7 @@
 */
 
 // powerbi.extensibility.utils.formatting
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 import IViewport = powerbi.IViewport;
 
 import * as axis from "./../../../src/axis/axis";

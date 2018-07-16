@@ -42,12 +42,6 @@ module.exports = (config: Config) => {
 
     config.set(<ConfigOptions>{
         browserNoActivityTimeout: 100000,
-        customLaunchers: {
-            ChromeTravisCI: {
-                base: "Chrome",
-                flags: ["--no-sandbox"]
-            }
-        },
         browsers: ["ChromeHeadless"],
         colors: true,
         frameworks: ["jasmine"],

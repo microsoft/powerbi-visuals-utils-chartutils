@@ -25,7 +25,7 @@
 */
 import { Selection } from "d3";
 
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 
 // powerbi.extensibility.utils.type
 import { pixelConverter as PixelConverter} from "powerbi-visuals-utils-typeutils";

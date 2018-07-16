@@ -24,7 +24,7 @@
 *  THE SOFTWARE.
 */
 import * as d3 from "d3";
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 // powerbi
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
 

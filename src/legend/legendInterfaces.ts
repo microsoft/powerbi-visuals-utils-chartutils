@@ -24,7 +24,7 @@
 *  THE SOFTWARE.
 */
 
-import powerbi from "powerbi-visuals-tools";
+import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.utils.svg
 import { Point } from "powerbi-visuals-utils-svgutils";
 
