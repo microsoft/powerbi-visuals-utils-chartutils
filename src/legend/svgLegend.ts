@@ -32,8 +32,9 @@ import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
 import { LegendBehavior, LegendBehaviorOptions } from "./legendBehavior";
 
-import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
+import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityService.IInteractivityService;
+import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
 
 // powerbi.visuals
 import ISelectionId = powerbi.visuals.ISelectionId;
@@ -97,6 +98,7 @@ export class SVGLegend implements ILegend {
     private clearCatcher: d3.Selection<any, any, any, any>;
     private element: HTMLElement;
     private interactivityService: IInteractivityService;
+    private interactiveBehavior?: IInteractiveBehavior;
     private legendDataStartIndex = 0;
     private arrowPosWindow = 1;
     private data: LegendData;
@@ -138,7 +140,9 @@ export class SVGLegend implements ILegend {
         element: HTMLElement,
         legendPosition: LegendPosition,
         interactivityService: IInteractivityService,
-        isScrollable: boolean) {
+        isScrollable: boolean,
+        interactiveBehavior?: IInteractiveBehavior
+        ) {
 
         this.svg = d3.select(element)
             .append("svg")
@@ -155,6 +159,7 @@ export class SVGLegend implements ILegend {
             .append("g")
             .attr("id", "legendGroup");
 
+        this.interactiveBehavior = interactiveBehavior ? interactiveBehavior : new LegendBehavior();
         this.interactivityService = interactivityService;
         this.isScrollable = isScrollable;
         this.element = element;
@@ -358,7 +363,7 @@ export class SVGLegend implements ILegend {
             .append("title")
             .text((d: LegendDataPoint) => d.tooltip);
 
-        legendItems
+        let mergedLegendIcons = legendItems
             .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
             .attr(
@@ -369,14 +374,6 @@ export class SVGLegend implements ILegend {
             )
             .attr(
                 "r", iconRadius,
-            )
-            .style(
-                "fill", (d: LegendDataPoint) => {
-                    if (hasSelection && !d.selected)
-                        return LegendBehavior.dimmedLegendColor;
-                    else
-                        return d.color;
-                }
             );
 
         legendItems
@@ -394,14 +391,14 @@ export class SVGLegend implements ILegend {
             .style("font-size", PixelConverter.fromPoint(data.fontSize));
 
         if (this.interactivityService) {
-            let iconsSelection = legendItems.select(SVGLegend.LegendIcon.selectorName);
             let behaviorOptions: LegendBehaviorOptions = {
                 legendItems: legendItems,
-                legendIcons: iconsSelection,
+                legendIcons: mergedLegendIcons,
                 clearCatcher: this.clearCatcher,
             };
 
-            this.interactivityService.bind(data.dataPoints, new LegendBehavior(), behaviorOptions, { isLegend: true });
+            this.interactivityService.bind(data.dataPoints, this.interactiveBehavior, behaviorOptions, { isLegend: true });
+            this.interactiveBehavior.renderSelection(hasSelection);
         }
 
         legendItems.exit().remove();
