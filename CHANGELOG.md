@@ -1,3 +1,6 @@
+## 1.7.0
+* Added OpacityLegendBehavior for legend
+
 ## 1.6.0
 * Allows to specify custom behavior for legend
 
