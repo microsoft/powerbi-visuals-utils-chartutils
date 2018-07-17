@@ -40,7 +40,7 @@ module powerbi.extensibility.utils.chart.legend {
             return new InteractiveLegend(legendParentElement);
         }
 
-        return new SVGLegend(legendParentElement, legendPosition, interactivityService, interactiveBehavior, isScrollable);
+        return new SVGLegend(legendParentElement, legendPosition, interactivityService, isScrollable, interactiveBehavior);
     }
 
     export function isLeft(orientation: LegendPosition): boolean {
