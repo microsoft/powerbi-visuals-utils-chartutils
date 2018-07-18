@@ -24,13 +24,38 @@
 *  THE SOFTWARE.
 */
 
-import * as d3 from "d3";
-import powerbi from "powerbi-visuals-api";
+import {
+    scaleLinear,
+    scaleLog,
+    scaleBand,
+    scalePoint,
+    ScaleBand,
 
-import scaleLinear = d3.scaleLinear;
-import scaleLog = d3.scaleLog;
-import scaleOrdinal = d3.scaleOrdinal;
-import scaleBand = d3.scaleBand;
+    ScaleLinear,
+    ScaleOrdinal,
+    ScalePoint,
+    ScaleLogarithmic
+} from "d3-scale";
+
+import {
+    Axis,
+    axisLeft,
+    axisBottom,
+    axisTop,
+    axisRight
+} from "d3-axis";
+
+import {
+    min,
+    max,
+    bisect
+} from "d3-array";
+
+import {
+    Selection,
+    select
+} from "d3-selection";
+import powerbi from "powerbi-visuals-api";
 
 // powerbi.extensibility.utils.type
 import { double as Double, valueType, arrayExtensions } from "powerbi-visuals-utils-typeutils";
@@ -468,7 +493,7 @@ export function isOrdinal(dataType: powerbi.ValueTypeDescriptor): boolean {
 }
 
 export function isOrdinalScale(scale: any):
-    scale is d3.ScaleOrdinal<any, any> | d3.ScaleBand<any> | d3.ScalePoint<any> {
+    scale is d3.ScaleOrdinal<any, any> | d3.ScaleBand<any> | ScalePoint<any> {
     return typeof (<any>scale).bandwidth === "function";
 }
 
@@ -542,7 +567,7 @@ export function invertOrdinalScale(scale: d3.ScaleBand<any>, x: number) {
     // The leftEdges don't include the inner padding, so we need to shift x over by halfInnerPadding to account it.
     // We want index - 1 since that's the greatest value less than x, meaning that's the band we're in.
     // Use that index to find the right value in the domain.
-    return domain[d3.bisect(range, x + halfInnerPadding) - 1];
+    return domain[bisect(range, x + halfInnerPadding) - 1];
 }
 
 export function findClosestXAxisIndex(categoryValue: number, categoryAxisValues: AxisHelperCategoryDataPoint[]): number {
@@ -710,7 +735,7 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
 
     // sets default orientation only, cartesianChart will fix y2 for comboChart
     // tickSize(pixelSpan) is used to create gridLines
-    let axisFunction = isVertical ? d3.axisLeft : d3.axisBottom;
+    let axisFunction = isVertical ? axisLeft : axisBottom;
     let axis = axisFunction(scale)
         .tickSize(6)
         .ticks(bestTickCount)
@@ -760,13 +785,13 @@ export function createStackedAxis(options: CreateStackedAxisOptions): d3.Axis<an
 
     switch (orientation) {
         case AxisOrientation.bottom:
-        axisFunction = d3.axisBottom;
+        axisFunction = axisBottom;
         case AxisOrientation.top:
-        axisFunction = d3.axisTop;
+        axisFunction = axisTop;
         case AxisOrientation.left:
-        axisFunction = d3.axisLeft;
+        axisFunction = axisLeft;
         case AxisOrientation.right:
-        axisFunction = d3.axisRight;
+        axisFunction = axisRight;
     }
 
     return axisFunction(options.scale)
@@ -1104,8 +1129,8 @@ function createScalarDomain(data: AxisHelperSeries[], userMin: powerbi.DataViewP
         return null;
     }
 
-    let defaultMinX = <number>d3.min(data, (kv) => { return d3.min(kv.data, d => { return d && d.categoryValue; }); });
-    let defaultMaxX = <number>d3.max(data, (kv) => { return d3.max(kv.data, d => { return d && d.categoryValue; }); });
+    let defaultMinX = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.categoryValue; }); });
+    let defaultMaxX = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.categoryValue; }); });
 
     return combineDomain([userMin, userMax], [defaultMinX, defaultMaxX], ensureDomain);
 }
@@ -1120,8 +1145,8 @@ export function createValueDomain(data: AxisHelperSeries[], includeZero: boolean
     if (data.length === 0)
         return null;
 
-    let minY = <number>d3.min(data, (kv) => { return d3.min(kv.data, d => { return d && d.value; }); });
-    let maxY = <number>d3.max(data, (kv) => { return d3.max(kv.data, d => { return d && d.value; }); });
+    let minY = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.value; }); });
+    let maxY = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.value; }); });
 
     if (includeZero) {
         return [Math.min(minY, 0), Math.max(maxY, 0)];
@@ -1294,7 +1319,7 @@ export module LabelLayoutStrategy {
         }
 
         labelSelection.each(function (datum) {
-            let axisLabel = d3.select(this);
+            let axisLabel = select(this);
             let labelText = axisLabel.text();
             textProperties.text = labelText;
             if (needRotate) {
@@ -1346,7 +1371,7 @@ export module LabelLayoutStrategy {
         let allowedLength = axisProperties.xLabelMaxWidth;
 
         text.each(function () {
-            let node = d3.select(this);
+            let node = select(this);
 
             // Reset style of text node
             node
@@ -1365,14 +1390,14 @@ export module LabelLayoutStrategy {
         }
 
         text.each(function () {
-            let text = d3.select(this);
+            let text = select(this);
             svgEllipsis(text.node() as any, availableWidth);
         });
     }
 }
 
 export function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): d3.ScalePoint<any> {
-    return d3.scalePoint()
+    return scalePoint()
         .range([0, pixelSpan])
         .padding(outerPaddingRatio)
         /* Avoid using rangeRoundBands here as it is adding some extra padding to the axis*/
@@ -1382,13 +1407,13 @@ export function createPointScale(pixelSpan: number, dataDomain: any[], outerPadd
 
 export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false):  d3.ScaleOrdinal<any, any> | d3.ScalePoint<any> {
     if (useRangePoints) {
-        return d3.scalePoint()
+        return scalePoint()
             .rangeRound([0, pixelSpan])
             .padding(innerPaddingRatio)
             /* Avoid using rangeRoundBands here as it is adding some extra padding to the axis*/
             .domain(dataDomain);
     }
-    return d3.scaleBand()
+    return scaleBand()
         .range([0, pixelSpan])
         .paddingInner(innerPaddingRatio)
         .paddingOuter(outerPaddingRatio)
@@ -1460,10 +1485,10 @@ export function getRangeForColumn(sizeColumn: powerbi.DataViewValueColumn): powe
 
     if (sizeColumn) {
         result.min = <number>((<any>sizeColumn).min == null
-            ? (<any>sizeColumn).minLocal == null ? d3.min(sizeColumn.values as number[]) : (<any>sizeColumn).minLocal
+            ? (<any>sizeColumn).minLocal == null ? min(sizeColumn.values as number[]) : (<any>sizeColumn).minLocal
             : (<any>sizeColumn).min);
         result.max = <number>((<any>sizeColumn).max == null
-            ? (<any>sizeColumn).maxLocal == null ? d3.max(sizeColumn.values as number[]) : (<any>sizeColumn).maxLocal
+            ? (<any>sizeColumn).maxLocal == null ? max(sizeColumn.values as number[]) : (<any>sizeColumn).maxLocal
             : (<any>sizeColumn).max);
     }
 

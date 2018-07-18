@@ -23,8 +23,6 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
-import { Selection } from "d3";
-
 import powerbi from "powerbi-visuals-api";
 
 // powerbi.extensibility.utils.type
@@ -194,14 +192,14 @@ export function getLabelPrecision(precision: number, format: string): number {
     return defaultCountLabelPrecision;
 }
 
-export function drawDefaultLabelsForDataPointChart(data: any[], context: Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout,
-    viewport: powerbi.IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): Selection<any, any, any, any> {
+export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout,
+    viewport: powerbi.IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): d3.Selection<any, any, any, any> {
 
     // Hide and reposition labels that overlap
     let dataLabelManager = new DataLabelManager();
     let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
     let hasAnimation: boolean = isAnimator && !!animationDuration;
-    let labels: Selection<any, any, any, any> = selectLabels(filteredData, context, false, hasAnimation);
+    let labels: d3.Selection<any, any, any, any> = selectLabels(filteredData, context, false, hasAnimation);
 
     if (!labels) {
         return;
@@ -252,7 +250,7 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
     return labels;
 }
 
-function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false): Selection<any, any, any, any> {
+function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false): d3.Selection<any, any, any, any> {
     // Check for a case where resizing leaves no labels - then we need to remove the labels "g"
     if (filteredData.length === 0) {
         cleanDataLabels(context, true);
@@ -289,7 +287,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
     return labels.merge(<any>newLabels);
 }
 
-export function cleanDataLabels(context: Selection<any, any, any, any>, removeLines: boolean = false): void {
+export function cleanDataLabels(context: d3.Selection<any, any, any, any>, removeLines: boolean = false): void {
     let empty = [],
         labels = context.selectAll(labelsClass.selectorName).data(empty);
 
@@ -316,7 +314,7 @@ export function cleanDataLabels(context: Selection<any, any, any, any>, removeLi
     }
 }
 
-export function setHighlightedLabelsOpacity(context: Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean) {
+export function setHighlightedLabelsOpacity(context: d3.Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean) {
     context
         .selectAll(labelsClass.selectorName)
         .style("fill-opacity", (d: any) => {

@@ -24,7 +24,9 @@
 *  THE SOFTWARE.
 */
 
-import * as d3 from "d3";
+import {
+    select
+} from "d3-selection";
 import powerbi from "powerbi-visuals-api";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
@@ -144,7 +146,7 @@ export class SVGLegend implements ILegend {
         interactiveBehavior?: IInteractiveBehavior
         ) {
 
-        this.svg = d3.select(element)
+        this.svg = select(element)
             .append("svg")
             .style("position", "absolute");
 
