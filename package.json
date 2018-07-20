@@ -69,6 +69,6 @@
     "powerbi-visuals-utils-typeutils": "2.0.1",
     "powerbi-visuals-utils-svgutils": "2.0.2",
     "powerbi-visuals-utils-formattingutils": "4.0.2",
-    "powerbi-visuals-utils-interactivityutils": "4.0.5"
+    "powerbi-visuals-utils-interactivityutils": "4.0.6"
   }
 }
