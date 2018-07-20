@@ -29,7 +29,9 @@ import powerbi from "powerbi-visuals-api";
 import { textUtil } from "powerbi-visuals-utils-formattingutils";
 import { manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
-import * as d3 from "d3";
+import {
+    select
+} from "d3-selection";
 // powerbi.extensibility.utils.svg
 import translateXWithPixels = manipulation.translateXWithPixels;
 
@@ -49,7 +51,7 @@ export class InteractiveLegend implements ILegend {
     private legendContainerDiv: d3.Selection<any, any, any, any>;
 
     constructor(element: HTMLElement) {
-        this.legendContainerParent = d3.select(element);
+        this.legendContainerParent = select(element);
     }
 
     public getMargins(): powerbi.IViewport {

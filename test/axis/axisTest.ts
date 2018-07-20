@@ -27,7 +27,11 @@
 import powerbi from "powerbi-visuals-api";
 
 // d3
-import * as d3 from "d3";
+import {
+    scaleLinear,
+    scaleTime,
+    scaleBand
+} from "d3-scale";
 
 // powerbi.extensibility.utils.type
 
@@ -1272,7 +1276,7 @@ describe("axis", () => {
         beforeEach(() => {
             let range = [0, 999];
             let domain = [0, 1, 2, 3, 4, 5, 6, 7, 8, 999];
-            scale = d3.scaleLinear()
+            scale = scaleLinear()
                 .range(range)
                 .domain(domain);
         });
@@ -1504,7 +1508,7 @@ describe("axis", () => {
             // Arrange
             let range = [0, 100];
             let domain = [0, 10];
-            let scale = d3.scaleLinear().domain(domain).range(range);
+            let scale = scaleLinear().domain(domain).range(range);
             let expectedThickness = range[1] - range[0];
 
             // Act
@@ -1517,8 +1521,7 @@ describe("axis", () => {
         xit("with a time scale returns the correct value", () => {
             // Arrange
             let range = [0, 100];
-            let domain = [new Date("2014-03-08T12:00:00.000Z"), new Date("2014-03-10T00:00:00.000Z")];
-            let scale = d3.scaleTime();
+            let scale = scaleTime();
             let expectedThickness = range[1] - range[0];
 
             // Act
@@ -1535,7 +1538,7 @@ describe("axis", () => {
             let outerPaddingRatio = 0.5; // Add padding so we know it's taken into account
             let innerPaddingRatio = 0.25;
 
-            let scale = d3.scaleBand()
+            let scale = scaleBand()
                 .range(rangeBand)
                 .domain(domain)
                 .paddingInner(innerPaddingRatio)
@@ -1563,7 +1566,7 @@ describe("axis", () => {
             let outerPaddingRatio = 0.5; // Add padding so we know it's taken into account
             let innerPaddingRatio = 0.25;
 
-            let scale = d3.scaleBand()
+            let scale = scaleBand()
                 .range(rangeBand)
                 .domain(domain)
                 .paddingInner(innerPaddingRatio)
@@ -1582,17 +1585,17 @@ describe("axis", () => {
     describe("scale tests", () => {
         describe("isOrdinalScale", () => {
             it("with an ordinal scale returns true", () => {
-                let scale = d3.scaleBand();
+                let scale = scaleBand();
                 expect(axis.isOrdinalScale(scale)).toBeTruthy();
             });
 
             it("with a linear (quantitive) scale returns false", () => {
-                let scale = d3.scaleLinear();
+                let scale = scaleLinear();
                 expect(axis.isOrdinalScale(scale)).toBeFalsy();
             });
 
             it("with a time scale returns false", () => {
-                let scale = d3.scaleTime();
+                let scale = scaleTime();
                 expect(axis.isOrdinalScale(scale)).toBeFalsy();
             });
         });

@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "2.0.3",
+  "version": "2.0.4",
   "description": "ChartUtils",
   "main": "lib/index",
   "types": "lib/index",
@@ -67,8 +67,8 @@
     "d3": "5.5.0",
     "globalize": "0.1.0-a2",
     "powerbi-visuals-utils-typeutils": "2.0.1",
-    "powerbi-visuals-utils-svgutils": "2.0.1",
+    "powerbi-visuals-utils-svgutils": "2.0.2",
     "powerbi-visuals-utils-formattingutils": "4.0.2",
-    "powerbi-visuals-utils-interactivityutils": "4.0.4"
+    "powerbi-visuals-utils-interactivityutils": "4.0.5"
   }
 }

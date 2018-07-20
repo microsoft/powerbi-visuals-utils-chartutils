@@ -23,7 +23,6 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
-import * as d3 from "d3";
 import powerbi from "powerbi-visuals-api";
 // powerbi
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
@@ -289,3 +288,4 @@ export interface TickLabelMargins {
     yRight: number;
     stackHeight?: number; // the height of each stacked hierarchy level that is not the leaf (the leaf can be rotated 90)
 }
+
