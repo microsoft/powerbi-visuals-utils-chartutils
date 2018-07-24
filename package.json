@@ -51,7 +51,6 @@
     "karma-typescript-preprocessor": "0.3.1",
     "karma-webpack": "3.0.0",
     "less": "3.0.4",
-    "lodash": "4.17.10",
     "powerbi-visuals-utils-colorutils": "2.0.1",
     "powerbi-visuals-utils-dataviewutils": "2.0.1",
     "powerbi-visuals-utils-testutils": "2.0.3",
