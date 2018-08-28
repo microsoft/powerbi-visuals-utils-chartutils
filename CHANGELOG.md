@@ -1,3 +1,6 @@
+## 1.7.1
+* Library links update
+
 ## 1.7.0
 * Added OpacityLegendBehavior for legend
 
