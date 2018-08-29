@@ -1,7 +1,7 @@
 # Legend service
 The ```Legend``` service provides helper interfaces for creating and managing PBI legends for Custom visuals
 
-The ```powerbi.visuals``` module provides the following functions and interfaces:
+The ```powerbi.extensibility.utils.chart.legend``` module provides the following functions and interfaces:
 
 * [createLegend](#createLegend)
 * [ILegend](#ILegend)
