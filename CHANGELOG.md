@@ -1,3 +1,12 @@
+## 1.7.1
+* Library links update
+
+## 1.7.0
+* Added OpacityLegendBehavior for legend
+
+## 1.6.0
+* Allows to specify custom behavior for legend
+
 ## 1.5.1
 * FIX: Was removed a wrong instruction from auto generated code that impacted on tests in visuals
 

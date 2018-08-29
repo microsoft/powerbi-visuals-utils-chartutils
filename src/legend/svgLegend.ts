@@ -45,6 +45,7 @@ module powerbi.extensibility.utils.chart.legend {
 
     // powerbi.extensibility.utils.interactivity
     import IInteractivityService = powerbi.extensibility.utils.interactivity.IInteractivityService;
+    import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
     import appendClearCatcher = powerbi.extensibility.utils.interactivity.appendClearCatcher;
     import dataHasSelection = powerbi.extensibility.utils.interactivity.dataHasSelection;
 
@@ -92,6 +93,7 @@ module powerbi.extensibility.utils.chart.legend {
         private clearCatcher: d3.Selection<any>;
         private element: HTMLElement;
         private interactivityService: IInteractivityService;
+        private interactiveBehavior?: IInteractiveBehavior;
         private legendDataStartIndex = 0;
         private arrowPosWindow = 1;
         private data: LegendData;
@@ -133,7 +135,8 @@ module powerbi.extensibility.utils.chart.legend {
             element: HTMLElement,
             legendPosition: LegendPosition,
             interactivityService: IInteractivityService,
-            isScrollable: boolean) {
+            isScrollable: boolean,
+            interactiveBehavior?: IInteractiveBehavior) {
 
             this.svg = d3.select(element)
                 .append("svg")
@@ -150,6 +153,7 @@ module powerbi.extensibility.utils.chart.legend {
                 .append("g")
                 .attr("id", "legendGroup");
 
+            this.interactiveBehavior = interactiveBehavior ? interactiveBehavior : new LegendBehavior();
             this.interactivityService = interactivityService;
             this.isScrollable = isScrollable;
             this.element = element;
@@ -356,14 +360,6 @@ module powerbi.extensibility.utils.chart.legend {
                     "cx": (d: LegendDataPoint, i) => d.glyphPosition.x,
                     "cy": (d: LegendDataPoint) => d.glyphPosition.y,
                     "r": iconRadius,
-                })
-                .style({
-                    "fill": (d: LegendDataPoint) => {
-                        if (hasSelection && !d.selected)
-                            return LegendBehavior.dimmedLegendColor;
-                        else
-                            return d.color;
-                    }
                 });
 
             legendItems
@@ -390,7 +386,8 @@ module powerbi.extensibility.utils.chart.legend {
                     clearCatcher: this.clearCatcher,
                 };
 
-                this.interactivityService.bind(data.dataPoints, new LegendBehavior(), behaviorOptions, { isLegend: true });
+                this.interactivityService.bind(data.dataPoints, this.interactiveBehavior, behaviorOptions, { isLegend: true });
+                this.interactiveBehavior.renderSelection(hasSelection);
             }
 
             legendItems.exit().remove();

@@ -1028,8 +1028,16 @@ module powerbi.extensibility.utils.chart.legend.test {
         });
     });
 
+    let incr: number = 0;
+
     function createSelectionIdentity(key?: number | string): ISelectionId {
-        return createSelectionId(key as string);
+        const selId: any = createSelectionId(key as string);
+        selId.measures = [incr];
+        incr++;
+        selId.compareMeasures = (current, others) => {
+            return current === others;
+        };
+        return selId;
     }
 
     function getLotsOfLegendData(): LegendDataPoint[] {
