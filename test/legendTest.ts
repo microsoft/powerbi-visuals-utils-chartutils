@@ -64,6 +64,18 @@ import MockBehavior from  "./mocks/mockBehavior";
 
 import * as d3scale from "d3-scale";
 
+let incr: number = 0;
+
+function createSelectionIdentity(key?: number | string): powerbi.visuals.ISelectionId {
+    const selId: any = createSelectionId(key as string);
+        selId.measures = [incr];
+        incr++;
+        selId.compareMeasures = (current, others) => {
+            return current === others;
+        };
+        return selId;
+}
+
 describe("legend", () => {
     describe("DOM validation", () => {
         let element: JQuery,
@@ -1028,10 +1040,6 @@ describe("legend", () => {
         }
     });
 });
-
-function createSelectionIdentity(key?: number | string): powerbi.visuals.ISelectionId {
-    return createSelectionId(key as string);
-}
 
 function getLotsOfLegendData(): LegendDataPoint[] {
     let states = [
