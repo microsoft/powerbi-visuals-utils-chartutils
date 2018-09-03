@@ -31,7 +31,7 @@ import { LegendBehavior } from "./legendBehavior";
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
 
-export class OpacityLegendBehavior extends LegendBehavior implements IInteractiveBehavior {
+export default class OpacityLegendBehavior extends LegendBehavior implements IInteractiveBehavior {
     public static dimmedOpacity: number = 0.4;
     public static defaultOpacity: number = 1;
     public renderSelection(hasSelection: boolean): void {
