@@ -32,7 +32,7 @@ import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";
 import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
-import { LegendBehavior, LegendBehaviorOptions } from "./legendBehavior";
+import { LegendBehavior, LegendBehaviorOptions } from "./behavior/legendBehavior";
 
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityService.IInteractivityService;

@@ -1,3 +1,6 @@
+## 2.0.6
+* Added OpacityLegendBehavior for legend
+
 ## 1.5.1
 * FIX: Was removed a wrong instruction from auto generated code that impacted on tests in visuals
 
