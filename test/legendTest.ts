@@ -24,12 +24,14 @@
 *  THE SOFTWARE.
 */
 
+import * as d3 from "d3";
+
 import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.visual
 import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 
 // powerbi.extensibility.utils.svg
-import { manipulation, Rect }  from "powerbi-visuals-utils-svgutils";
+import { manipulation, Rect } from "powerbi-visuals-utils-svgutils";
 import flushAllD3Transitions = manipulation.flushAllD3Transitions;
 
 // powerbi.extensibility.utils.interactivity
@@ -59,21 +61,24 @@ import { update } from "./../src/legend/legendData";
 import { LegendData, LegendPosition, legendProps, LegendIcon, ILegend, LegendDataPoint } from "./../src/legend/legendInterfaces";
 import * as legendPosition from "./../src/legend/legendPosition";
 
-import { assertColorsMatch, findElementTitle } from  "./helpers/helpers";
-import MockBehavior from  "./mocks/mockBehavior";
+import { assertColorsMatch, findElementTitle } from "./helpers/helpers";
+import MockBehavior from "./mocks/mockBehavior";
 
 import * as d3scale from "d3-scale";
+import MockOpacityBehavior from "./mocks/mockOpacityBehavior";
+import { LegendBehaviorOptions } from "../src/legend/behavior/legendBehavior";
+import { appendClearCatcher } from "powerbi-visuals-utils-interactivityutils/lib/interactivityService";
 
 let incr: number = 0;
 
 function createSelectionIdentity(key?: number | string): powerbi.visuals.ISelectionId {
     const selId: any = createSelectionId(key as string);
-        selId.measures = [incr];
-        incr++;
-        selId.compareMeasures = (current, others) => {
-            return current === others;
-        };
-        return selId;
+    selId.measures = [incr];
+    incr++;
+    selId.compareMeasures = (current, others) => {
+        return current === others;
+    };
+    return selId;
 }
 
 describe("legend", () => {
@@ -307,6 +312,38 @@ describe("legend", () => {
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#0000ff");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
+            });
+
+            it("with opacity legend behavior", () => {
+                let mockDatapoints = [
+                    { label: "California", color: "#ff0000", identity: legendData[0].identity, selected: false },
+                    { label: "Texas", color: "#0000ff", identity: legendData[1].identity, selected: false },
+                    { label: "Washington", color: "#00ff00", identity: legendData[2].identity, selected: false }
+                ];
+
+                let behavior = new MockOpacityBehavior();
+                const svg = d3.select($("div#jasmine-fixtures svg").get(0));
+                const clearCatcher = appendClearCatcher(svg);
+                const itemsSelection = svg.select("#legendGroup").selectAll(".legendItem");
+
+                let behaviorOptions: LegendBehaviorOptions = {
+                    legendItems: itemsSelection,
+                    legendIcons: itemsSelection,
+                    clearCatcher: clearCatcher,
+                };
+
+                interactivityService.bind(mockDatapoints, behavior, behaviorOptions);
+                behavior.uploadPoints(mockDatapoints);
+                behavior.selectIndex(1);
+                legend.drawLegend({ dataPoints: legendData }, viewport);
+
+                itemsSelection.each((data, index, nodeList) => {
+                    if (index === 1) {
+                        expect((<any>nodeList[index]).style.fillOpacity).toEqual("1");
+                    } else {
+                        expect((<any>nodeList[index]).style.fillOpacity).toEqual("0.4");
+                    }
+                });
             });
 
             describe("with pre-existing selection state", () => {
