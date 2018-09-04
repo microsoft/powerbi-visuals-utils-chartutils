@@ -11,7 +11,8 @@
 
  import * as interactiveLegend from "./legend/interactiveLegend";
  import * as legend from "./legend/legend";
- import * as legendBehavior from "./legend/legendBehavior";
+ import * as legendBehavior from "./legend/behavior/legendBehavior";
+ import OpacityLegendBehavior from "./legend/behavior/opacityLegendBehavior";
  import * as legendData from "./legend/legendData";
  import * as legendInterfaces from "./legend/legendInterfaces";
  import * as legendPosition from "./legend/legendPosition";
@@ -30,6 +31,7 @@
     interactiveLegend,
     legend,
     legendBehavior,
+    OpacityLegendBehavior,
     legendData,
     legendInterfaces,
     legendPosition,

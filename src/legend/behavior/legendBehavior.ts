@@ -25,9 +25,8 @@
 */
 
 // powerbi.extensibility.utils.interactivity
-import { ILegend, LegendPosition, LegendDataPoint } from  "./legendInterfaces";
+import { LegendDataPoint } from  "../legendInterfaces";
 import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
-import IInteractivityService = interactivityService.IInteractivityService;
 import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
 import ISelectionHandler = interactivityService.ISelectionHandler;
 
