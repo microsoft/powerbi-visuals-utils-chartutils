@@ -383,8 +383,10 @@ export class SVGLegend implements ILegend {
             .select("title")
             .text((d: LegendDataPoint) => d.tooltip);
 
-        legendItems
-            .merge(itemsEnter)
+        let mergedLegendItems = legendItems
+            .merge(itemsEnter);
+
+        mergedLegendItems
             .select(SVGLegend.LegendText.selectorName)
             .attr("x", (d: LegendDataPoint) => d.textPosition.x)
             .attr("y", (d: LegendDataPoint) => d.textPosition.y)
@@ -394,7 +396,7 @@ export class SVGLegend implements ILegend {
 
         if (this.interactivityService) {
             let behaviorOptions: LegendBehaviorOptions = {
-                legendItems: legendItems,
+                legendItems: mergedLegendItems,
                 legendIcons: mergedLegendIcons,
                 clearCatcher: this.clearCatcher,
             };
