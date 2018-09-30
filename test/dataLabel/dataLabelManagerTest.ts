@@ -61,10 +61,19 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
             });
 
             it("Get Label info - all values Provided", () => {
-                let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 12 });
+                let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 16 });
 
                 expect(defaultSettings.anchorMargin).toEqual(0);
-                expect(result.maximumMovingDistance).toEqual(12);
+                expect(result.maximumMovingDistance).toEqual(16);
+            });
+
+
+            it("Get Label info - maximumMovingDistance with anchorMargin > 0", () => {
+                let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 16, anchorMargin: 4 });
+
+                expect(result.anchorMargin).toEqual(4);
+                // maximumMovingDistance should be increased with anchorMargin.
+                expect(result.maximumMovingDistance).toEqual(16 + 4);
             });
 
             it("Get Label info - Default value should be taken", () => {
