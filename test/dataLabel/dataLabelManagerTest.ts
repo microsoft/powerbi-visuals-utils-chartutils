@@ -31,6 +31,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
     import RectOrientation = powerbi.extensibility.utils.chart.dataLabel.RectOrientation;
     import ContentPositions = powerbi.extensibility.utils.chart.dataLabel.ContentPositions;
     import OutsidePlacement = powerbi.extensibility.utils.chart.dataLabel.OutsidePlacement;
+    import LabelPosition = powerbi.extensibility.utils.chart.dataLabel.LabelPosition;
 
     describe("DataLabelManager", () => {
         describe("Default Settings", () => {
@@ -81,6 +82,60 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
 
                 expect(defaultSettings.anchorMargin).toEqual(0);
                 expect(result.anchorMargin).toEqual(0);
+            });
+        });
+
+        describe("It should hide collided labels", () => {
+            it("No Input, No Output", () => {
+                let labelManager: DataLabelManager = new DataLabelManager(),
+                    viewPort: IViewport = {width: 500, height: 500},
+                    labelLayout: ILabelLayout = {
+                        filter: () => true,
+                        labelLayout: {x: () => 250, y: () => 250},
+                        labelText: () => "",
+                        style: null
+                    },
+                    data: any[] = [];
+                expect(labelManager.hideCollidedLabels(viewPort, data, labelLayout)).toEqual([]);
+            });
+
+            it("One non colliding label should be present", () => {
+                let labelManager: DataLabelManager = new DataLabelManager(),
+                    viewPort: IViewport = {width: 500, height: 500},
+                    labelLayout: ILabelLayout = {
+                        filter: () => true,
+                        labelLayout: {
+                            x: (element) => element.x,
+                            y: (element) => element.y
+                        },
+                        labelText: () => "My-label",
+                        style: null
+                    },
+                    data: any[] = [
+                        {x: 5, y: 100}
+                    ];
+                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout)
+                expect(result.length).toEqual(1);
+            });
+
+            it("Two Identitical labels, 1 should be hidden", () => {
+                let labelManager: DataLabelManager = new DataLabelManager(),
+                    viewPort: IViewport = {width: 500, height: 500},
+                    labelLayout: ILabelLayout = {
+                        filter: () => true,
+                        labelLayout: {
+                            x: (element) => element.x,
+                            y: (element) => element.y
+                        },
+                        labelText: () => "My-label",
+                        style: null
+                    },
+                    data: any[] = [
+                        {x: 5, y: 100},
+                        {x: 5, y: 100}
+                    ];
+                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout, false, true)
+                expect(result.length).toEqual(1);
             });
         });
 
