@@ -114,7 +114,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
                     data: any[] = [
                         {x: 5, y: 100}
                     ];
-                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout)
+                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout);
                 expect(result.length).toEqual(1);
             });
 
@@ -134,7 +134,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
                         {x: 5, y: 100},
                         {x: 5, y: 100}
                     ];
-                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout, false, true)
+                let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout, false, true);
                 expect(result.length).toEqual(1);
             });
         });
