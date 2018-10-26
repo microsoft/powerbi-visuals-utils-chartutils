@@ -1,3 +1,6 @@
+## 1.8.0
+* Update packages to fix vulnerabilities
+
 ## 1.7.1
 * Library links update
 
