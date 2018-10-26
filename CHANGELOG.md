@@ -1,3 +1,6 @@
+## 2.1.0
+* Update packages to fix vulnerabilities
+
 ## 2.0.6
 * Added OpacityLegendBehavior for legend
 
