@@ -28,7 +28,7 @@ import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.utils.formatting
 import { textUtil } from "powerbi-visuals-utils-formattingutils";
 import { manipulation } from "powerbi-visuals-utils-svgutils";
-import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
+import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 import {
     select
 } from "d3-selection";

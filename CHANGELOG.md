@@ -1,3 +1,6 @@
+## 2.2.0
+* Implements legend marker shapes
+
 ## 2.1.0
 * Update packages to fix vulnerabilities
 

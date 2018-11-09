@@ -30,13 +30,23 @@ import {
 import powerbi from "powerbi-visuals-api";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
-import { CssConstants, manipulation } from "powerbi-visuals-utils-svgutils";
-import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
+
+import {
+    CssConstants,
+    manipulation as svgManipulation
+} from "powerbi-visuals-utils-svgutils";
+
+import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 import { LegendBehavior, LegendBehaviorOptions } from "./behavior/legendBehavior";
 
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityService.IInteractivityService;
 import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
+
+import {
+    LineStyle,
+    MarkerShape
+} from "./legendInterfaces";
 
 // powerbi.visuals
 import ISelectionId = powerbi.visuals.ISelectionId;
@@ -49,8 +59,6 @@ import font = formatting.font;
 // powerbi.extensibility.utils.svg
 import ClassAndSelector = CssConstants.ClassAndSelector;
 import createClassAndSelector = CssConstants.createClassAndSelector;
-import translate = manipulation.translate;
-import createArrow = manipulation.createArrow;
 
 // powerbi.extensibility.utils.interactivity
 import appendClearCatcher = interactivityService.appendClearCatcher;
@@ -123,6 +131,7 @@ export class SVGLegend implements ILegend {
     private static TopLegendHeight = 24;
     private static DefaultTextMargin = PixelConverter.fromPointToPixel(SVGLegend.DefaultFontSizeInPt);
     private static LegendIconYRatio = 0.52;
+    private static LegendIconLineTotalWidth: number = 31;
 
     // Navigation Arrow constants
     private static LegendArrowOffset = 10;
@@ -144,7 +153,7 @@ export class SVGLegend implements ILegend {
         interactivityService: IInteractivityService,
         isScrollable: boolean,
         interactiveBehavior?: IInteractiveBehavior
-        ) {
+    ) {
 
         this.svg = select(element)
             .append("svg")
@@ -297,11 +306,11 @@ export class SVGLegend implements ILegend {
             let centerOffset = 0;
             if (this.isTopOrBottom(this.orientation)) {
                 centerOffset = Math.max(0, (this.parentViewport.width - this.visibleLegendWidth) / 2);
-                group.attr("transform", translate(centerOffset, 0));
+                group.attr("transform", svgManipulation.translate(centerOffset, 0));
             }
             else {
                 centerOffset = Math.max((this.parentViewport.height - this.visibleLegendHeight) / 2);
-                group.attr("transform", translate(0, centerOffset));
+                group.attr("transform", svgManipulation.translate(0, centerOffset));
             }
         }
         else {
@@ -354,7 +363,7 @@ export class SVGLegend implements ILegend {
             .classed(SVGLegend.LegendItem.className, true);
 
         itemsEnter
-            .append("circle")
+            .append("path")
             .classed(SVGLegend.LegendIcon.className, true);
 
         itemsEnter
@@ -368,23 +377,57 @@ export class SVGLegend implements ILegend {
         let mergedLegendIcons = legendItems
             .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
-            .attr(
-                "cx", (d: LegendDataPoint, i) => d.glyphPosition.x
-            )
-            .attr(
-                "cy", (d: LegendDataPoint) => d.glyphPosition.y
-            )
-            .attr(
-                "r", iconRadius,
-            );
+            .attr("transform", (dataPoint: LegendDataPoint) => {
+                if (dataPoint.lineStyle) {
+                    return svgManipulation.translate(
+                        (SVGLegend.LegendIconLineTotalWidth / 2),
+                        this.visibleLegendHeight * SVGLegend.LegendIconYRatio
+                    );
+                }
+
+                return svgManipulation.translateAndScale(
+                    dataPoint.glyphPosition.x,
+                    dataPoint.glyphPosition.y,
+                    iconRadius / Markers.defaultSize
+                );
+            })
+            .attr("d", (dataPoint: LegendDataPoint) => {
+                if (dataPoint.lineStyle) {
+                    return "M -" + (SVGLegend.LegendIconLineTotalWidth / 2) + " 0 L " + (SVGLegend.LegendIconLineTotalWidth / 2) + " 0";
+                }
+
+                return Markers.getPath(dataPoint.markerShape || MarkerShape.circle);
+            })
+            .attr("stroke-width", (dataPoint: LegendDataPoint) => {
+                if (dataPoint.lineStyle) {
+                    return 2;
+                }
+
+                return Markers.getStrokeWidth(dataPoint.markerShape || MarkerShape.circle);
+            })
+            .style("fill", (dataPoint: LegendDataPoint) => {
+                if (dataPoint.lineStyle) {
+                    return null;
+                }
+
+                return dataPoint.color;
+            })
+            .style("stroke", (dataPoint: LegendDataPoint) => dataPoint.color)
+            .style("stroke-dasharray", (dataPoint: LegendDataPoint) => {
+                if (dataPoint.lineStyle) {
+                    return SVGLegend.getSrokeDashArrayForLegend(dataPoint.lineStyle);
+                }
+
+                return null;
+            })
+            .style("stroke-linejoin", "round");
 
         legendItems
             .merge(itemsEnter)
             .select("title")
-            .text((d: LegendDataPoint) => d.tooltip);
+            .text((dataPoint: LegendDataPoint) => dataPoint.tooltip);
 
-        let mergedLegendItems = legendItems
-            .merge(itemsEnter);
+        const mergedLegendItems = legendItems.merge(itemsEnter);
 
         mergedLegendItems
             .select(SVGLegend.LegendText.selectorName)
@@ -410,6 +453,20 @@ export class SVGLegend implements ILegend {
         this.drawNavigationArrows(layout.navigationArrows);
 
         this.updateLayout();
+    }
+
+    private static getSrokeDashArrayForLegend(style: LineStyle): string {
+        switch (style) {
+            case LineStyle.dashed: {
+                return "7,5";
+            }
+            case LineStyle.dotted: {
+                return "2.5,3.1";
+            }
+            case LineStyle.solid: {
+                return null;
+            }
+        }
     }
 
     private normalizePosition(points: any[]): void {
@@ -513,8 +570,8 @@ export class SVGLegend implements ILegend {
 
         let data: NavigationArrow[] = [];
         let rightShift = title ? title.x + title.width : 0;
-        let arrowLeft = createArrow(width, height, 180 /*angle*/);
-        let arrowRight = createArrow(width, height, 0 /*angle*/);
+        let arrowLeft = svgManipulation.createArrow(width, height, 180 /*angle*/);
+        let arrowRight = svgManipulation.createArrow(width, height, 0 /*angle*/);
 
         data.push({
             x: rightShift,
@@ -542,8 +599,8 @@ export class SVGLegend implements ILegend {
         let verticalCenter = this.viewport.height / 2;
         let data: NavigationArrow[] = [];
         let rightShift = verticalCenter + height / 2;
-        let arrowTop = createArrow(width, height, 270 /*angle*/);
-        let arrowBottom = createArrow(width, height, 90 /*angle*/);
+        let arrowTop = svgManipulation.createArrow(width, height, 270 /*angle*/);
+        let arrowBottom = svgManipulation.createArrow(width, height, 90 /*angle*/);
         let titleHeight = title ? title.height : 0;
 
         data.push({
@@ -572,7 +629,7 @@ export class SVGLegend implements ILegend {
 
         let dataPointsLength = dataPoints.length;
 
-        // Set the maximum amount of space available to each item. They can use less, but can't go over this number.
+        // Set the maximum amount of space available to each item. They can use less, but can"t go over this number.
         let maxItemWidth = dataPointsLength > 0 ? availableWidth / dataPointsLength | 0 : 0;
         let maxItemTextWidth = maxItemWidth - iconPadding;
 
@@ -584,7 +641,7 @@ export class SVGLegend implements ILegend {
             maxItemWidth = maxItemTextWidth + iconPadding;
         }
 
-        // Make sure the availableWidthPerItem is less than the availableWidth. This lets the long text properly add ellipsis when we're displaying one item at a time.
+        // Make sure the availableWidthPerItem is less than the availableWidth. This lets the long text properly add ellipsis when we"re displaying one item at a time.
         if (maxItemWidth > availableWidth) {
             maxItemWidth = availableWidth;
             maxItemTextWidth = maxItemWidth - iconPadding;
@@ -593,7 +650,7 @@ export class SVGLegend implements ILegend {
         let occupiedWidth = 0;
         let legendItems: LegendItem[] = [];
 
-        // Add legend items until we can't fit any more (the last one doesn't fit) or we've added all of them
+        // Add legend items until we can"t fit any more (the last one doesn"t fit) or we"ve added all of them
         for (let dataPoint of dataPoints) {
 
             let textProperties = SVGLegend.getTextProperties(false, dataPoint.label, fontSize);
@@ -619,7 +676,7 @@ export class SVGLegend implements ILegend {
                     // Set the width to the amount of space we actually have
                     occupiedWidth = availableWidth;
                 } else {
-                    // Subtract the width from what was just added since it won't fit
+                    // Subtract the width from what was just added since it won"t fit
                     occupiedWidth -= actualWidth;
                 }
                 break;
@@ -649,7 +706,7 @@ export class SVGLegend implements ILegend {
 
                 let usedExtraWidth: number;
                 if (item.desiredWidth <= newMaxItemWidth) {
-                    // If the item doesn't need all the extra space, it's not at max anymore
+                    // If the item doesn"t need all the extra space, it"s not at max anymore
                     item.desiredOverMaxWidth = false;
                     usedExtraWidth = item.desiredWidth - maxItemWidth;
                 } else {
@@ -700,7 +757,7 @@ export class SVGLegend implements ILegend {
         let legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(dataPoints, availableWidth, iconTotalItemPadding, this.data.fontSize);
         numberOfItems = legendItems.length;
 
-        // If we can't show all the legend items, subtract the "next" arrow space from the available space and re-run the width calculations
+        // If we can"t show all the legend items, subtract the "next" arrow space from the available space and re-run the width calculations
         if (numberOfItems !== dataPointsLength) {
             availableWidth -= SVGLegend.LegendArrowOffset;
             legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(dataPoints, availableWidth, iconTotalItemPadding, this.data.fontSize);
@@ -723,7 +780,7 @@ export class SVGLegend implements ILegend {
                 y: textYCoordinate,
             };
 
-            // If we're over the max width, process it so it fits
+            // If we"re over the max width, process it so it fits
             if (legendItem.desiredOverMaxWidth) {
                 let textWidth = legendItem.width - iconTotalItemPadding;
                 let text = textMeasurementService.getTailoredTextOrDefault(legendItem.textProperties, textWidth);
@@ -851,7 +908,7 @@ export class SVGLegend implements ILegend {
             .append("path");
 
         arrows
-            .attr("transform", (d: NavigationArrow) => translate(d.x, d.y))
+            .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y))
             .select("path")
             .attr("d", (d: NavigationArrow) => d.path)
             .attr("transform", (d: NavigationArrow) => d.rotateTransform);
@@ -901,6 +958,63 @@ export class SVGLegend implements ILegend {
         // we save the values to tooltip before cut
         for (let dataPoint of data.dataPoints) {
             dataPoint.tooltip = dataPoint.label;
+        }
+    }
+}
+
+export module Markers {
+    export const defaultSize = 5;
+
+    const circlePath = "M 0 0 m -5 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0";
+    const squarePath = "M 0 0 m -5 -5 l 10 0 l 0 10 l -10 0 z";
+    const diamondPath = "M 0 0 m -5 0 l 5 -5 l 5 5 l -5 5 z";
+    const trianglePath = "M 0 0 m -5 5 l 5 -10 l 5 10 z";
+    const xPath = "M 0 0 m -5 -5 l 10 10 m -10 0 l 10 -10";
+    const shortDashPath = "M 0 0 l 5 0";
+    const longDashPath = "M 0 0 m -5 0 l 10 0";
+    const plusPath = "M 0 0 m -5 0 l 10 0 m -5 -5 l 0 10";
+
+    const shapeStroke = 0;
+    const thinStroke = 1;
+    const thickStroke = 2;
+
+    export function getPath(shape: string): string {
+        switch (shape) {
+            case MarkerShape.circle:
+                return circlePath;
+            case MarkerShape.square:
+                return squarePath;
+            case MarkerShape.diamond:
+                return diamondPath;
+            case MarkerShape.triangle:
+                return trianglePath;
+            case MarkerShape.x:
+                return xPath;
+            case MarkerShape.shortDash:
+                return shortDashPath;
+            case MarkerShape.longDash:
+                return longDashPath;
+            case MarkerShape.plus:
+                return plusPath;
+            case MarkerShape.none:
+                return undefined;
+        }
+    }
+
+    export function getStrokeWidth(shape: string): number {
+        switch (shape) {
+            case MarkerShape.circle:
+            case MarkerShape.square:
+            case MarkerShape.diamond:
+            case MarkerShape.triangle:
+            case MarkerShape.none:
+                return shapeStroke;
+            case MarkerShape.x:
+            case MarkerShape.plus:
+                return thinStroke;
+            case MarkerShape.shortDash:
+            case MarkerShape.longDash:
+                return thickStroke;
         }
     }
 }

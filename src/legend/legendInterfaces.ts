@@ -25,19 +25,10 @@
 */
 
 import powerbi from "powerbi-visuals-api";
-// powerbi.extensibility.utils.svg
 import { Point } from "powerbi-visuals-utils-svgutils";
-
-// powerbi.extensibility.utils.interactivity
-
 import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
-import SelectableDataPoint = interactivityService.SelectableDataPoint;
 
-export enum LegendIcon {
-    Box,
-    Circle,
-    Line
-}
+import SelectableDataPoint = interactivityService.SelectableDataPoint;
 
 export enum LegendPosition {
     Top,
@@ -56,15 +47,34 @@ export interface LegendPosition2D {
     glyphPosition?: Point;
 }
 
+export enum MarkerShape {
+    circle = "circle",
+    square = "square",
+    diamond = "diamond",
+    triangle = "triangle",
+    x = "x",
+    shortDash = "shortDash",
+    longDash = "longDash",
+    plus = "plus",
+    none = "none",
+}
+
+export enum LineStyle {
+    dashed = "dashed",
+    solid = "solid",
+    dotted = "dotted",
+}
+
 export interface LegendDataPoint extends SelectableDataPoint, LegendPosition2D {
     label: string;
     color: string;
-    icon: LegendIcon;
     category?: string;
     measure?: any;
     iconOnlyOnLabel?: boolean;
     tooltip?: string;
     layerNumber?: number;
+    lineStyle: LineStyle;
+    markerShape?: MarkerShape;
 }
 
 export interface LegendData {
