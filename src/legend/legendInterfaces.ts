@@ -67,7 +67,7 @@ export interface LegendDataPoint extends SelectableDataPoint, LegendPosition2D {
     iconOnlyOnLabel?: boolean;
     tooltip?: string;
     layerNumber?: number;
-    lineStyle: LineStyle;
+    lineStyle?: LineStyle;
     markerShape?: MarkerShape;
 }
 

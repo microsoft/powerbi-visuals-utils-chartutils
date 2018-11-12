@@ -58,7 +58,7 @@ enum ClickEventType {
 // powerbi.extensibility.utils.chart
 import { createLegend } from "./../src/legend/legend";
 import { update } from "./../src/legend/legendData";
-import { LegendData, LegendPosition, legendProps, LegendIcon, ILegend, LegendDataPoint } from "./../src/legend/legendInterfaces";
+import { LegendData, LegendPosition, legendProps, ILegend, LegendDataPoint } from "./../src/legend/legendInterfaces";
 import * as legendPosition from "./../src/legend/legendPosition";
 
 import { assertColorsMatch, findElementTitle } from "./helpers/helpers";
@@ -107,21 +107,18 @@ describe("legend", () => {
                 {
                     label: "California",
                     color: "#ff0000",
-                    icon: LegendIcon.Line,
                     identity: createSelectionIdentity(0),
                     selected: false
                 },
                 {
                     label: "Texas",
                     color: "#0000ff",
-                    icon: LegendIcon.Line,
                     identity: createSelectionIdentity(1),
                     selected: false
                 },
                 {
                     label: "Washington",
                     color: "#00ff00",
-                    icon: LegendIcon.Line,
                     identity: createSelectionIdentity(2),
                     selected: false
                 }
@@ -184,9 +181,9 @@ describe("legend", () => {
 
         it("legend dom validation three legend items with shared label and color", (done) => {
             let legendData: LegendDataPoint[] = [
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(0), selected: false },
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(1), selected: false },
-                { label: "BREAKPOINT", color: "#00ff00", icon: LegendIcon.Line, identity: createSelectionIdentity(2), selected: false }
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false },
+                { label: "BREAKPOINT", color: "#00ff00", identity: createSelectionIdentity(2), selected: false }
             ];
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -201,9 +198,9 @@ describe("legend", () => {
 
         xit("legend dom validation three legend items but two share same identity", (done) => {
             let legendData: LegendDataPoint[] = [
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(0), selected: false },
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(0), selected: false },
-                { label: "BREAKPOINT", color: "#00ff00", icon: LegendIcon.Line, identity: createSelectionIdentity(1), selected: false }
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
+                { label: "BREAKPOINT", color: "#00ff00", identity: createSelectionIdentity(1), selected: false }
             ];
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -218,9 +215,9 @@ describe("legend", () => {
 
         it("legend dom validation three legend items but two share same identity but are on different layers", (done) => {
             let legendData: LegendDataPoint[] = [
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(1), selected: false, layerNumber: 0 },
-                { label: "ACCESS_VIOLA...", color: "#ff0000", icon: LegendIcon.Line, identity: createSelectionIdentity(2), selected: false, layerNumber: 1 },
-                { label: "BREAKPOINT", color: "#00ff00", icon: LegendIcon.Line, identity: createSelectionIdentity(4), selected: false, layerNumber: 0 }
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false, layerNumber: 0 },
+                { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(2), selected: false, layerNumber: 1 },
+                { label: "BREAKPOINT", color: "#00ff00", identity: createSelectionIdentity(4), selected: false, layerNumber: 0 }
             ];
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -242,10 +239,10 @@ describe("legend", () => {
 
                 // Draw the legend against with a new state at the start
                 let updatedData: LegendDataPoint[] = [
-                    { label: "Alaska", color: "#fff000", icon: LegendIcon.Box, identity: createSelectionIdentity(2), selected: false },
-                    { label: "California", color: "#fff00d", icon: LegendIcon.Box, identity: createSelectionIdentity(4), selected: false },
-                    { label: "Texas", color: "#fffe00", icon: LegendIcon.Box, identity: createSelectionIdentity(8), selected: false },
-                    { label: "Washington", color: "#0000dd", icon: LegendIcon.Box, identity: createSelectionIdentity(16), selected: false }
+                    { label: "Alaska", color: "#fff000", identity: createSelectionIdentity(2), selected: false },
+                    { label: "California", color: "#fff00d", identity: createSelectionIdentity(4), selected: false },
+                    { label: "Texas", color: "#fffe00", identity: createSelectionIdentity(8), selected: false },
+                    { label: "Washington", color: "#0000dd", identity: createSelectionIdentity(16), selected: false }
                 ];
                 legend.reset();
                 legend.drawLegend({ dataPoints: updatedData }, viewport);
@@ -508,7 +505,7 @@ describe("legend", () => {
             let legendData = [{
                 label: "Really long label, but i have the space to show",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 // identity: powerbi.visuals.SelectionId.createNull(),
                 identity: createSelectionIdentity(1),
                 selected: false
@@ -528,7 +525,7 @@ describe("legend", () => {
             let legendData: LegendDataPoint[] = [{
                 label: "Really long label, but i haven't the space to show",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(1),
                 selected: false
             }];
@@ -568,7 +565,7 @@ describe("legend", () => {
             let legendData = [{
                 label: "I am a really long label, but you should not allow me to take more than 300px",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(1),
                 selected: false
             }];
@@ -596,13 +593,13 @@ describe("legend", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(2),
                 selected: false
             }, {
                 label: "The End",
                 color: "blue",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(4),
                 selected: false
             }];
@@ -619,13 +616,13 @@ describe("legend", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(2),
                 selected: false
             }, {
                 label: "The End",
                 color: "blue",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(4),
                 selected: false
             }];
@@ -642,13 +639,13 @@ describe("legend", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(2),
                 selected: false
             }, {
                 label: "The End",
                 color: "blue",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(4),
                 selected: false
             }];
@@ -671,13 +668,13 @@ describe("legend", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(2),
                 selected: false
             }, {
                 label: "The End",
                 color: "blue",
-                icon: LegendIcon.Line,
+
                 identity: createSelectionIdentity(4),
                 selected: false
             }];
@@ -892,7 +889,7 @@ describe("legend", () => {
                 category: "state",
                 label: "Alaska",
                 color: "red",
-                icon: LegendIcon.Box,
+
                 measure: 0,
                 identity: createSelectionIdentity(),
                 selected: false
@@ -901,7 +898,7 @@ describe("legend", () => {
                 category: "state",
                 label: "California",
                 color: "blue",
-                icon: LegendIcon.Box,
+
                 measure: 5,
                 identity: createSelectionIdentity(),
                 selected: false
@@ -910,7 +907,7 @@ describe("legend", () => {
                 category: "state",
                 label: "Texas",
                 color: "green",
-                icon: LegendIcon.Box,
+
                 measure: 10,
                 identity: createSelectionIdentity(),
                 selected: false
@@ -1022,7 +1019,7 @@ describe("legend", () => {
                             category: "state",
                             label: "Washington",
                             color: "orange",
-                            icon: LegendIcon.Box,
+
                             measure: 15,
                             identity: createSelectionIdentity(2),
                             selected: false
@@ -1097,7 +1094,7 @@ function getLotsOfLegendData(): LegendDataPoint[] {
         legendData.push({
             label: states[i],
             color: <any>colors(i.toString()),
-            icon: LegendIcon.Line,
+
             identity: createSelectionIdentity(i),
             selected: false,
         });

@@ -823,7 +823,8 @@ export class SVGLegend implements ILegend {
         dataPoints: LegendDataPoint[],
         title: TitleLayout,
         navigationArrows: NavigationArrow[],
-        autoWidth: boolean): number {
+        autoWidth: boolean
+    ): number {
         // check if we need more space for the margin, or use the default text padding
         let fontSizeBiggerThenDefault = this.legendFontSizeMarginDifference > 0;
         let fontFactor = fontSizeBiggerThenDefault ? this.legendFontSizeMarginDifference : 0;
@@ -833,7 +834,13 @@ export class SVGLegend implements ILegend {
         let extraShiftForTextAlignmentToIcon = 4 + fontFactor;
         let totalSpaceOccupiedThusFar = verticalLegendHeight;
         // the default space for text and icon radius + the margin after the font size change
-        let fixedHorizontalIconShift = SVGLegend.TextAndIconPadding + SVGLegend.LegendIconRadius + (this.legendFontSizeMarginDifference / 1 /*SVGLegend.LegendIconRadiusFactor*/);
+
+        const firstDataPointMarkerShape: MarkerShape = dataPoints && dataPoints[0] && dataPoints[0].markerShape;
+
+        const fixedHorizontalIconShift: number = SVGLegend.TextAndIconPadding
+            + this.getMarkerShapeWidth(firstDataPointMarkerShape) / 2
+            + this.legendFontSizeMarginDifference;
+
         let fixedHorizontalTextShift = fixedHorizontalIconShift * 2;
         // check how much space is needed
         let maxHorizontalSpaceAvaliable = autoWidth
