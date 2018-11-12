@@ -27,11 +27,6 @@
 import powerbi from "powerbi-visuals-api";
 import DataViewPropertyValue = powerbi.DataViewPropertyValue;
 
-// powerbi.extensibility.utils.type
-import { valueType } from "powerbi-visuals-utils-typeutils";
-import ValueType = valueType.ValueType;
-import PrimitiveType = valueType.PrimitiveType;
-
 // powerbi.extensibility.utils.chart
 import { assertColorsMatch } from  "./../helpers/helpers";
 import * as dataLabelUtils from  "./../../src/dataLabel/dataLabelUtils";

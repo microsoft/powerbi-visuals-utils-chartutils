@@ -24,36 +24,42 @@
  *  THE SOFTWARE.
  */
 
-const path = require('path');
-const webpack = require("webpack");
+import { Units } from "./units";
 
-module.exports = {
-    entry: './src/index.ts',
-    devtool: 'source-map',
-    module: {
-        rules: [{
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.json$/,
-                loader: 'json-loader'
-            }
-        ]
-    },
-    externals: {
-        "powerbi-visuals-api": '{}'
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.css']
-    },
-    output: {
-        path: path.resolve(__dirname, ".tmp/test")
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            'powerbi-visuals-api': null
-        })
-    ]
-};
+export interface FontProperties {
+    readonly color?: string;
+    readonly family?: string;
+    readonly lineHeight?: string;
+    readonly size?: Units.FontSize;
+    readonly style?: string;
+    readonly variant?: string;
+    readonly weight?: string;
+    readonly whiteSpace?: string;
+}
+
+export interface MutableFontProperties {
+    color?: string;
+    family?: string;
+    lineHeight?: string;
+    size?: Units.FontSize;
+    style?: string;
+    variant?: string;
+    weight?: string;
+    whiteSpace?: string;
+}
+
+export module FontProperties {
+    /**
+     * Inherits a `FontProperties` object allowing specific properties to be overriden.
+     * Typically used for changing values on an existing object as all properties are readonly.
+     * @param fontProperties The existing `FontProperties` object
+     * @param newFontProperties The properties to override
+     * @returns A new object inherited from `fontProperties`.
+     */
+    export function inherit(fontProperties: FontProperties, newFontProperties: FontProperties): FontProperties {
+        return {
+            ...fontProperties,
+            ...newFontProperties
+        };
+    }
+}
