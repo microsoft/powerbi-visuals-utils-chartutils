@@ -122,7 +122,6 @@ export class SVGLegend implements ILegend {
 
     public static DefaultFontSizeInPt = 8;
     private static LegendIconRadius = 5;
-    private static LegendIconRadiusFactor = 5;
     private static MaxTextLength = 60;
     private static TextAndIconPadding = 5;
     private static TitlePadding = 15;
@@ -131,7 +130,6 @@ export class SVGLegend implements ILegend {
     private static TopLegendHeight = 24;
     private static DefaultTextMargin = PixelConverter.fromPointToPixel(SVGLegend.DefaultFontSizeInPt);
     private static LegendIconYRatio = 0.52;
-    private static LegendIconLineTotalWidth: number = 31;
 
     // Navigation Arrow constants
     private static LegendArrowOffset = 10;
@@ -346,12 +344,6 @@ export class SVGLegend implements ILegend {
             this.legendDataStartIndex,
             this.legendDataStartIndex + layout.numberOfItems);
 
-        let iconRadius = textMeasurementService.estimateSvgTextHeight(SVGLegend.getTextProperties(false, "", this.data.fontSize)) / SVGLegend.LegendIconRadiusFactor;
-
-        iconRadius = (this.legendFontSizeMarginValue > SVGLegend.DefaultTextMargin) && iconRadius > SVGLegend.LegendIconRadius
-            ? iconRadius :
-            SVGLegend.LegendIconRadius;
-
         let legendItems = group
             .selectAll(SVGLegend.LegendItem.selectorName)
             .data(virtualizedDataPoints, (d: LegendDataPoint) => {
@@ -378,24 +370,13 @@ export class SVGLegend implements ILegend {
             .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
             .attr("transform", (dataPoint: LegendDataPoint) => {
-                if (dataPoint.lineStyle) {
-                    return svgManipulation.translate(
-                        (SVGLegend.LegendIconLineTotalWidth / 2),
-                        this.visibleLegendHeight * SVGLegend.LegendIconYRatio
-                    );
-                }
-
                 return svgManipulation.translateAndScale(
                     dataPoint.glyphPosition.x,
                     dataPoint.glyphPosition.y,
-                    iconRadius / Markers.defaultSize
+                    this.getIconScale(dataPoint.markerShape)
                 );
             })
             .attr("d", (dataPoint: LegendDataPoint) => {
-                if (dataPoint.lineStyle) {
-                    return "M -" + (SVGLegend.LegendIconLineTotalWidth / 2) + " 0 L " + (SVGLegend.LegendIconLineTotalWidth / 2) + " 0";
-                }
-
                 return Markers.getPath(dataPoint.markerShape || MarkerShape.circle);
             })
             .attr("stroke-width", (dataPoint: LegendDataPoint) => {
@@ -415,7 +396,7 @@ export class SVGLegend implements ILegend {
             .style("stroke", (dataPoint: LegendDataPoint) => dataPoint.color)
             .style("stroke-dasharray", (dataPoint: LegendDataPoint) => {
                 if (dataPoint.lineStyle) {
-                    return SVGLegend.getSrokeDashArrayForLegend(dataPoint.lineStyle);
+                    return SVGLegend.getStrokeDashArrayForLegend(dataPoint.lineStyle);
                 }
 
                 return null;
@@ -431,8 +412,8 @@ export class SVGLegend implements ILegend {
 
         mergedLegendItems
             .select(SVGLegend.LegendText.selectorName)
-            .attr("x", (d: LegendDataPoint) => d.textPosition.x)
-            .attr("y", (d: LegendDataPoint) => d.textPosition.y)
+            .attr("x", (dataPoint: LegendDataPoint) => dataPoint.textPosition.x)
+            .attr("y", (dataPoint: LegendDataPoint) => dataPoint.textPosition.y)
             .text((d: LegendDataPoint) => d.label)
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize));
@@ -448,14 +429,16 @@ export class SVGLegend implements ILegend {
             this.interactiveBehavior.renderSelection(hasSelection);
         }
 
-        legendItems.exit().remove();
+        legendItems
+            .exit()
+            .remove();
 
         this.drawNavigationArrows(layout.navigationArrows);
 
         this.updateLayout();
     }
 
-    private static getSrokeDashArrayForLegend(style: LineStyle): string {
+    private static getStrokeDashArrayForLegend(style: LineStyle): string {
         switch (style) {
             case LineStyle.dashed: {
                 return "7,5";
@@ -484,8 +467,7 @@ export class SVGLegend implements ILegend {
             hasTitle = !!title;
 
         if (hasTitle) {
-            let isHorizontal = this.isTopOrBottom(this.orientation),
-                maxMeasureLength: number;
+            let isHorizontal = this.isTopOrBottom(this.orientation);
 
             let textProperties = SVGLegend.getTextProperties(true, title, this.data.fontSize);
             let text = title;
@@ -498,10 +480,10 @@ export class SVGLegend implements ILegend {
             }
 
             return {
+                text,
+                width,
                 x: 0,
                 y: 0,
-                text: text,
-                width: width,
                 height: textMeasurementService.estimateSvgTextHeight(textProperties)
             };
         }
@@ -528,7 +510,7 @@ export class SVGLegend implements ILegend {
             dataPoints = dataPoints.slice(this.legendDataStartIndex);
         }
 
-        let title = this.calculateTitleLayout(data.title);
+        let title: TitleLayout = this.calculateTitleLayout(data.title);
 
         let navArrows: NavigationArrow[];
         let numberOfItems: number;
@@ -543,8 +525,8 @@ export class SVGLegend implements ILegend {
         }
 
         return {
-            numberOfItems: numberOfItems,
-            title: title,
+            numberOfItems,
+            title,
             navigationArrows: navArrows
         };
     }
@@ -724,15 +706,18 @@ export class SVGLegend implements ILegend {
     }
 
     private calculateHorizontalLayout(dataPoints: LegendDataPoint[], title: TitleLayout, navigationArrows: NavigationArrow[]): number {
-        // calculate the text shift
-        let HorizontalTextShift = 4 + SVGLegend.LegendIconRadius;
-        // check if we need more space for the margin, or use the default text padding
         let fontSizeBiggerThanDefault = this.legendFontSizeMarginDifference > 0;
-        let fontSizeMargin = fontSizeBiggerThanDefault ? SVGLegend.TextAndIconPadding + this.legendFontSizeMarginDifference : SVGLegend.TextAndIconPadding;
-        let fixedTextShift = (fontSizeMargin / (SVGLegend.LegendIconRadiusFactor / 2)) + HorizontalTextShift;
+
+        let fontSizeMargin = fontSizeBiggerThanDefault
+            ? SVGLegend.TextAndIconPadding + this.legendFontSizeMarginDifference
+            : SVGLegend.TextAndIconPadding;
+
         let occupiedWidth = 0;
-        // calculate the size of the space for both sides of the radius
-        let iconTotalItemPadding = SVGLegend.LegendIconRadius * 2 + fontSizeMargin * 1.5;
+
+        const firstDataPointMarkerShape: MarkerShape = dataPoints && dataPoints[0] && dataPoints[0].markerShape;
+
+        let iconTotalItemPadding = this.getMarkerShapeWidth(firstDataPointMarkerShape) + fontSizeMargin * 1.5;
+
         let numberOfItems: number = dataPoints.length;
         // get the Y coordinate which is the middle of the container + the middle of the text height - the delta of the text
         let defaultTextProperties = SVGLegend.getTextProperties(false, "", this.data.fontSize);
@@ -765,26 +750,29 @@ export class SVGLegend implements ILegend {
         }
 
         for (let legendItem of legendItems) {
+            const { dataPoint } = legendItem;
 
-            let dataPoint = legendItem.dataPoint;
+            const markerShapeWidth: number = this.getMarkerShapeWidth(dataPoint.markerShape);
 
             dataPoint.glyphPosition = {
                 // the space taken so far + the radius + the margin / radiusFactor to prevent huge spaces
-                x: occupiedWidth + SVGLegend.LegendIconRadius + (this.legendFontSizeMarginDifference / SVGLegend.LegendIconRadiusFactor),
+                x: occupiedWidth + markerShapeWidth / 2 + (this.legendFontSizeMarginDifference / this.getLegendIconFactor(dataPoint.markerShape)),
                 // The middle of the container but a bit lower due to text not being in the middle (qP for example making middle between q and P)
-                y: (this.viewport.height * SVGLegend.LegendIconYRatio),
+                y: this.viewport.height * SVGLegend.LegendIconYRatio,
             };
+
+            const fixedTextShift = (fontSizeMargin / (this.getLegendIconFactor(dataPoint.markerShape) / 2)) + markerShapeWidth;
 
             dataPoint.textPosition = {
                 x: occupiedWidth + fixedTextShift,
                 y: textYCoordinate,
             };
 
-            // If we"re over the max width, process it so it fits
+            // If we're over the max width, process it so it fits
             if (legendItem.desiredOverMaxWidth) {
                 let textWidth = legendItem.width - iconTotalItemPadding;
-                let text = textMeasurementService.getTailoredTextOrDefault(legendItem.textProperties, textWidth);
-                dataPoint.label = text;
+
+                dataPoint.label = textMeasurementService.getTailoredTextOrDefault(legendItem.textProperties, textWidth);
             }
 
             occupiedWidth += legendItem.width;
@@ -794,6 +782,41 @@ export class SVGLegend implements ILegend {
         this.updateNavigationArrowLayout(navigationArrows, dataPointsLength, numberOfItems);
 
         return numberOfItems;
+    }
+
+    private getMarkerShapeWidth(markerShape: MarkerShape): number {
+        switch (markerShape) {
+            case MarkerShape.longDash: {
+                return Markers.LegendIconLineTotalWidth;
+            }
+            default: {
+                return SVGLegend.LegendIconRadius * 2;
+            }
+        }
+    }
+
+    private getLegendIconFactor(markerShape: MarkerShape): number {
+        switch (markerShape) {
+            case MarkerShape.circle:
+            case MarkerShape.square: {
+                return 5;
+            }
+            default: {
+                return 6;
+            }
+        }
+    }
+
+    private getIconScale(markerShape: MarkerShape): number {
+        switch (markerShape) {
+            case MarkerShape.circle:
+            case MarkerShape.square: {
+                return SVGLegend.LegendIconRadius / Markers.defaultSize;
+            }
+            default: {
+                return 1;
+            }
+        }
     }
 
     private calculateVerticalLayout(
@@ -810,7 +833,7 @@ export class SVGLegend implements ILegend {
         let extraShiftForTextAlignmentToIcon = 4 + fontFactor;
         let totalSpaceOccupiedThusFar = verticalLegendHeight;
         // the default space for text and icon radius + the margin after the font size change
-        let fixedHorizontalIconShift = SVGLegend.TextAndIconPadding + SVGLegend.LegendIconRadius + (this.legendFontSizeMarginDifference / SVGLegend.LegendIconRadiusFactor);
+        let fixedHorizontalIconShift = SVGLegend.TextAndIconPadding + SVGLegend.LegendIconRadius + (this.legendFontSizeMarginDifference / 1 /*SVGLegend.LegendIconRadiusFactor*/);
         let fixedHorizontalTextShift = fixedHorizontalIconShift * 2;
         // check how much space is needed
         let maxHorizontalSpaceAvaliable = autoWidth
@@ -965,56 +988,42 @@ export class SVGLegend implements ILegend {
 export module Markers {
     export const defaultSize = 5;
 
+    export const LegendIconLineTotalWidth: number = 31;
+
     const circlePath = "M 0 0 m -5 0 a 5 5 0 1 0 10 0 a 5 5 0 1 0 -10 0";
     const squarePath = "M 0 0 m -5 -5 l 10 0 l 0 10 l -10 0 z";
-    const diamondPath = "M 0 0 m -5 0 l 5 -5 l 5 5 l -5 5 z";
-    const trianglePath = "M 0 0 m -5 5 l 5 -10 l 5 10 z";
-    const xPath = "M 0 0 m -5 -5 l 10 10 m -10 0 l 10 -10";
-    const shortDashPath = "M 0 0 l 5 0";
-    const longDashPath = "M 0 0 m -5 0 l 10 0";
-    const plusPath = "M 0 0 m -5 0 l 10 0 m -5 -5 l 0 10";
+    const longDashPath = "M -" + (LegendIconLineTotalWidth / 2) + " 0 L " + (LegendIconLineTotalWidth / 2) + " 0";
 
     const shapeStroke = 0;
-    const thinStroke = 1;
     const thickStroke = 2;
 
     export function getPath(shape: string): string {
         switch (shape) {
-            case MarkerShape.circle:
+            case MarkerShape.circle: {
                 return circlePath;
-            case MarkerShape.square:
+            }
+            case MarkerShape.square: {
                 return squarePath;
-            case MarkerShape.diamond:
-                return diamondPath;
-            case MarkerShape.triangle:
-                return trianglePath;
-            case MarkerShape.x:
-                return xPath;
-            case MarkerShape.shortDash:
-                return shortDashPath;
-            case MarkerShape.longDash:
+            }
+            case MarkerShape.longDash: {
                 return longDashPath;
-            case MarkerShape.plus:
-                return plusPath;
-            case MarkerShape.none:
+            }
+            default: {
                 return undefined;
+            }
         }
     }
 
     export function getStrokeWidth(shape: string): number {
         switch (shape) {
+            case MarkerShape.longDash: {
+                return thickStroke;
+            }
             case MarkerShape.circle:
             case MarkerShape.square:
-            case MarkerShape.diamond:
-            case MarkerShape.triangle:
-            case MarkerShape.none:
+            default: {
                 return shapeStroke;
-            case MarkerShape.x:
-            case MarkerShape.plus:
-                return thinStroke;
-            case MarkerShape.shortDash:
-            case MarkerShape.longDash:
-                return thickStroke;
+            }
         }
     }
 }

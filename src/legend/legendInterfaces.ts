@@ -50,13 +50,7 @@ export interface LegendPosition2D {
 export enum MarkerShape {
     circle = "circle",
     square = "square",
-    diamond = "diamond",
-    triangle = "triangle",
-    x = "x",
-    shortDash = "shortDash",
     longDash = "longDash",
-    plus = "plus",
-    none = "none",
 }
 
 export enum LineStyle {
