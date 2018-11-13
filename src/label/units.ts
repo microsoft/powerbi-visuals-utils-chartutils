@@ -24,36 +24,18 @@
  *  THE SOFTWARE.
  */
 
-const path = require('path');
-const webpack = require("webpack");
+import { pixelConverter } from "powerbi-visuals-utils-typeutils";
 
-module.exports = {
-    entry: './src/index.ts',
-    devtool: 'source-map',
-    module: {
-        rules: [{
-                test: /\.tsx?$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
-            },
-            {
-                test: /\.json$/,
-                loader: 'json-loader'
-            }
-        ]
-    },
-    externals: {
-        "powerbi-visuals-api": '{}'
-    },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.css']
-    },
-    output: {
-        path: path.resolve(__dirname, ".tmp/test")
-    },
-    plugins: [
-        new webpack.ProvidePlugin({
-            'powerbi-visuals-api': null
-        })
-    ]
-};
+export module Units {
+    export class FontSize {
+        public static createFromPt(pt: number): FontSize {
+            return new FontSize(pt, pixelConverter.fromPointToPixel(pt));
+        }
+
+        public static createFromPx(px: number): FontSize {
+            return new FontSize(pixelConverter.toPoint(px), px);
+        }
+
+        private constructor(public readonly pt: number, public readonly px: number) { }
+    }
+}

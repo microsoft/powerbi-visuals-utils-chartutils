@@ -24,16 +24,14 @@
 *  THE SOFTWARE.
 */
 
-import powerbi from "powerbi-visuals-api";
-// powerbi.extensibility.utils.formatting
-import { textUtil } from "powerbi-visuals-utils-formattingutils";
-import { manipulation } from "powerbi-visuals-utils-svgutils";
-import { ILegend, LegendData, LegendDataPoint, LegendPosition, LegendIcon } from "./legendInterfaces";
 import {
     select
 } from "d3-selection";
-// powerbi.extensibility.utils.svg
-import translateXWithPixels = manipulation.translateXWithPixels;
+
+import powerbi from "powerbi-visuals-api";
+import { textUtil } from "powerbi-visuals-utils-formattingutils";
+
+import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 
 export class InteractiveLegend implements ILegend {
     private static LegendHeight = 70;
