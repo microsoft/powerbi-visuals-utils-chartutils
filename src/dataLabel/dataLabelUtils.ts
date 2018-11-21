@@ -204,11 +204,13 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Sele
     let dataLabelManager = new DataLabelManager();
     let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
     let hasAnimation: boolean = isAnimator && !!animationDuration;
-    let { oldSelection: labels, mergedSelection: allLabels }: pairSelection<dataLabelInterfaces.LabelEnabledDataPoint> = selectLabels(filteredData, context, false, hasAnimation);
+    let selectedLabels: pairSelection<dataLabelInterfaces.LabelEnabledDataPoint> = selectLabels(filteredData, context, false, hasAnimation);
 
-    if (!allLabels) {
+    if (!selectedLabels) {
         return;
     }
+
+    let { oldSelection: labels, mergedSelection: allLabels } = selectedLabels;
 
     if (hasAnimation) {
         allLabels
