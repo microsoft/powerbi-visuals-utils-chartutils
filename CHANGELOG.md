@@ -1,3 +1,6 @@
+## 2.2.1
+* FIX: d3 v5 wrong usage in Label Utils 
+
 ## 2.2.0
 * Implements legend marker shapes
 * New Label Utils
