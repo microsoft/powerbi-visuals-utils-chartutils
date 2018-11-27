@@ -26,9 +26,9 @@
 
 import powerbi from "powerbi-visuals-api";
 import { Point } from "powerbi-visuals-utils-svgutils";
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
+import { interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
 
-import SelectableDataPoint = interactivityService.SelectableDataPoint;
+import SelectableDataPoint = interactivitySelectionService.SelectableDataPoint;
 
 export enum LegendPosition {
     Top,

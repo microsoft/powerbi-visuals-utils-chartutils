@@ -35,10 +35,11 @@ import { manipulation, Rect } from "powerbi-visuals-utils-svgutils";
 import flushAllD3Transitions = manipulation.flushAllD3Transitions;
 
 // powerbi.extensibility.utils.interactivity
-
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
-import IInteractivityService = interactivityService.IInteractivityService;
-import createInteractivityService = interactivityService.createInteractivityService;
+import { interactivitySelectionService, interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
+import appendClearCatcher = interactivityBaseService.appendClearCatcher;
+import IBehaviorOptions = interactivityBaseService.IBehaviorOptions;
+import IInteractivityService = interactivityBaseService.IInteractivityService;
+import createInteractivityService = interactivitySelectionService.createInteractivitySelectionService;
 
 // powerbi.extensibility.utils.formatting
 import { stringExtensions } from "powerbi-visuals-utils-formattingutils";
@@ -67,7 +68,7 @@ import MockBehavior from "./mocks/mockBehavior";
 import * as d3scale from "d3-scale";
 import MockOpacityBehavior from "./mocks/mockOpacityBehavior";
 import { LegendBehaviorOptions } from "../src/legend/behavior/legendBehavior";
-import { appendClearCatcher } from "powerbi-visuals-utils-interactivityutils/lib/interactivityService";
+import { SelectableDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivitySelectionService";
 
 let incr: number = 0;
 
@@ -86,7 +87,7 @@ describe("legend", () => {
         let element: JQuery,
             viewport: powerbi.IViewport,
             legend: ILegend,
-            interactivityService: IInteractivityService,
+            interactivityService: IInteractivityService<SelectableDataPoint>,
             hostServices: IVisualHost,
             legendData: LegendDataPoint[],
             legendTitleClassSelector = ".legendTitle";
@@ -327,9 +328,11 @@ describe("legend", () => {
                     legendItems: itemsSelection,
                     legendIcons: itemsSelection,
                     clearCatcher: clearCatcher,
+                    behavior: behavior,
+                    dataPoints: mockDatapoints
                 };
 
-                interactivityService.bind(mockDatapoints, behavior, behaviorOptions);
+                interactivityService.bind(behaviorOptions);
                 behavior.uploadPoints(mockDatapoints);
                 behavior.selectIndex(1);
                 legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -352,7 +355,11 @@ describe("legend", () => {
                     ];
 
                     let mockBehavior = new MockBehavior(mockDatapoints);
-                    interactivityService.bind(mockDatapoints, mockBehavior, null);
+                    let behaviorOptions: IBehaviorOptions<LegendDataPoint> = {
+                        behavior: mockBehavior,
+                        dataPoints: mockDatapoints
+                    };
+                    interactivityService.bind(behaviorOptions);
                     mockBehavior.selectIndex(1);
 
                     legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -882,7 +889,7 @@ describe("legend", () => {
             legend: ILegend,
             colorStyle = "color: {0};",
             defaultLegendHeight = 70,
-            interactivityService: IInteractivityService;
+            interactivityService: IInteractivityService<SelectableDataPoint>;
 
         let legendData: LegendDataPoint[] = [
             {

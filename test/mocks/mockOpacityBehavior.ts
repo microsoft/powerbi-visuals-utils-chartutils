@@ -24,11 +24,11 @@
 *  THE SOFTWARE.
 */
 
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
+import { interactivityBaseService, interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
 
-import SelectableDataPoint = interactivityService.SelectableDataPoint;
-import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
-import ISelectionHandler = interactivityService.ISelectionHandler;
+import SelectableDataPoint = interactivitySelectionService.SelectableDataPoint;
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
+import ISelectionHandler = interactivityBaseService.ISelectionHandler;
 import OpacityLegendBehavior from "../../src/legend/behavior/opacityLegendBehavior";
 
 export default class MockOpacityBehavior extends OpacityLegendBehavior implements IInteractiveBehavior {

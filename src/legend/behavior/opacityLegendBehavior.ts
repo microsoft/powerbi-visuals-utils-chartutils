@@ -28,8 +28,8 @@ import { LegendDataPoint } from "../legendInterfaces";
 import { LegendBehavior } from "./legendBehavior";
 
 // Interactivity utils
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
-import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
+import { interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 
 export default class OpacityLegendBehavior extends LegendBehavior implements IInteractiveBehavior {
     public static dimmedOpacity: number = 0.4;

@@ -26,11 +26,12 @@
 
 // powerbi.extensibility.utils.interactivity
 import { LegendDataPoint } from  "../legendInterfaces";
-import { interactivityService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
-import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
-import ISelectionHandler = interactivityService.ISelectionHandler;
+import { interactivityBaseService, interactivityUtils, interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
+import ISelectionHandler = interactivityBaseService.ISelectionHandler;
+import IBehaviorOptions = interactivityBaseService.IBehaviorOptions;
 
-export interface LegendBehaviorOptions {
+export interface LegendBehaviorOptions extends IBehaviorOptions<LegendDataPoint> {
     legendItems: d3.Selection<any, any, any, any>;
     legendIcons: d3.Selection<any, any, any, any>;
     clearCatcher: d3.Selection<any, any, any, any>;
