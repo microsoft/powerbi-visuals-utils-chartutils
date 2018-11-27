@@ -1,3 +1,6 @@
+## 2.3.0
+* Update interactivity utils to 5.4.0
+
 ## 2.2.1
 * FIX: d3 v5 wrong usage in Label Utils 
 

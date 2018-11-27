@@ -33,7 +33,7 @@ import {
 } from "powerbi-visuals-utils-svgutils";
 
 import {
-    interactivityService
+    interactivitySelectionService
 } from "powerbi-visuals-utils-interactivityutils";
 
 import { double } from "powerbi-visuals-utils-typeutils";
@@ -323,7 +323,7 @@ export interface LabelDataPointGroup<TLabelDataPoint> {
     labelOrientation?: LabelOrientation;
 }
 
-export interface Label extends interactivityService.SelectableDataPoint {
+export interface Label extends interactivitySelectionService.SelectableDataPoint {
     /** Text to be displayed in the label */
     text: string;
 
@@ -362,7 +362,7 @@ export interface Label extends interactivityService.SelectableDataPoint {
     backgroundTransparency?: number;
 }
 
-export interface LabelOld extends interactivityService.SelectableDataPoint {
+export interface LabelOld extends interactivitySelectionService.SelectableDataPoint {
     /** Text to be displayed in the label */
     text: string;
 

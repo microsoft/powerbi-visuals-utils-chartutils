@@ -51,8 +51,8 @@ import ClassAndSelector = svg.CssConstants.ClassAndSelector;
 import createClassAndSelector = svg.CssConstants.createClassAndSelector;
 
 // powerbi.extensibility.utils.interactivity
-import * as interactivity from "powerbi-visuals-utils-interactivityutils";
-import SelectableDataPoint = interactivity.interactivityService.SelectableDataPoint;
+import { interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
+import SelectionDataPoint = interactivitySelectionService.SelectableDataPoint;
 
 import * as dataLabelInterfaces from "./dataLabelInterfaces";
 import LabelFormattedTextOptions = dataLabelInterfaces.LabelFormattedTextOptions;
@@ -204,21 +204,19 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Sele
     let dataLabelManager = new DataLabelManager();
     let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
     let hasAnimation: boolean = isAnimator && !!animationDuration;
-    let selectedLabels: pairSelection<dataLabelInterfaces.LabelEnabledDataPoint> = selectLabels(filteredData, context, false, hasAnimation);
+    let selectedLabels: d3.Selection<d3.BaseType, any, d3.BaseType, any> = selectLabels(filteredData, context, false, hasAnimation, animationDuration);
 
     if (!selectedLabels) {
         return;
     }
 
-    let { oldSelection: labels, mergedSelection: allLabels } = selectedLabels;
-
     if (hasAnimation) {
-        allLabels
+        selectedLabels
             .text((d: LabelEnabledDataPoint) => d.labeltext)
             .transition("")
             .duration(animationDuration)
             // .style(layout.style as any)
-            .style("opacity", (hasSelection ? (d: SelectableDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
+            .style("opacity", (hasSelection ? (d: SelectionDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
             .attr(
                 "x", (d: LabelEnabledDataPoint) => d.labelX
             )
@@ -226,18 +224,10 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Sele
                 "y", (d: LabelEnabledDataPoint) => d.labelY
             );
 
-        layout && layout.style && Object.keys(layout.style).forEach(style => allLabels = allLabels.style(style, layout.style[style]));
-
-
-        labels
-            .exit()
-            .transition()
-            .duration(animationDuration)
-            .style("opacity", 0) // fade out labels that are removed
-            .remove();
+        layout && layout.style && Object.keys(layout.style).forEach(style => selectedLabels = selectedLabels.style(style, layout.style[style]));
     }
     else {
-        allLabels
+        selectedLabels
             .attr(
                 "x", (d: LabelEnabledDataPoint) => d.labelX
             )
@@ -247,17 +237,13 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Sele
             .text((d: LabelEnabledDataPoint) => d.labeltext)
             .style(layout.style as any);
 
-        layout && layout.style && Object.keys(layout.style).forEach(style => allLabels = allLabels.style(style, layout.style[style]));
-
-        labels
-            .exit()
-            .remove();
+        layout && layout.style && Object.keys(layout.style).forEach(style => selectedLabels = selectedLabels.style(style, layout.style[style]));
     }
 
-    return allLabels;
+    return selectedLabels;
 }
 
-function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false): pairSelection<dataLabelInterfaces.LabelEnabledDataPoint> {
+function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false, animationDuration?: number): d3.Selection<d3.BaseType, any, d3.BaseType, any> {
     // Check for a case where resizing leaves no labels - then we need to remove the labels "g"
     if (filteredData.length === 0) {
         cleanDataLabels(context, true);
@@ -274,7 +260,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
     let getIdentifier = hasKey ?
         (d: any) => d.key
         : hasDataPointIdentity ?
-            (d: SelectableDataPoint) => (d.identity as ISelectionId).getKey()
+            (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
             : undefined;
 
     let labels = isDonut ?
@@ -282,6 +268,17 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
         : getIdentifier != null ?
             context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, getIdentifier)
             : context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData);
+
+    if (forAnimation) {
+        labels
+        .exit()
+        .transition()
+        .duration(animationDuration)
+        .style("opacity", 0) // fade out labels that are removed
+        .remove();
+    } else {
+        labels.exit().remove();
+    }
 
     let allLabels = labels.enter()
         .append("text")
@@ -292,7 +289,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
         allLabels.style("opacity", 0);
     }
 
-    return { oldSelection: labels, mergedSelection: allLabels };
+    return allLabels;
 }
 
 export function cleanDataLabels(context: d3.Selection<any, any, any, any>, removeLines: boolean = false): void {

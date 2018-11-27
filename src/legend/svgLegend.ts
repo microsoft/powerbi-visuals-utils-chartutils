@@ -39,9 +39,12 @@ import {
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 import { LegendBehavior, LegendBehaviorOptions } from "./behavior/legendBehavior";
 
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
-import IInteractivityService = interactivityService.IInteractivityService;
-import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
+import {
+    interactivityBaseService,
+    interactivitySelectionService
+} from "powerbi-visuals-utils-interactivityutils";
+import IInteractivityService = interactivityBaseService.IInteractivityService;
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 
 import {
     LineStyle,
@@ -61,8 +64,8 @@ import ClassAndSelector = CssConstants.ClassAndSelector;
 import createClassAndSelector = CssConstants.createClassAndSelector;
 
 // powerbi.extensibility.utils.interactivity
-import appendClearCatcher = interactivityService.appendClearCatcher;
-import dataHasSelection = interactivityService.dataHasSelection;
+import appendClearCatcher = interactivityBaseService.appendClearCatcher;
+import dataHasSelection = interactivityBaseService.dataHasSelection;
 
 export interface TitleLayout {
     x: number;
@@ -107,7 +110,7 @@ export class SVGLegend implements ILegend {
     private group: d3.Selection<any, any, any, any>;
     private clearCatcher: d3.Selection<any, any, any, any>;
     private element: HTMLElement;
-    private interactivityService: IInteractivityService;
+    private interactivityService: IInteractivityService<LegendDataPoint>;
     private interactiveBehavior?: IInteractiveBehavior;
     private legendDataStartIndex = 0;
     private arrowPosWindow = 1;
@@ -148,7 +151,7 @@ export class SVGLegend implements ILegend {
     constructor(
         element: HTMLElement,
         legendPosition: LegendPosition,
-        interactivityService: IInteractivityService,
+        interactivityService: IInteractivityService<LegendDataPoint>,
         isScrollable: boolean,
         interactiveBehavior?: IInteractiveBehavior
     ) {
@@ -423,9 +426,14 @@ export class SVGLegend implements ILegend {
                 legendItems: mergedLegendItems,
                 legendIcons: mergedLegendIcons,
                 clearCatcher: this.clearCatcher,
+                dataPoints: data.dataPoints,
+                behavior: this.interactiveBehavior,
+                interactivityServiceOptions: {
+                    isLegend: true
+                }
             };
 
-            this.interactivityService.bind(data.dataPoints, this.interactiveBehavior, behaviorOptions, { isLegend: true });
+            this.interactivityService.bind(behaviorOptions);
             this.interactiveBehavior.renderSelection(hasSelection);
         }
 

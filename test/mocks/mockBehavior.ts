@@ -24,11 +24,11 @@
 *  THE SOFTWARE.
 */
 
-import { interactivityService } from "powerbi-visuals-utils-interactivityutils";
+import { interactivitySelectionService, interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
 
-import SelectableDataPoint = interactivityService.SelectableDataPoint;
-import IInteractiveBehavior = interactivityService.IInteractiveBehavior;
-import ISelectionHandler = interactivityService.ISelectionHandler;
+import SelectableDataPoint = interactivitySelectionService.SelectableDataPoint;
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
+import ISelectionHandler = interactivityBaseService.ISelectionHandler;
 
 export default class MockBehavior implements IInteractiveBehavior {
     private selectableDataPoints: SelectableDataPoint[];
