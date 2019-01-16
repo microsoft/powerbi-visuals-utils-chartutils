@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "2.2.1",
+  "version": "2.3.1",
   "sideEffects": false,
   "description": "ChartUtils",
   "main": "lib/index",

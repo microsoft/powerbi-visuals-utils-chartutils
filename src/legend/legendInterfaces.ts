@@ -77,6 +77,7 @@ export interface LegendData {
     grouped?: boolean;
     labelColor?: string;
     fontSize?: number;
+    fontFamily?: string;
 }
 
 export const legendProps = {

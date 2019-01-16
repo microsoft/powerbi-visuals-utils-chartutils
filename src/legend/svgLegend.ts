@@ -39,10 +39,8 @@ import {
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
 import { LegendBehavior, LegendBehaviorOptions } from "./behavior/legendBehavior";
 
-import {
-    interactivityBaseService,
-    interactivitySelectionService
-} from "powerbi-visuals-utils-interactivityutils";
+import { interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
+
 import IInteractivityService = interactivityBaseService.IInteractivityService;
 import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 
@@ -138,9 +136,6 @@ export class SVGLegend implements ILegend {
     private static LegendArrowOffset = 10;
     private static LegendArrowHeight = 15;
     private static LegendArrowWidth = 7.5;
-
-    private static DefaultFontFamily: string = font.Family.regular.css;
-    private static DefaultTitleFontFamily: string = font.Family.semibold.css;
 
     private static LegendItem: ClassAndSelector = createClassAndSelector("legendItem");
     private static LegendText: ClassAndSelector = createClassAndSelector("legendText");
@@ -332,7 +327,7 @@ export class SVGLegend implements ILegend {
             .merge(enteredLegendTitle)
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize))
-            .style("font-family", SVGLegend.DefaultTitleFontFamily)
+            .style("font-family", data.fontFamily)
             .text((d: TitleLayout) => d.text)
             .attr("x", (d: TitleLayout) => d.x)
             .attr("y", (d: TitleLayout) => d.y)
@@ -419,7 +414,8 @@ export class SVGLegend implements ILegend {
             .attr("y", (dataPoint: LegendDataPoint) => dataPoint.textPosition.y)
             .text((d: LegendDataPoint) => d.label)
             .style("fill", data.labelColor)
-            .style("font-size", PixelConverter.fromPoint(data.fontSize));
+            .style("font-size", PixelConverter.fromPoint(data.fontSize))
+            .style("font-family", data.fontFamily);
 
         if (this.interactivityService) {
             let behaviorOptions: LegendBehaviorOptions = {
@@ -477,7 +473,7 @@ export class SVGLegend implements ILegend {
         if (hasTitle) {
             let isHorizontal = this.isTopOrBottom(this.orientation);
 
-            let textProperties = SVGLegend.getTextProperties(true, title, this.data.fontSize);
+            let textProperties = SVGLegend.getTextProperties(title, this.data.fontSize, this.data.fontFamily);
             let text = title;
             width = textMeasurementService.measureSvgTextWidth(textProperties);
 
@@ -615,7 +611,13 @@ export class SVGLegend implements ILegend {
     /**
      * Calculates the widths for each horizontal legend item.
      */
-    private static calculateHorizontalLegendItemsWidths(dataPoints: LegendDataPoint[], availableWidth: number, iconPadding: number, fontSize: number): LegendItem[] {
+    private static calculateHorizontalLegendItemsWidths(
+        dataPoints: LegendDataPoint[],
+        availableWidth: number,
+        iconPadding: number,
+        fontSize: number,
+        fontFamily: string,
+    ): LegendItem[] {
 
         let dataPointsLength = dataPoints.length;
 
@@ -643,7 +645,7 @@ export class SVGLegend implements ILegend {
         // Add legend items until we can"t fit any more (the last one doesn"t fit) or we"ve added all of them
         for (let dataPoint of dataPoints) {
 
-            let textProperties = SVGLegend.getTextProperties(false, dataPoint.label, fontSize);
+            let textProperties = SVGLegend.getTextProperties(dataPoint.label, fontSize, fontFamily);
             let itemTextWidth = textMeasurementService.measureSvgTextWidth(textProperties);
             let desiredWidth = itemTextWidth + iconPadding;
             let overMaxWidth = desiredWidth > maxItemWidth;
@@ -728,7 +730,7 @@ export class SVGLegend implements ILegend {
 
         let numberOfItems: number = dataPoints.length;
         // get the Y coordinate which is the middle of the container + the middle of the text height - the delta of the text
-        let defaultTextProperties = SVGLegend.getTextProperties(false, "", this.data.fontSize);
+        let defaultTextProperties = SVGLegend.getTextProperties("", this.data.fontSize, this.data.fontFamily);
         let verticalCenter = this.viewport.height / 2;
         let textYCoordinate = verticalCenter + textMeasurementService.estimateSvgTextHeight(defaultTextProperties) / 2
             - textMeasurementService.estimateSvgTextBaselineDelta(defaultTextProperties);
@@ -736,7 +738,9 @@ export class SVGLegend implements ILegend {
         if (title) {
             occupiedWidth += title.width;
             // get the Y coordinate which is the middle of the container + the middle of the text height - the delta of the text
-            title.y = verticalCenter + title.height / 2 - textMeasurementService.estimateSvgTextBaselineDelta(SVGLegend.getTextProperties(true, title.text, this.data.fontSize));
+            title.y = verticalCenter
+                + title.height / 2
+                - textMeasurementService.estimateSvgTextBaselineDelta(SVGLegend.getTextProperties(title.text, this.data.fontSize, this.data.fontFamily));
         }
 
         // if an arrow should be added, we add space for it
@@ -747,13 +751,29 @@ export class SVGLegend implements ILegend {
         // Calculate the width for each of the legend items
         let dataPointsLength = dataPoints.length;
         let availableWidth = this.parentViewport.width - occupiedWidth;
-        let legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(dataPoints, availableWidth, iconTotalItemPadding, this.data.fontSize);
+
+        let legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(
+            dataPoints,
+            availableWidth,
+            iconTotalItemPadding,
+            this.data.fontSize,
+            this.data.fontFamily,
+        );
+
         numberOfItems = legendItems.length;
 
         // If we can"t show all the legend items, subtract the "next" arrow space from the available space and re-run the width calculations
         if (numberOfItems !== dataPointsLength) {
             availableWidth -= SVGLegend.LegendArrowOffset;
-            legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(dataPoints, availableWidth, iconTotalItemPadding, this.data.fontSize);
+
+            legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(
+                dataPoints,
+                availableWidth,
+                iconTotalItemPadding,
+                this.data.fontSize,
+                this.data.fontFamily,
+            );
+
             numberOfItems = legendItems.length;
         }
 
@@ -874,7 +894,7 @@ export class SVGLegend implements ILegend {
         let dataPointsLength = dataPoints.length;
         for (let i = 0; i < dataPointsLength; i++) {
             let dp = dataPoints[i];
-            let textProperties = SVGLegend.getTextProperties(false, dp.label, this.data.fontSize);
+            let textProperties = SVGLegend.getTextProperties(dp.label, this.data.fontSize, this.data.fontFamily);
 
             dp.glyphPosition = {
                 x: fixedHorizontalIconShift,
@@ -982,13 +1002,15 @@ export class SVGLegend implements ILegend {
 
     public reset(): void { }
 
-    private static getTextProperties(isTitle: boolean, text?: string, fontSize?: number): TextProperties {
+    private static getTextProperties(
+        text: string,
+        fontSize: number,
+        fontFamily: string
+    ): TextProperties {
         return {
-            text: text,
-            fontFamily: isTitle
-                ? SVGLegend.DefaultTitleFontFamily
-                : SVGLegend.DefaultFontFamily,
-            fontSize: PixelConverter.fromPoint(fontSize || SVGLegend.DefaultFontSizeInPt)
+            fontFamily,
+            fontSize: PixelConverter.fromPoint(fontSize || SVGLegend.DefaultFontSizeInPt),
+            text,
         };
     }
 
