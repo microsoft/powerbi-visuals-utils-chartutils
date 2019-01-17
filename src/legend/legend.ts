@@ -27,17 +27,18 @@
 import { interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityBaseService.IInteractivityService;
 import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
-import { ILegend, LegendPosition, LegendDataPoint } from  "./legendInterfaces";
-import { InteractiveLegend } from  "./interactiveLegend";
-import { SVGLegend } from  "./svgLegend";
+import { ILegend, LegendPosition, LegendDataPoint } from "./legendInterfaces";
+import { InteractiveLegend } from "./interactiveLegend";
+import { SVGLegend } from "./svgLegend";
 
-export function createLegend(legendParentElement: HTMLElement,
+export function createLegend(
+    legendParentElement: HTMLElement,
     interactive: boolean,
     interactivityService: IInteractivityService<LegendDataPoint>,
     isScrollable: boolean = false,
     legendPosition: LegendPosition = LegendPosition.Top,
-    interactiveBehavior?: IInteractiveBehavior
-    ): ILegend {
+    interactiveBehavior?: IInteractiveBehavior,
+): ILegend {
 
     if (interactive) {
         return new InteractiveLegend(legendParentElement);

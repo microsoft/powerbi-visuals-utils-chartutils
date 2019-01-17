@@ -1080,6 +1080,82 @@ describe("legend", () => {
             }
         }
     });
+
+    describe("SVGLegend DOM", () => {
+        const dataPoints: LegendDataPoint[] = [
+            {
+                category: "state",
+                label: "Alaska",
+                color: "red",
+
+                measure: 0,
+                identity: createSelectionIdentity(),
+                selected: false
+            },
+            {
+                category: "state",
+                label: "California",
+                color: "blue",
+
+                measure: 5,
+                identity: createSelectionIdentity(),
+                selected: false
+            },
+            {
+                category: "state",
+                label: "Texas",
+                color: "green",
+
+                measure: 10,
+                identity: createSelectionIdentity(),
+                selected: false
+            },
+        ];
+
+        const viewport: powerbi.IViewport = {
+            height: 100,
+            width: 500,
+        };
+
+        let legend: ILegend;
+
+        beforeEach(() => {
+            const element: JQuery = testDom("500", "500");
+            const interactivityService: IInteractivityService<SelectableDataPoint> = createInteractivityService(createVisualHost());
+
+            legend = createLegend(element.get(0), false, interactivityService);
+        });
+
+        it("should render 3 legendText elements", (done) => {
+            legend.drawLegend({ dataPoints }, viewport);
+
+            setTimeout(() => {
+                expect($(".legendText").length).toBe(3);
+
+                done();
+            }, DefaultWaitForRender);
+        });
+
+        it("should apply fontFamily via CSS for each legendText element", (done) => {
+            const fontFamily: string = "Tahoma";
+
+            legend.drawLegend(
+                {
+                    fontFamily,
+                    dataPoints,
+                },
+                viewport,
+            );
+
+            setTimeout(() => {
+                $(".legendText").toArray().forEach((legendTextElement: Element) => {
+                    expect($(legendTextElement).css("font-family")).toBe(fontFamily);
+                });
+
+                done();
+            }, DefaultWaitForRender);
+        });
+    });
 });
 
 function getLotsOfLegendData(): LegendDataPoint[] {

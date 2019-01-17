@@ -1,8 +1,12 @@
+## 2.3.1
+* Fixes measurement of legend items to fit available viewport width
+* Supports `fontFamily` for legend component
+
 ## 2.3.0
 * Update interactivity utils to 5.4.0
 
 ## 2.2.1
-* FIX: d3 v5 wrong usage in Label Utils 
+* FIX: d3 v5 wrong usage in Label Utils
 
 ## 2.2.0
 * Implements legend marker shapes
@@ -18,7 +22,7 @@
 * FIX: Was removed a wrong instruction from auto generated code that impacted on tests in visuals
 
 ## 1.5.0
-* Added two new optional parameters for CreateScale function -- innerPadding and useRangePoint. The first lets set inner padding for scale instead of recieve it from constant. The second lets use rangePoint instead of rangeBands function for creation of ordinal scale.
+* Added two new optional parameters for CreateScale function -- innerPadding and useRangePoint. The first lets set inner padding for scale instead of receive it from constant. The second lets use rangePoint instead of rangeBands function for creation of ordinal scale.
 
 ## 1.4.0
 * Remove width restriction of title in legend
