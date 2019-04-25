@@ -1,3 +1,6 @@
+## 1.9.0
+* Update interactivity utils package to 4.3.0 version to allow use both packages at same time.
+
 ## 1.8.0
 * Update packages to fix vulnerabilities
 

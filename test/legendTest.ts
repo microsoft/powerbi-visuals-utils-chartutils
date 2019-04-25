@@ -42,7 +42,8 @@ module powerbi.extensibility.utils.chart.legend.test {
 
     // powerbi.extensibility.utils.interactivity
     import IInteractivityService = powerbi.extensibility.utils.interactivity.IInteractivityService;
-    import createInteractivityService = powerbi.extensibility.utils.interactivity.createInteractivityService;
+    import createInteractivityService = powerbi.extensibility.utils.interactivity.createInteractivitySelectionService;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
 
     // powerbi.extensibility.utils.formatting
     import stringExtensions = powerbi.extensibility.utils.formatting.stringExtensions;
@@ -72,7 +73,7 @@ module powerbi.extensibility.utils.chart.legend.test {
             let element: JQuery,
                 viewport: powerbi.IViewport,
                 legend: ILegend,
-                interactivityService: IInteractivityService,
+                interactivityService: IInteractivityService<SelectionDataPoint>,
                 hostServices: IVisualHost,
                 legendData: LegendDataPoint[],
                 legendTitleClassSelector = ".legendTitle";
@@ -308,7 +309,11 @@ module powerbi.extensibility.utils.chart.legend.test {
                         ];
 
                         let mockBehavior = new MockBehavior(mockDatapoints);
-                        interactivityService.bind(mockDatapoints, mockBehavior, null);
+                        interactivityService.bind({
+                            behavior: mockBehavior,
+                            dataPoints: mockDatapoints,
+                            interactivityServiceOptions: null
+                        });
                         mockBehavior.selectIndex(1);
 
                         legend.drawLegend({ dataPoints: legendData }, viewport);
@@ -835,7 +840,7 @@ module powerbi.extensibility.utils.chart.legend.test {
                 legend: ILegend,
                 colorStyle = "color: {0};",
                 defaultLegendHeight = 70,
-                interactivityService: IInteractivityService;
+                interactivityService: IInteractivityService<SelectionDataPoint>;
 
             let legendData: LegendDataPoint[] = [
                 {
