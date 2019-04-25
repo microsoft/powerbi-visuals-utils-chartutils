@@ -48,6 +48,7 @@ module powerbi.extensibility.utils.chart.legend {
     import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
     import appendClearCatcher = powerbi.extensibility.utils.interactivity.appendClearCatcher;
     import dataHasSelection = powerbi.extensibility.utils.interactivity.dataHasSelection;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
 
     interface TitleLayout {
         x: number;
@@ -92,7 +93,7 @@ module powerbi.extensibility.utils.chart.legend {
         private group: d3.Selection<any>;
         private clearCatcher: d3.Selection<any>;
         private element: HTMLElement;
-        private interactivityService: IInteractivityService;
+        private interactivityService: IInteractivityService<SelectionDataPoint>;
         private interactiveBehavior?: IInteractiveBehavior;
         private legendDataStartIndex = 0;
         private arrowPosWindow = 1;
@@ -134,7 +135,7 @@ module powerbi.extensibility.utils.chart.legend {
         constructor(
             element: HTMLElement,
             legendPosition: LegendPosition,
-            interactivityService: IInteractivityService,
+            interactivityService: IInteractivityService<SelectionDataPoint>,
             isScrollable: boolean,
             interactiveBehavior?: IInteractiveBehavior) {
 
@@ -384,9 +385,12 @@ module powerbi.extensibility.utils.chart.legend {
                     legendItems: legendItems,
                     legendIcons: iconsSelection,
                     clearCatcher: this.clearCatcher,
+                    dataPoints: data.dataPoints,
+                    behavior: this.interactiveBehavior,
+                    interactivityServiceOptions: { isLegend: true }
                 };
 
-                this.interactivityService.bind(data.dataPoints, this.interactiveBehavior, behaviorOptions, { isLegend: true });
+                this.interactivityService.bind(behaviorOptions);
                 this.interactiveBehavior.renderSelection(hasSelection);
             }
 

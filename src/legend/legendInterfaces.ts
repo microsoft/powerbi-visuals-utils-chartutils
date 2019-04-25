@@ -29,7 +29,7 @@ module powerbi.extensibility.utils.chart.legend {
     import Point = powerbi.extensibility.utils.svg.Point;
 
     // powerbi.extensibility.utils.interactivity
-    import SelectableDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
 
     export enum LegendIcon {
         Box,
@@ -54,7 +54,7 @@ module powerbi.extensibility.utils.chart.legend {
         glyphPosition?: Point;
     }
 
-    export interface LegendDataPoint extends SelectableDataPoint, LegendPosition2D {
+    export interface LegendDataPoint extends SelectionDataPoint, LegendPosition2D {
         label: string;
         color: string;
         icon: LegendIcon;

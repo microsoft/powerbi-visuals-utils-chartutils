@@ -47,7 +47,7 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
     import createClassAndSelector = powerbi.extensibility.utils.svg.CssConstants.createClassAndSelector;
 
     // powerbi.extensibility.utils.interactivity
-    import SelectableDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
 
     export const maxLabelWidth: number = 50;
     export const defaultLabelDensity: string = "50";
@@ -199,7 +199,7 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
                 .transition()
                 .duration(animationDuration)
                 .style(layout.style as any)
-                .style("opacity", (hasSelection ? (d: SelectableDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
+                .style("opacity", (hasSelection ? (d: SelectionDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
                 .attr({
                     x: (d: LabelEnabledDataPoint) => d.labelX,
                     y: (d: LabelEnabledDataPoint) => d.labelY
@@ -243,7 +243,7 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
         let getIdentifier = hasKey ?
             (d: any) => d.key
             : hasDataPointIdentity ?
-                (d: SelectableDataPoint) => (d.identity as ISelectionId).getKey()
+                (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
                 : undefined;
 
         let labels = isDonut ?
