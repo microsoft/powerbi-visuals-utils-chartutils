@@ -33,9 +33,10 @@ import {
 
 import { assertColorsMatch } from "./../helpers/helpers";
 
+import * as DataLabelRectPositioner from "../../src/label/dataLabelRectPositioner";
+import * as DataLabelPointPositioner from "../../src/label/dataLabelPointPositioner";
+
 import {
-    DataLabelRectPositioner,
-    DataLabelPointPositioner,
     Label,
     LabelOld,
     LabelDataPoint,
@@ -48,7 +49,7 @@ import {
     LabelParentPoint,
 } from "../../src/label/labelLayout";
 
-import { LabelUtils } from "../../src/label/labelUtils";
+import * as LabelUtils from "../../src/label/labelUtils";
 
 let testOutsideFillColor = "#000000";
 let testInsideFillColor = "#FFFFFF";

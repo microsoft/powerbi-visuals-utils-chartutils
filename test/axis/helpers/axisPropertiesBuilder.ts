@@ -42,249 +42,247 @@ import * as axisInterfaces from "./../../../src/axis/axisInterfaces";
 import IAxisProperties = axisInterfaces.IAxisProperties;
 import CreateAxisOptions = axisInterfaces.CreateAxisOptions;
 
-export module axisPropertiesBuilder {
-    const dataStrings = ["Sun", "Mon", "Holiday"];
+const dataStrings = ["Sun", "Mon", "Holiday"];
 
-    export const dataNumbers = [47.5, 98.22, 127.3];
+export const dataNumbers = [47.5, 98.22, 127.3];
 
-    const domainOrdinal3 = [0, 1, 2];
+const domainOrdinal3 = [0, 1, 2];
 
-    const domainBoolIndex = [0, 1];
+const domainBoolIndex = [0, 1];
 
-    export const domainNaN = [NaN, NaN];
+export const domainNaN = [NaN, NaN];
 
-    const displayName: string = "Column";
+const displayName: string = "Column";
 
-    const pixelSpan: number = 100;
+const pixelSpan: number = 100;
 
-    export const dataTime = [
-        new Date("10/15/2014"),
-        new Date("10/15/2015"),
-        new Date("10/15/2016")
-    ];
+export const dataTime = [
+    new Date("10/15/2014"),
+    new Date("10/15/2015"),
+    new Date("10/15/2016")
+];
 
-    const metaDataColumnText: DataViewMetadataColumn = {
-        displayName: displayName,
-        type: ValueType.fromDescriptor({ text: true })
+const metaDataColumnText: DataViewMetadataColumn = {
+    displayName: displayName,
+    type: ValueType.fromDescriptor({ text: true })
+};
+
+export const metaDataColumnNumeric: DataViewMetadataColumn = {
+    displayName: displayName,
+    type: ValueType.fromDescriptor({ numeric: true })
+};
+
+export const metaDataColumnCurrency: DataViewMetadataColumn = {
+    displayName: displayName,
+    type: ValueType.fromDescriptor({ numeric: true }),
+    objects: { general: { formatString: "$0" } },
+};
+
+const metaDataColumnBool: DataViewMetadataColumn = {
+    displayName: displayName,
+    type: ValueType.fromDescriptor({ bool: true })
+};
+
+const metaDataColumnTime: DataViewMetadataColumn = {
+    displayName: displayName,
+    type: ValueType.fromDescriptor({ dateTime: true }),
+    format: "yyyy/MM/dd",
+    objects: { general: { formatString: "yyyy/MM/dd" } },
+};
+
+const formatStringProp: DataViewObjectPropertyIdentifier = {
+    objectName: "general",
+    propertyName: "formatString"
+};
+
+function getValueFnStrings(index): string {
+    return dataStrings[index];
+}
+
+function getValueFnNumbers(index): number {
+    return dataNumbers[index];
+}
+
+function getValueFnBool(d): boolean {
+    return d === 0;
+}
+
+function getValueFnTime(index): Date {
+    return new Date(index);
+}
+
+function getValueFnTimeIndex(index): Date {
+    return dataTime[index];
+}
+
+function createAxisOptions(
+    metaDataColumn: DataViewMetadataColumn,
+    dataDomain: any[],
+    getValueFn?): CreateAxisOptions {
+    let axisOptions: CreateAxisOptions = {
+        pixelSpan: pixelSpan,
+        dataDomain: dataDomain,
+        metaDataColumn: metaDataColumn,
+        formatString: valueFormatter.getFormatString(metaDataColumn, formatStringProp),
+        outerPadding: 0.5,
+        isScalar: false,
+        isVertical: false, // callers will update this to true if necessary before calling createAxis
+        getValueFn: getValueFn,
     };
 
-    export const metaDataColumnNumeric: DataViewMetadataColumn = {
-        displayName: displayName,
-        type: ValueType.fromDescriptor({ numeric: true })
-    };
+    return axisOptions;
+}
 
-    export const metaDataColumnCurrency: DataViewMetadataColumn = {
-        displayName: displayName,
-        type: ValueType.fromDescriptor({ numeric: true }),
-        objects: { general: { formatString: "$0" } },
-    };
+function getAxisOptions(
+    metaDataColumn: DataViewMetadataColumn,
+    domain?: string[],
+    getValueFn?: (idx: number) => string): CreateAxisOptions {
+    let axisOptions = createAxisOptions(
+        metaDataColumn,
+        domain ? domain :
+            metaDataColumn ? domainOrdinal3 : [],
+        getValueFn ? getValueFn : getValueFnStrings);
 
-    const metaDataColumnBool: DataViewMetadataColumn = {
-        displayName: displayName,
-        type: ValueType.fromDescriptor({ bool: true })
-    };
+    return axisOptions;
+}
 
-    const metaDataColumnTime: DataViewMetadataColumn = {
-        displayName: displayName,
-        type: ValueType.fromDescriptor({ dateTime: true }),
-        format: "yyyy/MM/dd",
-        objects: { general: { formatString: "yyyy/MM/dd" } },
-    };
+export function buildAxisProperties(dataDomain: any[], metadataColumn?: DataViewMetadataColumn): IAxisProperties {
+    let axisOptions = createAxisOptions(metadataColumn ? metadataColumn : metaDataColumnNumeric, dataDomain);
+    axisOptions.isScalar = true;
+    axisOptions.useTickIntervalForDisplayUnits = true;
 
-    const formatStringProp: DataViewObjectPropertyIdentifier = {
-        objectName: "general",
-        propertyName: "formatString"
-    };
+    return axis.createAxis(axisOptions);
+}
 
-    function getValueFnStrings(index): string {
-        return dataStrings[index];
-    }
+export function buildAxisPropertiesString(): IAxisProperties {
+    let axisOptions = getAxisOptions(metaDataColumnText);
 
-    function getValueFnNumbers(index): number {
-        return dataNumbers[index];
-    }
+    return axis.createAxis(axisOptions);
+}
 
-    function getValueFnBool(d): boolean {
-        return d === 0;
-    }
+export function buildAxisPropertiesText(
+    metaDataColumn: DataViewMetadataColumn,
+    domain?: string[],
+    getValueFn?: (idx: number) => string): IAxisProperties {
+    let axisOptions = getAxisOptions(metaDataColumn, domain, getValueFn);
 
-    function getValueFnTime(index): Date {
-        return new Date(index);
-    }
+    return axis.createAxis(axisOptions);
+}
 
-    function getValueFnTimeIndex(index): Date {
-        return dataTime[index];
-    }
-
-    function createAxisOptions(
-        metaDataColumn: DataViewMetadataColumn,
-        dataDomain: any[],
-        getValueFn?): CreateAxisOptions {
-        let axisOptions: CreateAxisOptions = {
-            pixelSpan: pixelSpan,
-            dataDomain: dataDomain,
-            metaDataColumn: metaDataColumn,
-            formatString: valueFormatter.getFormatString(metaDataColumn, formatStringProp),
-            outerPadding: 0.5,
-            isScalar: false,
-            isVertical: false, // callers will update this to true if necessary before calling createAxis
-            getValueFn: getValueFn,
-        };
-
-        return axisOptions;
-    }
-
-    function getAxisOptions(
-        metaDataColumn: DataViewMetadataColumn,
-        domain?: string[],
-        getValueFn?: (idx: number) => string): CreateAxisOptions {
-        let axisOptions = createAxisOptions(
-            metaDataColumn,
-            domain ? domain :
-                metaDataColumn ? domainOrdinal3 : [],
-            getValueFn ? getValueFn : getValueFnStrings);
-
-        return axisOptions;
-    }
-
-    export function buildAxisProperties(dataDomain: any[], metadataColumn?: DataViewMetadataColumn): IAxisProperties {
-        let axisOptions = createAxisOptions(metadataColumn ? metadataColumn : metaDataColumnNumeric, dataDomain);
-        axisOptions.isScalar = true;
-        axisOptions.useTickIntervalForDisplayUnits = true;
-
-        return axis.createAxis(axisOptions);
-    }
-
-    export function buildAxisPropertiesString(): IAxisProperties {
-        let axisOptions = getAxisOptions(metaDataColumnText);
-
-        return axis.createAxis(axisOptions);
-    }
-
-    export function buildAxisPropertiesText(
-        metaDataColumn: DataViewMetadataColumn,
-        domain?: string[],
-        getValueFn?: (idx: number) => string): IAxisProperties {
-        let axisOptions = getAxisOptions(metaDataColumn, domain, getValueFn);
-
-        return axis.createAxis(axisOptions);
-    }
-
-    export function buildAxisPropertiesNumber(): IAxisProperties {
-        return axis.createAxis(
-            createAxisOptions(
-                metaDataColumnNumeric,
-                domainOrdinal3,
-                getValueFnNumbers));
-    }
-
-    export function buildAxisPropertiesBool(): IAxisProperties {
-        return axis.createAxis(
-            createAxisOptions(
-                metaDataColumnBool,
-                domainBoolIndex,
-                getValueFnBool));
-    }
-
-    export function buildAxisPropertiesStringWithCategoryThickness(
-        categoryThickness: number = 5): IAxisProperties {
-        let axisOptions = createAxisOptions(
-            metaDataColumnText,
+export function buildAxisPropertiesNumber(): IAxisProperties {
+    return axis.createAxis(
+        createAxisOptions(
+            metaDataColumnNumeric,
             domainOrdinal3,
-            getValueFnStrings);
+            getValueFnNumbers));
+}
 
+export function buildAxisPropertiesBool(): IAxisProperties {
+    return axis.createAxis(
+        createAxisOptions(
+            metaDataColumnBool,
+            domainBoolIndex,
+            getValueFnBool));
+}
+
+export function buildAxisPropertiesStringWithCategoryThickness(
+    categoryThickness: number = 5): IAxisProperties {
+    let axisOptions = createAxisOptions(
+        metaDataColumnText,
+        domainOrdinal3,
+        getValueFnStrings);
+
+    axisOptions.categoryThickness = categoryThickness;
+
+    return axis.createAxis(axisOptions);
+}
+
+export function buildAxisPropertiesNumbers(): IAxisProperties {
+    let axisOptions = createAxisOptions(
+        metaDataColumnNumeric,
+        [
+            dataNumbers[0],
+            dataNumbers[2]
+        ]);
+
+    axisOptions.isScalar = true;
+
+    return axis.createAxis(axisOptions);
+}
+
+export function buildAxisPropertiesNan(): IAxisProperties {
+    let axisOptions = createAxisOptions(
+        metaDataColumnNumeric,
+        domainNaN);
+
+    axisOptions.isVertical = true;
+    axisOptions.isScalar = true;
+
+    return axis.createAxis(axisOptions);
+}
+
+export function buildAxisPropertiesWithDefinedInnerPadding(): IAxisProperties {
+    let axisOptions = getAxisOptions(metaDataColumnText);
+    axisOptions.innerPadding = 0.5;
+    return axis.createAxis(axisOptions);
+}
+
+export function buildAxisPropertiesWithRangePointsUsing(): IAxisProperties {
+    let axisOptions = getAxisOptions(metaDataColumnText);
+    axisOptions.innerPadding = 0.5;
+    axisOptions.useRangePoints = true;
+    return axis.createAxis(axisOptions);
+}
+
+export function buildAxisPropertiesNumeric(
+    dataDomain: any[],
+    categoryThickness?: number,
+    pixelSpan?: number,
+    isVertical: boolean = true,
+    isScalar: boolean = true,
+    getValueFn?: (idx: number) => string): IAxisProperties {
+
+    let axisOptions = createAxisOptions(
+        metaDataColumnNumeric,
+        dataDomain,
+        getValueFn);
+
+    if (categoryThickness) {
         axisOptions.categoryThickness = categoryThickness;
-
-        return axis.createAxis(axisOptions);
     }
 
-    export function buildAxisPropertiesNumbers(): IAxisProperties {
-        let axisOptions = createAxisOptions(
-            metaDataColumnNumeric,
-            [
-                dataNumbers[0],
-                dataNumbers[2]
-            ]);
-
-        axisOptions.isScalar = true;
-
-        return axis.createAxis(axisOptions);
+    if (pixelSpan) {
+        axisOptions.pixelSpan = pixelSpan;
     }
 
-    export function buildAxisPropertiesNan(): IAxisProperties {
-        let axisOptions = createAxisOptions(
-            metaDataColumnNumeric,
-            domainNaN);
+    axisOptions.isVertical = isVertical;
+    axisOptions.isScalar = isScalar;
 
-        axisOptions.isVertical = true;
-        axisOptions.isScalar = true;
+    return axis.createAxis(axisOptions);
+}
 
-        return axis.createAxis(axisOptions);
-    }
+export function buildAxisPropertiesTime(
+    dataDomain: any[],
+    isScalar: boolean = true,
+    maxTicks?: number): IAxisProperties {
+    let axisOptions = createAxisOptions(
+        metaDataColumnTime,
+        dataDomain,
+        getValueFnTime);
 
-    export function buildAxisPropertiesWithDefinedInnerPadding(): IAxisProperties {
-        let axisOptions = getAxisOptions(metaDataColumnText);
-        axisOptions.innerPadding = 0.5;
-        return axis.createAxis(axisOptions);
-    }
+    axisOptions.isScalar = isScalar;
 
-    export function buildAxisPropertiesWithRangePointsUsing(): IAxisProperties {
-        let axisOptions = getAxisOptions(metaDataColumnText);
-        axisOptions.innerPadding = 0.5;
-        axisOptions.useRangePoints = true;
-        return axis.createAxis(axisOptions);
-    }
+    if (maxTicks)
+        axisOptions.maxTickCount = maxTicks;
 
-    export function buildAxisPropertiesNumeric(
-        dataDomain: any[],
-        categoryThickness?: number,
-        pixelSpan?: number,
-        isVertical: boolean = true,
-        isScalar: boolean = true,
-        getValueFn?: (idx: number) => string): IAxisProperties {
+    return axis.createAxis(axisOptions);
+}
 
-        let axisOptions = createAxisOptions(
-            metaDataColumnNumeric,
-            dataDomain,
-            getValueFn);
+export function buildAxisPropertiesTimeIndex(): IAxisProperties {
+    let axisOptions = createAxisOptions(
+        metaDataColumnTime,
+        domainOrdinal3,
+        getValueFnTimeIndex);
 
-        if (categoryThickness) {
-            axisOptions.categoryThickness = categoryThickness;
-        }
-
-        if (pixelSpan) {
-            axisOptions.pixelSpan = pixelSpan;
-        }
-
-        axisOptions.isVertical = isVertical;
-        axisOptions.isScalar = isScalar;
-
-        return axis.createAxis(axisOptions);
-    }
-
-    export function buildAxisPropertiesTime(
-        dataDomain: any[],
-        isScalar: boolean = true,
-        maxTicks?: number): IAxisProperties {
-        let axisOptions = createAxisOptions(
-            metaDataColumnTime,
-            dataDomain,
-            getValueFnTime);
-
-        axisOptions.isScalar = isScalar;
-
-        if (maxTicks)
-            axisOptions.maxTickCount = maxTicks;
-
-        return axis.createAxis(axisOptions);
-    }
-
-    export function buildAxisPropertiesTimeIndex(): IAxisProperties {
-        let axisOptions = createAxisOptions(
-            metaDataColumnTime,
-            domainOrdinal3,
-            getValueFnTimeIndex);
-
-        return axis.createAxis(axisOptions);
-    }
+    return axis.createAxis(axisOptions);
 }

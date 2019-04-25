@@ -29,7 +29,10 @@ import { Selection } from "d3-selection";
 import { CssConstants } from "powerbi-visuals-utils-svgutils";
 
 import { FontProperties } from "./fontProperties";
-import { NewDataLabelUtils } from "./newDataLabelUtils";
+import {
+    drawDefaultLabels as newDrawDefaultLabels,
+    getDataLabelLayoutOptions as newGetDataLabelLayoutOptions,
+    getNumberOfLabelsToRender as newGetNumberOfLabelsToRender } from "./newDataLabelUtils";
 
 import {
     DataLabelLayoutOptions,
@@ -95,42 +98,41 @@ export const enum CartesianChartType {
     RealTimeLineChart,
 }
 
-export module LabelUtils {
-    export const DefaultFontSizeInPt = 9;
 
-    export const horizontalLabelBackgroundPadding = 4;
-    export const verticalLabelBackgroundPadding = 2;
+export const DefaultFontSizeInPt = 9;
 
-    export let labelGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelGraphicsContext");
-    export let labelBackgroundGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelBackgroundGraphicsContext");
+export const horizontalLabelBackgroundPadding = 4;
+export const verticalLabelBackgroundPadding = 2;
 
-    export function downgradeToOldLabels(labels: Label[]): LabelOld[] {
-        if (!labels) return;
-        return labels.map((label) => {
-            let inheritedLabel: Label = { ...label };
-            inheritedLabel.fontProperties = null;
-            let oldLabel: LabelOld = <any>inheritedLabel;
-            oldLabel.fill = label.fontProperties ? label.fontProperties.color : undefined;
-            oldLabel.fontSize = (label.fontProperties && label.fontProperties.size) ? label.fontProperties.size.pt : undefined;
-            oldLabel.fontFamily = label.fontProperties ? label.fontProperties.family : undefined;
-            return oldLabel;
-        });
-    }
+export let labelGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelGraphicsContext");
+export let labelBackgroundGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelBackgroundGraphicsContext");
 
-    export function drawDefaultLabels(
-        context: Selection<any, any, any, any>,
-        dataLabels: Label[],
-        numeric: boolean = false,
-        hasTooltip: boolean = false
-    ): Selection<any, any, any, any> {
-        return NewDataLabelUtils.drawDefaultLabels(context, downgradeToOldLabels(dataLabels), numeric, hasTooltip);
-    }
+export function downgradeToOldLabels(labels: Label[]): LabelOld[] {
+    if (!labels) return;
+    return labels.map((label) => {
+        let inheritedLabel: Label = { ...label };
+        inheritedLabel.fontProperties = null;
+        let oldLabel: LabelOld = <any>inheritedLabel;
+        oldLabel.fill = label.fontProperties ? label.fontProperties.color : undefined;
+        oldLabel.fontSize = (label.fontProperties && label.fontProperties.size) ? label.fontProperties.size.pt : undefined;
+        oldLabel.fontFamily = label.fontProperties ? label.fontProperties.family : undefined;
+        return oldLabel;
+    });
+}
 
-    export function getDataLabelLayoutOptions(chartType: CartesianChartType): DataLabelLayoutOptions {
-        return NewDataLabelUtils.getDataLabelLayoutOptions(chartType);
-    }
+export function drawDefaultLabels(
+    context: Selection<any, any, any, any>,
+    dataLabels: Label[],
+    numeric: boolean = false,
+    hasTooltip: boolean = false
+): Selection<any, any, any, any> {
+    return newDrawDefaultLabels(context, downgradeToOldLabels(dataLabels), numeric, hasTooltip);
+}
 
-    export function getNumberOfLabelsToRender(viewportWidth: number, labelDensity: number, minimumLabelsToRender: number, estimatedLabelWidth: number): number {
-        return NewDataLabelUtils.getNumberOfLabelsToRender(viewportWidth, labelDensity, minimumLabelsToRender, estimatedLabelWidth);
-    }
+export function getDataLabelLayoutOptions(chartType: CartesianChartType): DataLabelLayoutOptions {
+    return newGetDataLabelLayoutOptions(chartType);
+}
+
+export function getNumberOfLabelsToRender(viewportWidth: number, labelDensity: number, minimumLabelsToRender: number, estimatedLabelWidth: number): number {
+    return newGetNumberOfLabelsToRender(viewportWidth, labelDensity, minimumLabelsToRender, estimatedLabelWidth);
 }

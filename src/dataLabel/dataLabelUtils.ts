@@ -88,11 +88,6 @@ const lineClass: ClassAndSelector = createClassAndSelector("line-label");
 const DimmedOpacity = 0.4;
 const DefaultOpacity = 1.0;
 
-type pairSelection<Type> = {
-    oldSelection: d3.Selection<d3.BaseType, Type, d3.BaseType, any>,
-    mergedSelection: d3.Selection<d3.BaseType, Type, d3.BaseType, any>
-};
-
 function getFillOpacity(selected: boolean, highlight: boolean, hasSelection: boolean, hasPartialHighlights: boolean): number {
     if ((hasPartialHighlights && !highlight) || (hasSelection && !selected)) {
         return DimmedOpacity;

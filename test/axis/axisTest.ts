@@ -51,7 +51,7 @@ import * as axis from "./../../src/axis/axis";
 import * as axisInterfaces from "./../../src/axis/axisInterfaces";
 import IAxisProperties = axisInterfaces.IAxisProperties;
 import * as axisScale from "./../../src/axis/axisScale";
-import { axisPropertiesBuilder } from "./helpers/axisPropertiesBuilder";
+import * as axisPropertiesBuilder from "./helpers/axisPropertiesBuilder";
 import { AxisTickLabelBuilder } from "./helpers/axisTickLabelBuilder";
 
 import { isInRange } from "./../helpers/helpers";

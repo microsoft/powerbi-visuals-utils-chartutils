@@ -1,3 +1,8 @@
+## 2.4.0
+* Update interactivity utils to 5.5.0
+* Update powerbi-visual-api to 2.6
+* Update packages to fix vulnerabilities
+
 ## 2.3.1
 * Fixes measurement of legend items to fit available viewport width
 * Supports `fontFamily` for legend component

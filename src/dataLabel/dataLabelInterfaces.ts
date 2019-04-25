@@ -210,12 +210,6 @@ export interface IArrangeGridElementInfo {
     rect: IRect;
 }
 
-export module labelStyle {
-    export const category: string = "Category";
-    export const data: string = "Data";
-    export const both: string = "Both";
-}
-
 export enum PointLabelPosition {
     Above,
     Below,

@@ -24,13 +24,13 @@
  *  THE SOFTWARE.
  */
 
-import { Units } from "./units";
+import { FontSize } from "./units";
 
 export interface FontProperties {
     readonly color?: string;
     readonly family?: string;
     readonly lineHeight?: string;
-    readonly size?: Units.FontSize;
+    readonly size?: FontSize;
     readonly style?: string;
     readonly variant?: string;
     readonly weight?: string;
@@ -41,25 +41,23 @@ export interface MutableFontProperties {
     color?: string;
     family?: string;
     lineHeight?: string;
-    size?: Units.FontSize;
+    size?: FontSize;
     style?: string;
     variant?: string;
     weight?: string;
     whiteSpace?: string;
 }
 
-export module FontProperties {
-    /**
-     * Inherits a `FontProperties` object allowing specific properties to be overriden.
-     * Typically used for changing values on an existing object as all properties are readonly.
-     * @param fontProperties The existing `FontProperties` object
-     * @param newFontProperties The properties to override
-     * @returns A new object inherited from `fontProperties`.
-     */
-    export function inherit(fontProperties: FontProperties, newFontProperties: FontProperties): FontProperties {
-        return {
-            ...fontProperties,
-            ...newFontProperties
-        };
-    }
+/**
+ * Inherits a `FontProperties` object allowing specific properties to be overriden.
+ * Typically used for changing values on an existing object as all properties are readonly.
+ * @param fontProperties The existing `FontProperties` object
+ * @param newFontProperties The properties to override
+ * @returns A new object inherited from `fontProperties`.
+ */
+export function inherit(fontProperties: FontProperties, newFontProperties: FontProperties): FontProperties {
+    return {
+        ...fontProperties,
+        ...newFontProperties
+    };
 }
