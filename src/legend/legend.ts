@@ -27,7 +27,7 @@
 module powerbi.extensibility.utils.chart.legend {
     import IInteractivityService = powerbi.extensibility.utils.interactivity.IInteractivityService;
     import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
-    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
 
     export function createLegend(
         legendParentElement: HTMLElement,

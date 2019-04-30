@@ -29,7 +29,7 @@ module powerbi.extensibility.utils.chart.legend {
     import Point = powerbi.extensibility.utils.svg.Point;
 
     // powerbi.extensibility.utils.interactivity
-    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
 
     export enum LegendIcon {
         Box,

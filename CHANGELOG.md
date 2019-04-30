@@ -1,3 +1,7 @@
+## 1.10.0
+* Update interactivity utils package to 4.4.0 version to allow use both packages same time.
+* Support API 2.5.0
+
 ## 1.9.0
 * Update interactivity utils package to 4.3.0 version to allow use both packages at same time.
 

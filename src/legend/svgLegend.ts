@@ -48,7 +48,7 @@ module powerbi.extensibility.utils.chart.legend {
     import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
     import appendClearCatcher = powerbi.extensibility.utils.interactivity.appendClearCatcher;
     import dataHasSelection = powerbi.extensibility.utils.interactivity.dataHasSelection;
-    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
 
     interface TitleLayout {
         x: number;

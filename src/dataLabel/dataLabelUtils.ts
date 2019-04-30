@@ -47,7 +47,7 @@ module powerbi.extensibility.utils.chart.dataLabel.utils {
     import createClassAndSelector = powerbi.extensibility.utils.svg.CssConstants.createClassAndSelector;
 
     // powerbi.extensibility.utils.interactivity
-    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
 
     export const maxLabelWidth: number = 50;
     export const defaultLabelDensity: string = "50";
