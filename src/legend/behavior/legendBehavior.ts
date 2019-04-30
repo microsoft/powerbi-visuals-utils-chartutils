@@ -30,7 +30,7 @@ module powerbi.extensibility.utils.chart.legend {
     import ISelectionHandler = powerbi.extensibility.utils.interactivity.ISelectionHandler;
     import interactivityUtils = powerbi.extensibility.utils.interactivity.interactivityUtils;
     import IBehaviorOptions = powerbi.extensibility.utils.interactivity.IBehaviorOptions;
-    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectionDataPoint;
+    import SelectionDataPoint = powerbi.extensibility.utils.interactivity.SelectableDataPoint;
 
     export interface LegendBehaviorOptions extends IBehaviorOptions<SelectionDataPoint> {
         legendItems: d3.Selection<any>;
