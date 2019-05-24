@@ -24,52 +24,49 @@
  *  THE SOFTWARE.
  */
 
-export module Font {
+export const FamilyDelimiter = ", ";
 
-    export const FamilyDelimiter = ", ";
+export class FamilyInfo {
+    constructor(public families: string[]) { }
 
-    export class FamilyInfo {
-        constructor(public families: string[]) { }
-
-        /**
-         * Gets the font-families joined by FamilyDelimiter.
-         */
-        get family(): string {
-            return this.getFamily();
-        }
-
-        /**
-        * Gets the font-families joined by FamilyDelimiter.
-        */
-        getFamily(): string {
-            return this.families.join(FamilyDelimiter);
-        }
-
-        /**
-         * Gets the CSS string for the "font-family" CSS attribute.
-         */
-        get css(): string {
-            return this.getCSS();
-        }
-
-        /**
-         * Gets the CSS string for the "font-family" CSS attribute.
-         */
-        getCSS(): string {
-            return this.families ? this.families.map((font => font.indexOf(" ") > -1 ? `'${font}'` : font)).join(", ") : null;
-        }
+    /**
+     * Gets the font-families joined by FamilyDelimiter.
+     */
+    get family(): string {
+        return this.getFamily();
     }
 
-    // These should map to the fonts in src\clients\externals\StyleLibrary\less\fontFaces.less
-    export let Family = {
-        light: new FamilyInfo(["Segoe UI Light", "wf_segoe-ui_light", "helvetica", "arial", "sans-serif"]),
-        semilight: new FamilyInfo(["Segoe UI Semilight", "wf_segoe-ui_semilight", "helvetica", "arial", "sans-serif"]),
-        regular: new FamilyInfo(["Segoe UI", "wf_segoe-ui_normal", "helvetica", "arial", "sans-serif"]),
-        semibold: new FamilyInfo(["Segoe UI Semibold", "wf_segoe-ui_semibold", "helvetica", "arial", "sans-serif"]),
-        bold: new FamilyInfo(["Segoe UI Bold", "wf_segoe-ui_bold", "helvetica", "arial", "sans-serif"]),
-        lightSecondary: new FamilyInfo(["wf_standard-font_light", "helvetica", "arial", "sans-serif"]),
-        regularSecondary: new FamilyInfo(["wf_standard-font", "helvetica", "arial", "sans-serif"]),
-        boldSecondary: new FamilyInfo(["wf_standard-font_bold", "helvetica", "arial", "sans-serif"]),
-        glyphs: new FamilyInfo(["PowerVisuals"]),
-    };
+    /**
+    * Gets the font-families joined by FamilyDelimiter.
+    */
+    getFamily(): string {
+        return this.families.join(FamilyDelimiter);
+    }
+
+    /**
+     * Gets the CSS string for the "font-family" CSS attribute.
+     */
+    get css(): string {
+        return this.getCSS();
+    }
+
+    /**
+     * Gets the CSS string for the "font-family" CSS attribute.
+     */
+    getCSS(): string {
+        return this.families ? this.families.map((font => font.indexOf(" ") > -1 ? `'${font}'` : font)).join(", ") : null;
+    }
 }
+
+// These should map to the fonts in src\clients\externals\StyleLibrary\less\fontFaces.less
+export let Family = {
+    light: new FamilyInfo(["Segoe UI Light", "wf_segoe-ui_light", "helvetica", "arial", "sans-serif"]),
+    semilight: new FamilyInfo(["Segoe UI Semilight", "wf_segoe-ui_semilight", "helvetica", "arial", "sans-serif"]),
+    regular: new FamilyInfo(["Segoe UI", "wf_segoe-ui_normal", "helvetica", "arial", "sans-serif"]),
+    semibold: new FamilyInfo(["Segoe UI Semibold", "wf_segoe-ui_semibold", "helvetica", "arial", "sans-serif"]),
+    bold: new FamilyInfo(["Segoe UI Bold", "wf_segoe-ui_bold", "helvetica", "arial", "sans-serif"]),
+    lightSecondary: new FamilyInfo(["wf_standard-font_light", "helvetica", "arial", "sans-serif"]),
+    regularSecondary: new FamilyInfo(["wf_standard-font", "helvetica", "arial", "sans-serif"]),
+    boldSecondary: new FamilyInfo(["wf_standard-font_bold", "helvetica", "arial", "sans-serif"]),
+    glyphs: new FamilyInfo(["PowerVisuals"]),
+};

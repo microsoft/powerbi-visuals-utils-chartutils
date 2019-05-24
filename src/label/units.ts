@@ -26,16 +26,14 @@
 
 import { pixelConverter } from "powerbi-visuals-utils-typeutils";
 
-export module Units {
-    export class FontSize {
-        public static createFromPt(pt: number): FontSize {
-            return new FontSize(pt, pixelConverter.fromPointToPixel(pt));
-        }
-
-        public static createFromPx(px: number): FontSize {
-            return new FontSize(pixelConverter.toPoint(px), px);
-        }
-
-        private constructor(public readonly pt: number, public readonly px: number) { }
+export class FontSize {
+    public static createFromPt(pt: number): FontSize {
+        return new FontSize(pt, pixelConverter.fromPointToPixel(pt));
     }
+
+    public static createFromPx(px: number): FontSize {
+        return new FontSize(pixelConverter.toPoint(px), px);
+    }
+
+    private constructor(public readonly pt: number, public readonly px: number) { }
 }
