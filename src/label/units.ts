@@ -24,12 +24,16 @@
  *  THE SOFTWARE.
  */
 
-module powerbi.extensibility.utils.chart.axis {
-    export interface ValueRange<T> {
-        min?: T;
-        max?: T;
+import { pixelConverter } from "powerbi-visuals-utils-typeutils";
+
+export class FontSize {
+    public static createFromPt(pt: number): FontSize {
+        return new FontSize(pt, pixelConverter.fromPointToPixel(pt));
     }
 
-    /** Defines the acceptable values of a number. */
-    export type NumberRange = ValueRange<number>;
+    public static createFromPx(px: number): FontSize {
+        return new FontSize(pixelConverter.toPoint(px), px);
+    }
+
+    private constructor(public readonly pt: number, public readonly px: number) { }
 }

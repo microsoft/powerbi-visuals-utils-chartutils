@@ -24,15 +24,40 @@
  *  THE SOFTWARE.
  */
 
-/// <reference path="../lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-tools/templates/visuals/.api/v1.2.0/PowerBI-visuals.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-interactivityutils/lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-colorutils/lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts" />
-/// <reference path="../node_modules/powerbi-visuals-utils-testutils/lib/index.d.ts" />
-/// <reference path="axis/helpers/axisPropertiesBuilder.ts" />
-/// <reference path="axis/helpers/axisTickLabelBuilder.ts" />
-/// <reference path="helpers/helpers.ts" />
-/// <reference path="mocks/mockBehavior.ts" />
+import { FontSize } from "./units";
+
+export interface FontProperties {
+    readonly color?: string;
+    readonly family?: string;
+    readonly lineHeight?: string;
+    readonly size?: FontSize;
+    readonly style?: string;
+    readonly variant?: string;
+    readonly weight?: string;
+    readonly whiteSpace?: string;
+}
+
+export interface MutableFontProperties {
+    color?: string;
+    family?: string;
+    lineHeight?: string;
+    size?: FontSize;
+    style?: string;
+    variant?: string;
+    weight?: string;
+    whiteSpace?: string;
+}
+
+/**
+ * Inherits a `FontProperties` object allowing specific properties to be overriden.
+ * Typically used for changing values on an existing object as all properties are readonly.
+ * @param fontProperties The existing `FontProperties` object
+ * @param newFontProperties The properties to override
+ * @returns A new object inherited from `fontProperties`.
+ */
+export function inherit(fontProperties: FontProperties, newFontProperties: FontProperties): FontProperties {
+    return {
+        ...fontProperties,
+        ...newFontProperties
+    };
+}

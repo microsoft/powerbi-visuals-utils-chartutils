@@ -24,40 +24,38 @@
  *  THE SOFTWARE.
  */
 
-module powerbi.extensibility.utils.chart.legend {
+import { LegendDataPoint } from "../legendInterfaces";
+import { LegendBehavior } from "./legendBehavior";
 
-    import IInteractiveBehavior = powerbi.extensibility.utils.interactivity.IInteractiveBehavior;
+// Interactivity utils
+import { interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 
-    import LegendBehavior = powerbi.extensibility.utils.chart.legend.LegendBehavior;
-    import LegendDataPoint = powerbi.extensibility.utils.chart.legend.LegendDataPoint;
-
-    export class OpacityLegendBehavior extends LegendBehavior implements IInteractiveBehavior {
-        public static dimmedOpacity: number = 0.4;
-        public static defaultOpacity: number = 1;
-
-        public renderSelection(hasSelection: boolean): void {
-            if (hasSelection) {
-                this.legendIcons.style(
-                    "fill", (d: LegendDataPoint) => {
-                        return d.color;
-                    })
-                    .style(
-                        "fill-opacity", (d: LegendDataPoint) => {
-                            if (!d.selected) {
-                                return OpacityLegendBehavior.dimmedOpacity;
-                            }
-                            else {
-                                return OpacityLegendBehavior.defaultOpacity;
-                            }
-                        });
-            }
-            else {
-                this.legendIcons.style(
-                    "fill", (d: LegendDataPoint) => {
-                        return d.color;
-                    })
-                    .style("fill-opacity", OpacityLegendBehavior.defaultOpacity);
-            }
+export default class OpacityLegendBehavior extends LegendBehavior implements IInteractiveBehavior {
+    public static dimmedOpacity: number = 0.4;
+    public static defaultOpacity: number = 1;
+    public renderSelection(hasSelection: boolean): void {
+        if (hasSelection) {
+            this.legendIcons.style(
+                "fill", (d: LegendDataPoint) => {
+                    return d.color;
+                })
+                .style(
+                    "fill-opacity", (d: LegendDataPoint) => {
+                        if (!d.selected) {
+                            return OpacityLegendBehavior.dimmedOpacity;
+                        }
+                        else {
+                            return OpacityLegendBehavior.defaultOpacity;
+                        }
+                    });
+        }
+        else {
+            this.legendIcons.style(
+                "fill", (d: LegendDataPoint) => {
+                    return d.color;
+                })
+                .style("fill-opacity", OpacityLegendBehavior.defaultOpacity);
         }
     }
 }

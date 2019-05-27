@@ -24,6 +24,36 @@
  *  THE SOFTWARE.
  */
 
-export const showBoth: string = "showBoth";
-export const showTitleOnly: string = "showTitleOnly";
-export const showUnitOnly: string = "showUnitOnly";
+const path = require('path');
+const webpack = require("webpack");
+
+module.exports = {
+    entry: './src/index.ts',
+    devtool: 'source-map',
+    module: {
+        rules: [{
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.json$/,
+                loader: 'json-loader'
+            }
+        ]
+    },
+    externals: {
+        "powerbi-visuals-api": '{}'
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js', '.css']
+    },
+    output: {
+        path: path.resolve(__dirname, ".tmp/test")
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+            'powerbi-visuals-api': null
+        })
+    ]
+};

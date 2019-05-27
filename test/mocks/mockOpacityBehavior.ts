@@ -24,11 +24,28 @@
 *  THE SOFTWARE.
 */
 
-export const top: string = "Top";
-export const bottom: string = "Bottom";
-export const left: string = "Left";
-export const right: string = "Right";
-export const topCenter: string = "TopCenter";
-export const bottomCenter: string = "BottomCenter";
-export const leftCenter: string = "LeftCenter";
-export const rightCenter: string = "RightCenter";
+import { interactivityBaseService, interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
+
+import SelectableDataPoint = interactivitySelectionService.SelectableDataPoint;
+import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
+import ISelectionHandler = interactivityBaseService.ISelectionHandler;
+import OpacityLegendBehavior from "../../src/legend/behavior/opacityLegendBehavior";
+
+export default class MockOpacityBehavior extends OpacityLegendBehavior implements IInteractiveBehavior {
+    protected legendIcons: any;
+    private selectableDataPoints: SelectableDataPoint[];
+    private selectionHandler: ISelectionHandler;
+
+    public uploadPoints(selectableDataPoints: SelectableDataPoint[]) {
+        this.selectableDataPoints = selectableDataPoints;
+    }
+
+    public bindEvents(options: any, selectionHandler: ISelectionHandler): void {
+        this.selectionHandler = selectionHandler;
+        super.bindEvents(options, selectionHandler);
+    }
+
+    public selectIndex(index: number, multiSelect?: boolean): void {
+        this.selectionHandler.handleSelection(this.selectableDataPoints[index], !!multiSelect);
+    }
+}

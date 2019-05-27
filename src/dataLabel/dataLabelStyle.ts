@@ -24,11 +24,6 @@
 *  THE SOFTWARE.
 */
 
-export const top: string = "Top";
-export const bottom: string = "Bottom";
-export const left: string = "Left";
-export const right: string = "Right";
-export const topCenter: string = "TopCenter";
-export const bottomCenter: string = "BottomCenter";
-export const leftCenter: string = "LeftCenter";
-export const rightCenter: string = "RightCenter";
+export const category: string = "Category";
+export const data: string = "Data";
+export const both: string = "Both";
