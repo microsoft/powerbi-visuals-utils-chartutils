@@ -41,7 +41,7 @@ import PrimitiveType = valueType.PrimitiveType;
 
 // powerbi.extensibility.utils.formatting
 import { valueFormatter as vf } from "powerbi-visuals-utils-formattingutils";
-import valueFormatter = vf.valueFormatter;
+import valueFormatter = vf;
 
 import { textMeasurementService as tms } from "powerbi-visuals-utils-formattingutils";
 import textMeasurementService = tms.textMeasurementService;

@@ -24,7 +24,7 @@
  *  THE SOFTWARE.
  */
 
-import * as _ from "lodash";
+import {union} from "lodash.union";
 
 import {
     shapesInterfaces,
@@ -380,41 +380,41 @@ describe("DataLabelRectPositioner tests", () => {
         ];
 
         it("valid label overflowing", () => {
-            let rectangles = _.union(fullyContained, hIntercectValid, vIntercectValid, hOverflowRatioValid, vOverflowRatioValid);
+            let rectangles = union(fullyContained, hIntercectValid, vIntercectValid, hOverflowRatioValid, vOverflowRatioValid);
             testLabelOverflowing(/* isValid */ true, rectangles, vbLabelDataPoint, /* hasMultiplyDataSeries */ false);
         });
 
         it("invalid label overflowing", () => {
-            let rectangles = _.union(notContained, intercectTooLittle, overflowRatioTooSmall);
+            let rectangles = union(notContained, intercectTooLittle, overflowRatioTooSmall);
             testLabelOverflowing(/* isValid */ false, rectangles, vbLabelDataPoint, /* hasMultiplyDataSeries */ false);
         });
 
         describe("HasMultiplyDataSeries", () => {
-            let horizontalOverflow = _.union(hOverflowRatioValid, hIntercectValid); // horizontal
-            let verticalOverflow = _.union(vOverflowRatioValid, vIntercectValid); // vertical
+            let horizontalOverflow = union(hOverflowRatioValid, hIntercectValid); // horizontal
+            let verticalOverflow = union(vOverflowRatioValid, vIntercectValid); // vertical
 
             it("valid - parent orientation: vertical", () => {
-                let rectangles = _.union(fullyContained, horizontalOverflow);
+                let rectangles = union(fullyContained, horizontalOverflow);
 
                 testLabelOverflowing(/* isValid */ true, rectangles, vbLabelDataPoint, /* hasMultiplyDataSeries */ true);
                 testLabelOverflowing(/* isValid */ true, rectangles, vtLabelDataPoint, /* hasMultiplyDataSeries */ true);
             });
 
             it("valid - parent orientation: horizontal", () => {
-                let rectangles = _.union(fullyContained, verticalOverflow);
+                let rectangles = union(fullyContained, verticalOverflow);
 
                 testLabelOverflowing(/* isValid */ true, rectangles, hlLabelDataPoint, /* hasMultiplyDataSeries */ true);
                 testLabelOverflowing(/* isValid */ true, rectangles, hrLabelDataPoint, /* hasMultiplyDataSeries */ true);
             });
 
             it("invalid - parent orientation: vertical", () => {
-                let rectangles = _.union(notContained, verticalOverflow);
+                let rectangles = union(notContained, verticalOverflow);
                 testLabelOverflowing(/* isValid */ false, rectangles, vbLabelDataPoint, /* hasMultiplyDataSeries */ true);
                 testLabelOverflowing(/* isValid */ false, rectangles, vtLabelDataPoint, /* hasMultiplyDataSeries */ true);
             });
 
             it("invalid - parent orientation: horizontal", () => {
-                let rectangles = _.union(notContained, horizontalOverflow);
+                let rectangles = union(notContained, horizontalOverflow);
                 testLabelOverflowing(/* isValid */ false, rectangles, hlLabelDataPoint, /* hasMultiplyDataSeries */ true);
                 testLabelOverflowing(/* isValid */ false, rectangles, hrLabelDataPoint, /* hasMultiplyDataSeries */ true);
             });

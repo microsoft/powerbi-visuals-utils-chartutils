@@ -34,7 +34,7 @@ import ValueType = valueType.ValueType;
 // powerbi.extensibility.utils.formatting
 
 import { valueFormatter as vf } from "powerbi-visuals-utils-formattingutils";
-import valueFormatter = vf.valueFormatter;
+import valueFormatter = vf;
 
 // powerbi.extensibility.utils.chart
 import * as axis from "./../../../src/axis/axis";
