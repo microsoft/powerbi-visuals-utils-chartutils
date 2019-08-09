@@ -39,7 +39,6 @@ const testRecursivePath = "test/**/*.ts"
 
 process.env.CHROME_BIN = require("puppeteer").executablePath();
 module.exports = (config: Config) => {
-
     config.set(<ConfigOptions>{
         browserNoActivityTimeout: 100000,
         browsers: ["ChromeHeadless"],
@@ -47,11 +46,14 @@ module.exports = (config: Config) => {
         frameworks: ["jasmine"],
         reporters: [
             "progress",
-            "coverage",
-            "karma-remap-istanbul"
+            "coverage-istanbul"
         ],
+        coverageIstanbulReporter: {
+            reports: ["html", "lcovonly", "text-summary"],
+            combineBrowserReports: true,
+            fixWebpackSourcePaths: true
+        },
         singleRun: true,
-        autoWatch: true,
         plugins: [
             "karma-remap-istanbul",
             "karma-coverage",
@@ -59,7 +61,8 @@ module.exports = (config: Config) => {
             "karma-webpack",
             "karma-jasmine",
             "karma-sourcemap-loader",
-            "karma-chrome-launcher"
+            "karma-chrome-launcher",
+            "karma-coverage-istanbul-reporter"
         ],
         files: [
             "node_modules/jquery/dist/jquery.min.js",
@@ -90,7 +93,8 @@ module.exports = (config: Config) => {
         remapIstanbulReporter: {
             reports: {
                 lcovonly: coverageFolder + "/lcov.info",
-                html: coverageFolder
+                html: coverageFolder,
+                "text-summary": null
             }
         },
         mime: {
