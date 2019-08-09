@@ -24,35 +24,31 @@
  *  THE SOFTWARE.
  */
 
-/// <reference path="../_references.ts" />
+import { parseColorString , RgbColor} from "powerbi-visuals-utils-colorutils";
 
-module powerbi.extensibility.utils.chart.test.helpers {
-    import parseColorString = powerbi.extensibility.utils.color.parseColorString;
-    import RgbColor = powerbi.extensibility.utils.color.RgbColor;
+export function assertColorsMatch(actual: string, expected: string, invert: boolean = false): boolean {
+    const rgbActual: RgbColor = parseColorString(actual),
+        rgbExpected: RgbColor = parseColorString(expected);
 
-    export function assertColorsMatch(actual: string, expected: string, invert: boolean = false): boolean {
-        const rgbActual: RgbColor = parseColorString(actual),
-            rgbExpected: RgbColor = parseColorString(expected);
-
-        if (invert) {
-            return expect(rgbActual).not.toEqual(rgbExpected);
-        }
-
-        return expect(rgbActual).toEqual(rgbExpected);
+    if (invert) {
+        return expect(rgbActual).not.toEqual(rgbExpected);
     }
 
-    /**
-     * Checks if value is in the given range
-     * @val Value to check
-     * @min Min value of range
-     * @max Max value of range
-     * @returns True, if value falls in range. False, otherwise
-     **/
-    export function isInRange(val: number, min: number, max: number): Boolean {
-        return min <= val && val <= max;
-    }
-
-    export function findElementTitle(element: JQuery): string {
-        return element.children("title").text();
-    }
+    return expect(rgbActual).toEqual(rgbExpected);
 }
+
+/**
+ * Checks if value is in the given range
+ * @val Value to check
+ * @min Min value of range
+ * @max Max value of range
+ * @returns True, if value falls in range. False, otherwise
+ **/
+export function isInRange(val: number, min: number, max: number): Boolean {
+    return min <= val && val <= max;
+}
+
+export function findElementTitle(element: JQuery): string {
+    return element.children("title").text();
+}
+
