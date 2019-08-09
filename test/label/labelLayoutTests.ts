@@ -24,7 +24,7 @@
  *  THE SOFTWARE.
  */
 
-import {union} from "lodash.union";
+import union from "lodash.union";
 
 import {
     shapesInterfaces,
