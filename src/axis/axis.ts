@@ -85,7 +85,7 @@ import ITextAsSVGMeasurer = tms.ITextAsSVGMeasurer;
 import TextProperties = tms.TextProperties;
 import textMeasurementService = tms.textMeasurementService;
 import IValueFormatter = vf.IValueFormatter;
-import valueFormatter = vf.valueFormatter;
+import valueFormatter = vf;
 import ValueFormatterOptions = vf.ValueFormatterOptions;
 import numberFormat = formattingService.numberFormat;
 

@@ -73,7 +73,7 @@ export function drawDefaultLabels(
     numeric: boolean = false,
     hasTooltip: boolean = false
 ): Selection<any, any, any, any> {
-    const labels = context
+    const labels: Selection<any, any, any, any> = context
         .selectAll(labelsClass.selectorName)
         .data(dataLabels, labelKeyFunction);
 

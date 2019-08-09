@@ -1,3 +1,6 @@
+## 2.4.1
+* Packages update
+
 ## 2.4.0
 * Update interactivity utils to 5.5.0
 * Update powerbi-visual-api to 2.6

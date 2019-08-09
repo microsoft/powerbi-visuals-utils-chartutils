@@ -41,7 +41,7 @@ import numberFormat = formatting.formattingService.numberFormat;
 import formattingService = formatting.formattingService.formattingService;
 import textMeasurementService = formatting.textMeasurementService.textMeasurementService;
 import IValueFormatter = formatting.valueFormatter.IValueFormatter;
-import valueFormatter = formatting.valueFormatter.valueFormatter;
+import valueFormatter = formatting.valueFormatter;
 import DisplayUnitSystemType = formatting.displayUnitSystemType.DisplayUnitSystemType;
 import ValueFormatterOptions = formatting.valueFormatter.ValueFormatterOptions;
 
@@ -258,7 +258,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
             (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
             : undefined;
 
-    let labels = isDonut ?
+    let labels: d3.Selection<any, any, any, any> = isDonut ?
         context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, (d: any) => d.data.identity.getKey())
         : getIdentifier != null ?
             context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, getIdentifier)
