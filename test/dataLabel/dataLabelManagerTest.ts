@@ -1,37 +1,34 @@
 /*
- *  Power BI Visualizations
- *
- *  Copyright (c) Microsoft Corporation
- *  All rights reserved.
- *  MIT License
- *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the ""Software""), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
- *
- *  The above copyright notice and this permission notice shall be included in
- *  all copies or substantial portions of the Software.
- *
- *  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- *  THE SOFTWARE.
- */
+*  Power BI Visualizations
+*
+*  Copyright (c) Microsoft Corporation
+*  All rights reserved.
+*  MIT License
+*
+*  Permission is hereby granted, free of charge, to any person obtaining a copy
+*  of this software and associated documentation files (the ""Software""), to deal
+*  in the Software without restriction, including without limitation the rights
+*  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+*  copies of the Software, and to permit persons to whom the Software is
+*  furnished to do so, subject to the following conditions:
+*
+*  The above copyright notice and this permission notice shall be included in
+*  all copies or substantial portions of the Software.
+*
+*  THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+*  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+*  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+*  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+*  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+*  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+*  THE SOFTWARE.
+*/
 
-/// <reference path="../_references.ts" />
+import { DataLabelManager } from "./../../src/dataLabel/dataLabelManager";
+import { IDataLabelSettings, IDataLabelInfo } from "./../../src/dataLabel/dataLabelInterfaces";
+import { RectOrientation, ContentPositions, OutsidePlacement } from "./../../src/dataLabel/dataLabelInterfaces";
 
 module powerbi.extensibility.utils.chart.dataLabel.test {
-    import DataLabelManager = powerbi.extensibility.utils.chart.dataLabel.DataLabelManager;
-    import RectOrientation = powerbi.extensibility.utils.chart.dataLabel.RectOrientation;
-    import ContentPositions = powerbi.extensibility.utils.chart.dataLabel.ContentPositions;
-    import OutsidePlacement = powerbi.extensibility.utils.chart.dataLabel.OutsidePlacement;
-    import LabelPosition = powerbi.extensibility.utils.chart.dataLabel.LabelPosition;
 
     describe("DataLabelManager", () => {
         describe("Default Settings", () => {
@@ -62,12 +59,11 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
             });
 
             it("Get Label info - all values Provided", () => {
-                let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 16 });
+                let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 12 });
 
                 expect(defaultSettings.anchorMargin).toEqual(0);
-                expect(result.maximumMovingDistance).toEqual(16);
+                expect(result.maximumMovingDistance).toEqual(12);
             });
-
 
             it("Get Label info - maximumMovingDistance with anchorMargin > 0", () => {
                 let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 16, anchorMargin: 4 });
@@ -88,10 +84,10 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
         describe("It should hide collided labels", () => {
             it("No Input, No Output", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = {width: 500, height: 500},
+                    viewPort: IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
-                        labelLayout: {x: () => 250, y: () => 250},
+                        labelLayout: { x: () => 250, y: () => 250 },
                         labelText: () => "",
                         style: null
                     },
@@ -101,7 +97,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
 
             it("One non colliding label should be present", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = {width: 500, height: 500},
+                    viewPort: IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
                         labelLayout: {
@@ -112,7 +108,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
                         style: null
                     },
                     data: any[] = [
-                        {x: 5, y: 100}
+                        { x: 5, y: 100 }
                     ];
                 let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout);
                 expect(result.length).toEqual(1);
@@ -120,7 +116,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
 
             it("Two Identitical labels, 1 should be hidden", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = {width: 500, height: 500},
+                    viewPort: IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
                         labelLayout: {
@@ -131,8 +127,8 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
                         style: null
                     },
                     data: any[] = [
-                        {x: 5, y: 100},
-                        {x: 5, y: 100}
+                        { x: 5, y: 100 },
+                        { x: 5, y: 100 }
                     ];
                 let result = labelManager.hideCollidedLabels(viewPort, data, labelLayout, false, true);
                 expect(result.length).toEqual(1);
