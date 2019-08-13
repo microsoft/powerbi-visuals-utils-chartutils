@@ -31,7 +31,6 @@ import { RectOrientation, ContentPositions, OutsidePlacement } from "./../../src
 import powerbi from "powerbi-visuals-api";
 
 module extensibility.utils.chart.dataLabel.test {
-    
     describe("DataLabelManager", () => {
         describe("Default Settings", () => {
             it("Check default values are true", () => {
