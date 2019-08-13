@@ -25,11 +25,13 @@
 */
 
 import { DataLabelManager } from "./../../src/dataLabel/dataLabelManager";
-import { IDataLabelSettings, IDataLabelInfo } from "./../../src/dataLabel/dataLabelInterfaces";
+import { IDataLabelSettings, IDataLabelInfo, ILabelLayout } from "./../../src/dataLabel/dataLabelInterfaces";
 import { RectOrientation, ContentPositions, OutsidePlacement } from "./../../src/dataLabel/dataLabelInterfaces";
 
-module powerbi.extensibility.utils.chart.dataLabel.test {
+import powerbi from "powerbi-visuals-api";
 
+module extensibility.utils.chart.dataLabel.test {
+    
     describe("DataLabelManager", () => {
         describe("Default Settings", () => {
             it("Check default values are true", () => {
@@ -84,7 +86,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
         describe("It should hide collided labels", () => {
             it("No Input, No Output", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = { width: 500, height: 500 },
+                    viewPort: powerbi.IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
                         labelLayout: { x: () => 250, y: () => 250 },
@@ -97,7 +99,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
 
             it("One non colliding label should be present", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = { width: 500, height: 500 },
+                    viewPort: powerbi.IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
                         labelLayout: {
@@ -116,7 +118,7 @@ module powerbi.extensibility.utils.chart.dataLabel.test {
 
             it("Two Identitical labels, 1 should be hidden", () => {
                 let labelManager: DataLabelManager = new DataLabelManager(),
-                    viewPort: IViewport = { width: 500, height: 500 },
+                    viewPort: powerbi.IViewport = { width: 500, height: 500 },
                     labelLayout: ILabelLayout = {
                         filter: () => true,
                         labelLayout: {
