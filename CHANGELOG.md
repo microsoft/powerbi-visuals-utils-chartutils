@@ -1,5 +1,6 @@
 ## 2.4.1
 * Packages update
+* Removal of LabelLayoutStrategy module definition, now it is imported from a file
 
 ## 2.4.0
 * Update interactivity utils to 5.5.0
