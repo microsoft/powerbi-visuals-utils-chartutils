@@ -45,7 +45,7 @@ import { LabelTextProperties } from "./dataLabelUtils";
 /**
  * Utility class to speed up the conflict detection by collecting the arranged items in the DataLabelsPanel.
  */
-export class DataLabelArrangeGrid {
+export default class DataLabelArrangeGrid {
 
     private grid: IArrangeGridElementInfo[][][] = [];
     // size of a grid cell

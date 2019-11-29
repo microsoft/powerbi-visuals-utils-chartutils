@@ -1,3 +1,7 @@
+## 2.4.2
+* Export as default `DataLabelArrangeGrid`, `DataLabelManager` classes
+* Update packages
+
 ## 2.4.1
 * Packages update
 * Removal of LabelLayoutStrategy module definition, now it is imported from a file
