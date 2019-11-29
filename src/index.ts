@@ -3,9 +3,9 @@ import * as axis from "./axis/axis";
 import * as axisScale from "./axis/axisScale";
 import * as axisStyle from "./axis/axisStyle";
 
-import * as dataLabelArrangeGrid from "./dataLabel/dataLabelArrangeGrid";
+import DataLabelArrangeGrid from "./dataLabel/dataLabelArrangeGrid";
 import * as dataLabelInterfaces from "./dataLabel/dataLabelInterfaces";
-import * as dataLabelManager from "./dataLabel/dataLabelManager";
+import DataLabelManager from "./dataLabel/dataLabelManager";
 import * as dataLabelUtils from "./dataLabel/dataLabelUtils";
 import * as locationConverter from "./dataLabel/locationConverter";
 
@@ -25,9 +25,9 @@ export {
     axis,
     axisScale,
     axisStyle,
-    dataLabelArrangeGrid,
+    DataLabelArrangeGrid,
     dataLabelInterfaces,
-    dataLabelManager,
+    DataLabelManager,
     dataLabelUtils,
     locationConverter,
     interactiveLegend,

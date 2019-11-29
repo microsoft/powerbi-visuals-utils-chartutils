@@ -24,7 +24,7 @@
 *  THE SOFTWARE.
 */
 
-import { DataLabelManager } from "./../../src/dataLabel/dataLabelManager";
+import DataLabelManager from "./../../src/dataLabel/dataLabelManager";
 import { IDataLabelSettings, IDataLabelInfo } from "./../../src/dataLabel/dataLabelInterfaces";
 import { RectOrientation, ContentPositions, OutsidePlacement } from "./../../src/dataLabel/dataLabelInterfaces";
 

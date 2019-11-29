@@ -59,7 +59,7 @@ import LabelFormattedTextOptions = dataLabelInterfaces.LabelFormattedTextOptions
 import LabelEnabledDataPoint = dataLabelInterfaces.LabelEnabledDataPoint;
 import VisualDataLabelsSettings = dataLabelInterfaces.VisualDataLabelsSettings;
 
-import { DataLabelManager } from "./dataLabelManager";
+import DataLabelManager from "./dataLabelManager";
 
 export const maxLabelWidth: number = 50;
 export const defaultLabelDensity: string = "50";
