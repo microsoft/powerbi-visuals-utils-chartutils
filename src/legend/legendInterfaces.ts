@@ -58,6 +58,7 @@ export enum LineStyle {
     solid = "solid",
     dotted = "dotted",
     dotdash = "dotdash",
+    dashdot = "dashdot",
 }
 
 export interface LegendDataPoint extends SelectableDataPoint, LegendPosition2D {

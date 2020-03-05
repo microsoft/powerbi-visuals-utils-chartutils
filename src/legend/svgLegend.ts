@@ -453,6 +453,9 @@ export class SVGLegend implements ILegend {
                 return "2.5,3.1";
             }
             case LineStyle.dotdash: {
+                return "2.5,3.1,7,3.1";
+            }
+            case LineStyle.dashdot: {
                 return "7,3.1,2.5,3.1";
             }
             case LineStyle.solid: {
