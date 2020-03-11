@@ -966,13 +966,13 @@ export class SVGLegend implements ILegend {
             .append("g")
             .classed(SVGLegend.NavigationArrow.className, true)
         )
-            .on("click", (d) => {
+            .on("click", (d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;
                 this.legendDataStartIndex = d.dataType === 0 /* Increase */
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                 this.drawLegendInternal(this.data, this.parentViewport, false);
             })
-            .attr("transform", (d) => svgManipulation.translate(d.x, d.y))
+            .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y));
 
         let path = arrows.selectAll("path")
             .data((data) => [data]);
@@ -982,8 +982,9 @@ export class SVGLegend implements ILegend {
                 .append("path")
         );
 
-        path.attr("d", (d) => d.path)
-            .attr("transform", (d) => d.rotateTransform);    }
+        path.attr("d", (d: NavigationArrow) => d.path)
+            .attr("transform", (d: NavigationArrow) => d.rotateTransform);
+    }
 
     private isTopOrBottom(orientation: LegendPosition): boolean {
         switch (orientation) {
