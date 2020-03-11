@@ -968,7 +968,7 @@ export class SVGLegend implements ILegend {
         )
             .on("click", (d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;
-                this.legendDataStartIndex = d.dataType === 0 /* Increase */
+                this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                 this.drawLegendInternal(this.data, this.parentViewport, false);
             })
