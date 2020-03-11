@@ -959,30 +959,31 @@ export class SVGLegend implements ILegend {
         let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
             .data(layout);
 
-        let enteredArrows = arrows
-            .enter();
+        arrows.exit().remove();
 
-        enteredArrows
+        arrows = arrows.merge(arrows
+            .enter()
             .append("g")
-            .on("click", (d: NavigationArrow) => {
+            .classed(SVGLegend.NavigationArrow.className, true)
+        )
+            .on("click", (d) => {
                 let pos = this.legendDataStartIndex;
-                this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
+                this.legendDataStartIndex = d.dataType === 0 /* Increase */
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                 this.drawLegendInternal(this.data, this.parentViewport, false);
             })
-            .classed(SVGLegend.NavigationArrow.className, true)
-            .append("path");
+            .attr("transform", (d) => svgManipulation.translate(d.x, d.y))
 
-        arrows
-            .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y))
-            .select("path")
-            .attr("d", (d: NavigationArrow) => d.path)
-            .attr("transform", (d: NavigationArrow) => d.rotateTransform);
+        let path = arrows.selectAll("path")
+            .data((data) => [data]);
+        path.exit().remove();
+        path = path.merge(
+            path.enter()
+                .append("path")
+        );
 
-        arrows
-            .exit()
-            .remove();
-    }
+        path.attr("d", (d) => d.path)
+            .attr("transform", (d) => d.rotateTransform);    }
 
     private isTopOrBottom(orientation: LegendPosition): boolean {
         switch (orientation) {
