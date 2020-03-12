@@ -1,3 +1,6 @@
+## 2.4.3
+* FIX: navigation arrows not displayed on first visual render
+
 ## 2.4.2
 * Export as default `DataLabelArrangeGrid`, `DataLabelManager` classes
 * Update packages
