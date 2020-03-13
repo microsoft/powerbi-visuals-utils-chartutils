@@ -66,6 +66,7 @@ import createClassAndSelector = CssConstants.createClassAndSelector;
 // powerbi.extensibility.utils.interactivity
 import appendClearCatcher = interactivityBaseService.appendClearCatcher;
 import dataHasSelection = interactivityBaseService.dataHasSelection;
+import { BaseDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivityBaseService";
 
 export interface TitleLayout {
     x: number;
@@ -956,7 +957,7 @@ export class SVGLegend implements ILegend {
     }
 
     private drawNavigationArrows(layout: NavigationArrow[]): void {
-        let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
+        let arrows: d3.Selection<d3.BaseType, NavigationArrow, HTMLElement, any> = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
             .data(layout);
 
         arrows.exit().remove();
@@ -974,13 +975,14 @@ export class SVGLegend implements ILegend {
             })
             .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y));
 
-        let path = arrows.selectAll("path")
+        let path: d3.Selection<SVGPathElement, NavigationArrow, d3.BaseType, any> = arrows.selectAll<SVGPathElement, NavigationArrow>("path")
             .data((data) => [data]);
+
         path.exit().remove();
-        path = path.merge(
-            path.enter()
-                .append("path")
-        );
+        path = path
+            .enter()
+            .append("path")
+            .merge(path);
 
         path.attr("d", (d: NavigationArrow) => d.path)
             .attr("transform", (d: NavigationArrow) => d.rotateTransform);
