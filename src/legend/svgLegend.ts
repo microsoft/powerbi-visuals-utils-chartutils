@@ -66,6 +66,7 @@ import createClassAndSelector = CssConstants.createClassAndSelector;
 // powerbi.extensibility.utils.interactivity
 import appendClearCatcher = interactivityBaseService.appendClearCatcher;
 import dataHasSelection = interactivityBaseService.dataHasSelection;
+import { BaseDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivityBaseService";
 
 export interface TitleLayout {
     x: number;
@@ -956,32 +957,35 @@ export class SVGLegend implements ILegend {
     }
 
     private drawNavigationArrows(layout: NavigationArrow[]): void {
-        let arrows = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
+        let arrows: d3.Selection<d3.BaseType, NavigationArrow, HTMLElement, any> = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
             .data(layout);
 
-        let enteredArrows = arrows
-            .enter();
+        arrows.exit().remove();
 
-        enteredArrows
+        arrows = arrows.merge(arrows
+            .enter()
             .append("g")
+            .classed(SVGLegend.NavigationArrow.className, true)
+        )
             .on("click", (d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;
                 this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                 this.drawLegendInternal(this.data, this.parentViewport, false);
             })
-            .classed(SVGLegend.NavigationArrow.className, true)
-            .append("path");
+            .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y));
 
-        arrows
-            .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y))
-            .select("path")
-            .attr("d", (d: NavigationArrow) => d.path)
+        let path: d3.Selection<SVGPathElement, NavigationArrow, d3.BaseType, any> = arrows.selectAll<SVGPathElement, NavigationArrow>("path")
+            .data((data) => [data]);
+
+        path.exit().remove();
+        path = path
+            .enter()
+            .append("path")
+            .merge(path);
+
+        path.attr("d", (d: NavigationArrow) => d.path)
             .attr("transform", (d: NavigationArrow) => d.rotateTransform);
-
-        arrows
-            .exit()
-            .remove();
     }
 
     private isTopOrBottom(orientation: LegendPosition): boolean {
