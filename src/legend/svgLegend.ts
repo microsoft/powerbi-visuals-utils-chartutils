@@ -55,8 +55,8 @@ import {
 import ISelectionId = powerbi.visuals.ISelectionId;
 
 // powerbi.extensibility.utils.formatting
-import TextProperties = formatting.textMeasurementService.TextProperties;
-import textMeasurementService = formatting.textMeasurementService.textMeasurementService;
+import TextProperties = formatting.interfaces.TextProperties;
+import textMeasurementService = formatting.textMeasurementService;
 import font = formatting.font;
 
 // powerbi.extensibility.utils.svg

@@ -35,9 +35,9 @@ import IThickness = shapesInterfaces.IThickness;
 import { prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 
 // powerbi.extensibility.utils.formatting
-import { textMeasurementService as tms } from "powerbi-visuals-utils-formattingutils";
-import TextProperties = tms.TextProperties;
-import textMeasurementService = tms.textMeasurementService;
+import { textMeasurementService,
+        interfaces } from "powerbi-visuals-utils-formattingutils";
+import TextProperties = interfaces.TextProperties;
 
 import { IArrangeGridElementInfo, ILabelLayout, IDataLabelInfo } from "./dataLabelInterfaces";
 
