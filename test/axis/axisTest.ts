@@ -43,8 +43,7 @@ import PrimitiveType = valueType.PrimitiveType;
 import { valueFormatter as vf } from "powerbi-visuals-utils-formattingutils";
 import valueFormatter = vf;
 
-import { textMeasurementService as tms } from "powerbi-visuals-utils-formattingutils";
-import textMeasurementService = tms.textMeasurementService;
+import { textMeasurementService } from "powerbi-visuals-utils-formattingutils";
 
 // powerbi.extensibility.utils.chart
 import * as axis from "./../../src/axis/axis";

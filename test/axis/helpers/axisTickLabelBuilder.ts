@@ -32,9 +32,8 @@ import * as axis from "./../../../src/axis/axis";
 import * as axisInterfaces from "./../../../src/axis/axisInterfaces";
 import IAxisProperties = axisInterfaces.IAxisProperties;
 
-import { textMeasurementService as tms } from "powerbi-visuals-utils-formattingutils";
-import TextProperties = tms.TextProperties;
-import textMeasurementService = tms.textMeasurementService;
+import { textMeasurementService, interfaces } from "powerbi-visuals-utils-formattingutils";
+import TextProperties = interfaces.TextProperties;
 import CartesianAxisProperties = axisInterfaces.CartesianAxisProperties;
 
 export class AxisTickLabelBuilder {
