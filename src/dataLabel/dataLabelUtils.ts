@@ -35,11 +35,11 @@ import * as formatting from "powerbi-visuals-utils-formattingutils";
 import ISelectionId = powerbi.visuals.ISelectionId;
 
 // powerbi.extensibility.utils.formatting
-import TextProperties = formatting.textMeasurementService.TextProperties;
+import TextProperties = formatting.interfaces.TextProperties;
 import font = formatting.font;
 import numberFormat = formatting.formattingService.numberFormat;
 import formattingService = formatting.formattingService.formattingService;
-import textMeasurementService = formatting.textMeasurementService.textMeasurementService;
+import textMeasurementService = formatting.textMeasurementService;
 import IValueFormatter = formatting.valueFormatter.IValueFormatter;
 import valueFormatter = formatting.valueFormatter;
 import DisplayUnitSystemType = formatting.displayUnitSystemType.DisplayUnitSystemType;

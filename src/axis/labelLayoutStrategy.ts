@@ -3,14 +3,14 @@ import {
 } from "d3-selection";
 
 import {
-    textMeasurementService as tms,
+    textMeasurementService,
+    interfaces,
     textUtil,
     wordBreaker
 } from "powerbi-visuals-utils-formattingutils";
 
-import textMeasurementService = tms.textMeasurementService;
-import ITextAsSVGMeasurer = tms.ITextAsSVGMeasurer;
-import TextProperties = tms.TextProperties;
+import ITextAsSVGMeasurer = interfaces.ITextAsSVGMeasurer;
+import TextProperties = interfaces.TextProperties;
 
 import {
     IAxisProperties,

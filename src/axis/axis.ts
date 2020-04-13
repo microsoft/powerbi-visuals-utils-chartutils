@@ -68,11 +68,12 @@ import * as axisStyle from "./axisStyle";
 
 // powerbi.extensibility.utils.formatting
 import {
-    valueFormatter as vf, textMeasurementService as tms, wordBreaker, dateTimeSequence, formattingService
+    valueFormatter as vf, textMeasurementService as tms, wordBreaker, dateTimeSequence, formattingService,
+    interfaces
 } from "powerbi-visuals-utils-formattingutils";
 import DateTimeSequence = dateTimeSequence.DateTimeSequence;
-import ITextAsSVGMeasurer = tms.ITextAsSVGMeasurer;
-import TextProperties = tms.TextProperties;
+import ITextAsSVGMeasurer = interfaces.ITextAsSVGMeasurer;
+import TextProperties = interfaces.TextProperties;
 
 import IValueFormatter = vf.IValueFormatter;
 import valueFormatter = vf;
@@ -271,7 +272,7 @@ function getRecommendedTickValuesForADateTimeRange(maxTicks: number, dataDomain:
     if (dataDomain[0] === 0 && dataDomain[1] === 0)
         return [];
 
-    let dateTimeTickLabels = DateTimeSequence.calculate(new Date(dataDomain[0]), new Date(dataDomain[1]), maxTicks).sequence;
+    let dateTimeTickLabels = DateTimeSequence.CALCULATE(new Date(dataDomain[0]), new Date(dataDomain[1]), maxTicks).sequence;
 
     tickLabels = dateTimeTickLabels.map(d => d.getTime());
     tickLabels = ensureValuesInRange(tickLabels, dataDomain[0], dataDomain[1]);
