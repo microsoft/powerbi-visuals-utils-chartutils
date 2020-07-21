@@ -58,7 +58,7 @@
     "powerbi-visuals-api": "^3.2.0",
     "powerbi-visuals-utils-colorutils": "^2.3.0",
     "powerbi-visuals-utils-dataviewutils": "^2.3.0",
-    "powerbi-visuals-utils-testutils": "^2.3.1",
+    "powerbi-visuals-utils-testutils": "^2.2.1",
     "puppeteer": "^5.2.0",
     "ts-loader": "^8.0.1",
     "ts-node": "^8.10.2",

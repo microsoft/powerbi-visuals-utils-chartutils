@@ -1,3 +1,7 @@
+## 2.5.0
+* Packages update
+* Github actions
+
 ## 2.4.3
 * FIX: navigation arrows not displayed on first visual render
 
