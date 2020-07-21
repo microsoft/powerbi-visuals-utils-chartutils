@@ -93,7 +93,7 @@ describe("legend", () => {
             legendTitleClassSelector = ".legendTitle";
 
         beforeEach(() => {
-            element = testDom("500", "500");
+            element = $(testDom("500", "500"));
             hostServices = createVisualHost();
 
             interactivityService = createInteractivityService(hostServices);
@@ -922,7 +922,7 @@ describe("legend", () => {
         ];
 
         beforeEach(() => {
-            element = testDom("500", "500");
+            element = $(testDom("500", "500"));
             interactivityService = createInteractivityService(createVisualHost());
             legend = createLegend(element.get(0), true, interactivityService);
         });
@@ -1120,7 +1120,7 @@ describe("legend", () => {
         let legend: ILegend;
 
         beforeEach(() => {
-            const element: JQuery = testDom("500", "500");
+            const element: JQuery = $(testDom("500", "500"));
             const interactivityService: IInteractivityService<SelectableDataPoint> = createInteractivityService(createVisualHost());
 
             legend = createLegend(element.get(0), false, interactivityService);
