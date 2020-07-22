@@ -1,3 +1,7 @@
+## 2.5.1
+* tests upgrade from EricSmekens in dataLabelManagerTest.ts
+* npm audit fix
+
 ## 2.5.0
 * Packages update
 * Github actions
