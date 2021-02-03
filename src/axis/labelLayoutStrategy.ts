@@ -1,5 +1,6 @@
 import {
-    select
+    select,
+    Selection
 } from "d3-selection";
 
 import {
@@ -136,7 +137,7 @@ export const DefaultRotationWithScrollbarTickSizeZero = {
  * Perform rotation and/or truncation of axis tick labels (SVG text) with ellipsis
  */
 export function rotate(
-    labelSelection: d3.Selection<any, any, any, any>,
+    labelSelection: Selection<any, any, any, any>,
     maxBottomMargin: number,
     textTruncator: (properties: TextProperties, maxWidth: number) => string,
     textProperties: TextProperties,
@@ -210,7 +211,7 @@ export function rotate(
 }
 
 export function wordBreak(
-    text: d3.Selection<any, any, any, any>,
+    text: Selection<any, any, any, any>,
     axisProperties: IAxisProperties,
     maxHeight: number) {
 
@@ -230,7 +231,7 @@ export function wordBreak(
     });
 }
 
-export function clip(text: d3.Selection<any, any, any, any>, availableWidth: number, svgEllipsis: (textElement: SVGTextElement, maxWidth: number) => void) {
+export function clip(text: Selection<any, any, any, any>, availableWidth: number, svgEllipsis: (textElement: SVGTextElement, maxWidth: number) => void) {
     if (text.size() === 0) {
         return;
     }

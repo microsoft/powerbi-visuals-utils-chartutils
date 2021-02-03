@@ -61,6 +61,12 @@ import VisualDataLabelsSettings = dataLabelInterfaces.VisualDataLabelsSettings;
 
 import DataLabelManager from "./dataLabelManager";
 
+import {
+    select,
+    Selection,
+    BaseType
+} from "d3-selection";
+
 export const maxLabelWidth: number = 50;
 export const defaultLabelDensity: string = "50";
 export const DefaultDy: string = "-0.15em";
@@ -192,14 +198,14 @@ export function getLabelPrecision(precision: number, format: string): number {
     return defaultCountLabelPrecision;
 }
 
-export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout,
-    viewport: powerbi.IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): d3.Selection<any, any, any, any> {
+export function drawDefaultLabelsForDataPointChart(data: any[], context: Selection<any, any, any, any>, layout: dataLabelInterfaces.ILabelLayout,
+    viewport: powerbi.IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): Selection<any, any, any, any> {
 
     // Hide and reposition labels that overlap
     let dataLabelManager = new DataLabelManager();
     let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
     let hasAnimation: boolean = isAnimator && !!animationDuration;
-    let selectedLabels: d3.Selection<d3.BaseType, any, d3.BaseType, any> = selectLabels(filteredData, context, false, hasAnimation, animationDuration);
+    let selectedLabels: Selection<BaseType, any, BaseType, any> = selectLabels(filteredData, context, false, hasAnimation, animationDuration);
 
     if (!selectedLabels) {
         return;
@@ -238,7 +244,7 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: d3.Sele
     return selectedLabels;
 }
 
-function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false, animationDuration?: number): d3.Selection<d3.BaseType, any, d3.BaseType, any> {
+function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<any, any, any, any>, isDonut: boolean = false, forAnimation: boolean = false, animationDuration?: number): Selection<BaseType, any, BaseType, any> {
     // Check for a case where resizing leaves no labels - then we need to remove the labels "g"
     if (filteredData.length === 0) {
         cleanDataLabels(context, true);
@@ -258,7 +264,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
             (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
             : undefined;
 
-    let labels: d3.Selection<any, any, any, any> = isDonut ?
+    let labels: Selection<any, any, any, any> = isDonut ?
         context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, (d: any) => d.data.identity.getKey())
         : getIdentifier != null ?
             context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, getIdentifier)
@@ -287,7 +293,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: d3.Selecti
     return allLabels;
 }
 
-export function cleanDataLabels(context: d3.Selection<any, any, any, any>, removeLines: boolean = false): void {
+export function cleanDataLabels(context: Selection<any, any, any, any>, removeLines: boolean = false): void {
     let empty = [],
         labels = context.selectAll(labelsClass.selectorName).data(empty);
 
@@ -314,7 +320,7 @@ export function cleanDataLabels(context: d3.Selection<any, any, any, any>, remov
     }
 }
 
-export function setHighlightedLabelsOpacity(context: d3.Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean) {
+export function setHighlightedLabelsOpacity(context: Selection<any, any, any, any>, hasSelection: boolean, hasHighlights: boolean) {
     context
         .selectAll(labelsClass.selectorName)
         .style("fill-opacity", (d: any) => {
