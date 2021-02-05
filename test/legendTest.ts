@@ -25,6 +25,7 @@
 */
 
 import { select } from "d3-selection";
+import * as d3scale from "d3-scale";
 
 import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.visual
@@ -65,7 +66,6 @@ import * as legendPosition from "./../src/legend/legendPosition";
 import { assertColorsMatch, findElementTitle } from "./helpers/helpers";
 import MockBehavior from "./mocks/mockBehavior";
 
-import * as d3scale from "d3-scale";
 import MockOpacityBehavior from "./mocks/mockOpacityBehavior";
 import { LegendBehaviorOptions } from "../src/legend/behavior/legendBehavior";
 import { SelectableDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivitySelectionService";
@@ -884,7 +884,7 @@ describe("legend", () => {
     });
 
     describe("Mobile: interactive legend DOM validation", () => {
-        let element: JQuery,
+        let element: HTMLElement,
             viewport: powerbi.IViewport,
             legend: ILegend,
             colorStyle = "color: {0};",
@@ -922,25 +922,25 @@ describe("legend", () => {
         ];
 
         beforeEach(() => {
-            element = $(testDom("500", "500"));
+            element = testDom("500", "500");
             interactivityService = createInteractivityService(createVisualHost());
-            legend = createLegend(element.get(0), true, interactivityService);
+            legend = createLegend(element, true, interactivityService);
         });
 
         describe("3 item legend", () => {
-            // it("legend dom validation one legend item count validation", (done) => {//failed
-            //     legend.drawLegend({
-            //         dataPoints: [
-            //             legendData[1],
-            //         ]
-            //     }, viewport);
+            it("legend dom validation one legend item count validation", (done) => {//failed
+                legend.drawLegend({
+                    dataPoints: [
+                        legendData[1],
+                    ]
+                }, viewport);
 
-            //     setTimeout(() => {
-            //         expect($(".interactive-legend .title").length).toBe(1);
-            //         expect($(".interactive-legend .item").length).toBe(1);
-            //         done();
-            //     }, DefaultWaitForRender);
-            // });
+                setTimeout(() => {
+                    expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
+                    expect(element.querySelectorAll(".interactive-legend .item").length).toBe(1);
+                    done();
+                }, DefaultWaitForRender);
+            });
 
             it("legend dom validation three legend items count validation", (done) => {
                 debugger;
@@ -948,41 +948,41 @@ describe("legend", () => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
-                    expect($(".interactive-legend .title").length).toBe(1);
-                    expect($(".interactive-legend .item").length).toBe(3);
+                    expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
+                    expect(element.querySelectorAll(".interactive-legend .item").length).toBe(3);
                     done();
                 }, DefaultWaitForRender);
             });
 
-            // it("legend dom validation three legend items first item name and measure", (done) => {//failed
-            //     legend.drawLegend({ dataPoints: legendData }, viewport);
+            it("legend dom validation three legend items first item name and measure", (done) => {//failed
+                legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            //     setTimeout(() => {
-            //         expect($(".interactive-legend .title").text()).toBe(legendData[0].category);
-            //         expect($(".interactive-legend .item").first().find(".itemName").text().trim()).toBe("Alaska");
-            //         expect($(".interactive-legend .item").first().find(".itemMeasure").text().trim()).toBe("0");
-            //         done();
-            //     }, DefaultWaitForRender);
-            // });
+                setTimeout(() => {
+                    expect(element.querySelector(".interactive-legend .title").textContent).toBe(legendData[0].category);
+                    expect(element.querySelector(".interactive-legend .item .itemName").textContent.trim()).toBe("Alaska");
+                    expect(element.querySelector(".interactive-legend .item .itemMeasure").textContent.trim()).toBe("0");
+                    done();
+                }, DefaultWaitForRender);
+            });
 
-            // it("legend dom validation three legend items last item name and measure", (done) => {//failed
-            //     legend.drawLegend({ dataPoints: legendData }, viewport);
-            //     setTimeout(() => {
-            //         expect($(".interactive-legend .title").text()).toBe(legendData[0].category);
-            //         expect($(".interactive-legend .item").last().find(".itemName").text().trim()).toBe("Texas");
-            //         expect($(".interactive-legend .item").last().find(".itemMeasure").text().trim()).toBe("10");
-            //         done();
-            //     }, DefaultWaitForRender);
-            // });
+            it("legend dom validation three legend items last item name and measure", (done) => {//failed
+                legend.drawLegend({ dataPoints: legendData }, viewport);
+                setTimeout(() => {
+                    expect(element.querySelector(".interactive-legend .title").textContent).toBe(legendData[0].category);
+                    expect(element.querySelectorAll(".interactive-legend .item .itemName")[legendData.length-1].textContent.trim()).toBe("Texas");
+                    expect(element.querySelectorAll(".interactive-legend .item .itemMeasure")[legendData.length-1].textContent.trim()).toBe("10");
+                    done();
+                }, DefaultWaitForRender);
+            });
 
-            // it("legend dom validation three legend items colors count", (done) => {//failed
-            //     legend.drawLegend({ dataPoints: legendData }, viewport);
+            it("legend dom validation three legend items colors count", (done) => {//failed
+                legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            //     setTimeout(() => {
-            //         expect($(".interactive-legend .icon").length).toBe(3);
-            //         done();
-            //     }, DefaultWaitForRender);
-            // });
+                setTimeout(() => {
+                    expect(element.querySelectorAll(".interactive-legend .icon").length).toBe(3);
+                    done();
+                }, DefaultWaitForRender);
+            });
 
             it("legend getHeight empty", () => {
                 expect(legend.getMargins().height).toBe(defaultLegendHeight);
@@ -1010,49 +1010,49 @@ describe("legend", () => {
                 expect(legend.getMargins().height).toBe(defaultLegendHeight);
             });
 
-            // it("legend dom validation incremental build", (done) => {//failed
-            //     // Draw the legend once with the 3 states
-            //     let initialData: LegendDataPoint[] = legendData;
+            it("legend dom validation incremental build", (done) => {//failed
+                // Draw the legend once with the 3 states
+                let initialData: LegendDataPoint[] = legendData;
 
-            //     legend.drawLegend({ dataPoints: initialData }, viewport);
+                legend.drawLegend({ dataPoints: initialData }, viewport);
 
-            //     setTimeout(() => {
-            //         validateLegendDOM(initialData);
+                setTimeout(() => {
+                    validateLegendDOM(initialData);
 
-            //         // Draw the legend against with a new state at the start
-            //         let updatedData: LegendDataPoint[] = [
-            //             legendData[0],
-            //             legendData[1],
-            //             legendData[2],
-            //             {
-            //                 category: "state",
-            //                 label: "Washington",
-            //                 color: "orange",
+                    // Draw the legend against with a new state at the start
+                    let updatedData: LegendDataPoint[] = [
+                        legendData[0],
+                        legendData[1],
+                        legendData[2],
+                        {
+                            category: "state",
+                            label: "Washington",
+                            color: "orange",
 
-            //                 measure: 15,
-            //                 identity: createSelectionIdentity(2),
-            //                 selected: false
-            //             }
-            //         ];
-            //         legend.reset();
-            //         legend.drawLegend({ dataPoints: updatedData }, viewport);
-            //         setTimeout(() => {
-            //             validateLegendDOM(updatedData);
-            //             done();
-            //         }, DefaultWaitForRender);
-            //     }, DefaultWaitForRender);
-            // });
+                            measure: 15,
+                            identity: createSelectionIdentity(2),
+                            selected: false
+                        }
+                    ];
+                    legend.reset();
+                    legend.drawLegend({ dataPoints: updatedData }, viewport);
+                    setTimeout(() => {
+                        validateLegendDOM(updatedData);
+                        done();
+                    }, DefaultWaitForRender);
+                }, DefaultWaitForRender);
+            });
 
         });
 
         function validateLegendDOM(expectedData: LegendDataPoint[]): void {
             let len = expectedData.length,
-                items = $(".interactive-legend .item");
+                items = element.querySelectorAll(".interactive-legend .item");
 
-            expect($(".interactive-legend .title").length).toBe(1);
+            expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
             expect(items.length).toBe(len);
 
-            let icons = $(".interactive-legend .icon");
+            let icons = element.querySelectorAll(".interactive-legend .icon");
             expect(icons.length).toBe(len);
 
             // items are returned from the table, first row and then second row.
@@ -1061,8 +1061,8 @@ describe("legend", () => {
                 rearrangedIcons = [];
 
             for (let i = 0; i < len; i++) {
-                rearrangedItems.push($(items.get(i)));
-                rearrangedIcons.push($(icons.get(i)));
+                rearrangedItems.push(items[i]);
+                rearrangedIcons.push(icons[i]);
             }
 
             for (let i = 0; i < len; ++i) {
@@ -1070,12 +1070,12 @@ describe("legend", () => {
                     item = rearrangedItems[i],
                     icon = rearrangedIcons[i];
 
-                expect(item.find(".itemName").text()).toBe(expectedDatum.label);
-                expect(item.find(".itemMeasure").text().trim()).toBe(expectedDatum.measure.toString());
+                expect(item.querySelector(".itemName").textContent).toBe(expectedDatum.label);
+                expect(item.querySelector(".itemMeasure").textContent.trim()).toBe(expectedDatum.measure.toString());
 
                 let color = icon
-                    .attr("style")
-                    .substring(icon.attr("style").indexOf("color:"))
+                    .getAttribute("style")
+                    .substring(icon.getAttribute("style").indexOf("color:"))
                     .trim();
 
                 expect(color).toBe(stringExtensions.format(colorStyle, expectedDatum.color));
