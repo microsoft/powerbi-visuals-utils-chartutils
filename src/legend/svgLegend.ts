@@ -969,7 +969,7 @@ export class SVGLegend implements ILegend {
             .append("g")
             .classed(SVGLegend.NavigationArrow.className, true)
         )
-            .on("click", (d: NavigationArrow) => {
+            .on("click", (event, d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;
                 this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
