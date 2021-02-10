@@ -126,7 +126,7 @@ describe("legend", () => {
             ];
         });
 
-        it("legend dom validation one legend item count validation", (done) => {//failed
+        it("legend dom validation one legend item count validation", (done) => {
             legend.drawLegend({
                 dataPoints: [
                     legendData[0],
@@ -141,7 +141,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation three legend items count validation", (done) => {//failed
+        it("legend dom validation three legend items count validation", (done) => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
@@ -152,7 +152,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation three legend items first item text", (done) => {//failed
+        it("legend dom validation three legend items first item text", (done) => {
             legend.reset();
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
@@ -171,7 +171,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation three legend items colors count", (done) => {//failed
+        it("legend dom validation three legend items colors count", (done) => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
@@ -180,7 +180,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation three legend items with shared label and color", (done) => {//failed
+        it("legend dom validation three legend items with shared label and color", (done) => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false },
@@ -214,7 +214,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation three legend items but two share same identity but are on different layers", (done) => {//failed
+        it("legend dom validation three legend items but two share same identity but are on different layers", (done) => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false, layerNumber: 0 },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(2), selected: false, layerNumber: 1 },
@@ -231,7 +231,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("legend dom validation incremental build", (done) => {//failed
+        it("legend dom validation incremental build", (done) => {
             // Draw the legend once with the 3 states
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
@@ -262,7 +262,7 @@ describe("legend", () => {
                 icons = element.querySelectorAll(".legendIcon");
             });
 
-            it("Default state", () => {//failed
+            it("Default state", () => {
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#0000ff");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
@@ -365,13 +365,13 @@ describe("legend", () => {
                     legend.drawLegend({ dataPoints: legendData }, viewport);
                 });
 
-                it("has correct selection fill", () => {//failed
+                it("has correct selection fill", () => {
                     assertColorsMatch(icons[0].style.fill, "#a6a6a6");
                     assertColorsMatch(icons[1].style.fill, "#0000ff");
                     assertColorsMatch(icons[2].style.fill, "#a6a6a6");
                 });
 
-                it("click selects corresponding item", () => {//failed
+                it("click selects corresponding item", () => {
                     d3Click.call(icons[0], icons[0], 0, 0);
 
                     assertColorsMatch(icons[0].style.fill, "#ff0000");
@@ -379,7 +379,7 @@ describe("legend", () => {
                     assertColorsMatch(icons[2].style.fill, "#a6a6a6");
                 });
 
-                it("ctrl+click adds item to current selection", () => {//failed
+                it("ctrl+click adds item to current selection", () => {
                     d3Click.call(icons[0], icons[0], 0, 0, ClickEventType.CtrlKey);
 
                     assertColorsMatch(icons[0].style.fill, "#ff0000");
@@ -400,7 +400,7 @@ describe("legend", () => {
             expect(props[legendProps.position]).toEqual(legendPosition.top);
         });
 
-        it("legend with title", () => {//failed
+        it("legend with title", () => {
             let legendData = getLotsOfLegendData();
             legend.drawLegend({ dataPoints: legendData, title: "states" }, viewport);
 
@@ -409,7 +409,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(legendTitleClassSelector).length).toBe(1);
         });
 
-        it("legend title tooltip", () => {//failed
+        it("legend title tooltip", () => {
             let legendData = getLotsOfLegendData();
             legend.drawLegend({ dataPoints: legendData, title: "states" }, viewport);
 
@@ -417,7 +417,7 @@ describe("legend", () => {
             expect(findElementTitle(element.querySelector(legendTitleClassSelector))).toBe("states");
         });
 
-        it("legend truncated title tooltip", () => {//failed
+        it("legend truncated title tooltip", () => {
             let legendData = getLotsOfLegendData();
             legend.drawLegend({ dataPoints: legendData, title: "Very Long Legend Header Data" }, viewport);
 
@@ -425,7 +425,7 @@ describe("legend", () => {
             expect(findElementTitle(element.querySelector(legendTitleClassSelector))).toBe("Very Long Legend Header Data");
         });
 
-        it("legend items tooltip", () => {//failed
+        it("legend items tooltip", () => {
             let legendData = getLotsOfLegendData();
             legend.drawLegend({ dataPoints: legendData, title: "states" }, viewport);
 
@@ -437,7 +437,7 @@ describe("legend", () => {
             }
         });
 
-        it("legend truncated items tooltip", () => {//failed
+        it("legend truncated items tooltip", () => {
             let legendData = getLotsOfLegendData();
             let originalOrientation = legend.getOrientation();
 
@@ -464,7 +464,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".legendTitle").length).toBe(0);
         });
 
-        it("legend Top & horizontal trim", () => {//failed
+        it("legend Top & horizontal trim", () => {
             let legendData = getLotsOfLegendData();
             legend.changeOrientation(LegendPosition.Top);
             legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 1000 });
@@ -475,7 +475,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
-        it("legend Bottom & horizontal trim", () => {//failed
+        it("legend Bottom & horizontal trim", () => {
             let legendData = getLotsOfLegendData();
             legend.changeOrientation(LegendPosition.Bottom);
             legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 1000 });
@@ -486,7 +486,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
-        it("legend Left & vertical trim", () => {//failed
+        it("legend Left & vertical trim", () => {
             let legendData = getLotsOfLegendData();
             legend.changeOrientation(LegendPosition.Left);
             legend.drawLegend({ dataPoints: legendData }, { height: 200, width: 1000 });
@@ -508,7 +508,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
-        it("Intelligent Layout: Low label count should result in longer max-width", () => {//failed
+        it("Intelligent Layout: Low label count should result in longer max-width", () => {
             let legendData = [{
                 label: "Really long label, but i have the space to show",
                 color: "red",
@@ -528,7 +528,7 @@ describe("legend", () => {
             expect(element.querySelector(".legendText").textContent).not.toContain("...");
         });
 
-        it("Intelligent Layout: Long label must be cut off", () => {//failed
+        it("Intelligent Layout: Long label must be cut off", () => {
             let legendData: LegendDataPoint[] = [{
                 label: "Really long label, but i haven't the space to show",
                 color: "red",
@@ -547,7 +547,7 @@ describe("legend", () => {
             expect(element.querySelector(".legendText").textContent.length).toBeGreaterThan(3);
         });
 
-        it("Intelligent Layout: Lots of small labels should get compacted in horizontal layout", () => {//failed
+        it("Intelligent Layout: Lots of small labels should get compacted in horizontal layout", () => {
             let legendData = getLotsOfLegendData();
             legend.changeOrientation(LegendPosition.Top);
             legend.drawLegend({ dataPoints: legendData, fontSize: 8 }, { height: 100, width: 1000 });
@@ -585,7 +585,7 @@ describe("legend", () => {
             expect(legend.getMargins().width).toBe(300);
         });
 
-        it("Intelligent Layout: Only right arrow shown at start ", () => {//failed
+        it("Intelligent Layout: Only right arrow shown at start ", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Top);
@@ -596,7 +596,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: No arrows when you have enough horizontal space ", () => {//failed
+        it("Intelligent Layout: No arrows when you have enough horizontal space ", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
@@ -642,7 +642,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(0);
         });
 
-        it("Intelligent Layout: No arrows when you have enough horizontal space, but appears on resize ", () => {//failed
+        it("Intelligent Layout: No arrows when you have enough horizontal space, but appears on resize ", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
@@ -671,7 +671,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: No arrows when you have enough vertical space, but appears on resize ", () => {//failed
+        it("Intelligent Layout: No arrows when you have enough vertical space, but appears on resize ", () => {
             let legendData = [{
                 label: "Skywalker",
                 color: "red",
@@ -700,7 +700,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: Only down arrow shown at start ", () => {//failed
+        it("Intelligent Layout: Only down arrow shown at start ", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Right);
@@ -711,7 +711,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: Only down arrow shown at start ", () => {//failed
+        it("Intelligent Layout: Only down arrow shown at start ", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Right);
@@ -722,7 +722,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: Second arrow appears when you page right", () => {//failed
+        it("Intelligent Layout: Second arrow appears when you page right", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Top);
@@ -734,11 +734,11 @@ describe("legend", () => {
 
             let elementToClick = element.querySelector(".navArrow");
             d3Click.call(elementToClick, elementToClick, 0, 0);
-            
+
             expect(element.querySelectorAll(".navArrow").length).toBe(2);
         });
 
-        it("Intelligent Layout: Second arrow appears when you page down", () => {//failed
+        it("Intelligent Layout: Second arrow appears when you page down", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Left);
@@ -754,7 +754,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(2);
         });
 
-        it("Intelligent Layout: Second arrow disappears when you page rigth to last page", () => {//failed
+        it("Intelligent Layout: Second arrow disappears when you page rigth to last page", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Top);
@@ -774,12 +774,12 @@ describe("legend", () => {
                 element.querySelectorAll(".navArrow")[element.querySelectorAll(".navArrow").length - 1],
                 0,
                 0
-                );
+            );
 
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        it("Intelligent Layout: Second arrow disappears when you page down to last page", () => {//failed
+        it("Intelligent Layout: Second arrow disappears when you page down to last page", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Right);
@@ -933,7 +933,7 @@ describe("legend", () => {
         });
 
         describe("3 item legend", () => {
-            it("legend dom validation one legend item count validation", (done) => {//failed
+            it("legend dom validation one legend item count validation", (done) => {
                 legend.drawLegend({
                     dataPoints: [
                         legendData[1],
@@ -959,7 +959,7 @@ describe("legend", () => {
                 }, DefaultWaitForRender);
             });
 
-            it("legend dom validation three legend items first item name and measure", (done) => {//failed
+            it("legend dom validation three legend items first item name and measure", (done) => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
@@ -970,17 +970,17 @@ describe("legend", () => {
                 }, DefaultWaitForRender);
             });
 
-            it("legend dom validation three legend items last item name and measure", (done) => {//failed
+            it("legend dom validation three legend items last item name and measure", (done) => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
                 setTimeout(() => {
                     expect(element.querySelector(".interactive-legend .title").textContent).toBe(legendData[0].category);
-                    expect(element.querySelectorAll(".interactive-legend .item .itemName")[legendData.length-1].textContent.trim()).toBe("Texas");
-                    expect(element.querySelectorAll(".interactive-legend .item .itemMeasure")[legendData.length-1].textContent.trim()).toBe("10");
+                    expect(element.querySelectorAll(".interactive-legend .item .itemName")[legendData.length - 1].textContent.trim()).toBe("Texas");
+                    expect(element.querySelectorAll(".interactive-legend .item .itemMeasure")[legendData.length - 1].textContent.trim()).toBe("10");
                     done();
                 }, DefaultWaitForRender);
             });
 
-            it("legend dom validation three legend items colors count", (done) => {//failed
+            it("legend dom validation three legend items colors count", (done) => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
@@ -1015,7 +1015,7 @@ describe("legend", () => {
                 expect(legend.getMargins().height).toBe(defaultLegendHeight);
             });
 
-            it("legend dom validation incremental build", (done) => {//failed
+            it("legend dom validation incremental build", (done) => {
                 // Draw the legend once with the 3 states
                 let initialData: LegendDataPoint[] = legendData;
 
@@ -1090,12 +1090,12 @@ describe("legend", () => {
 
     describe("SVGLegend DOM", () => {
         let element: HTMLElement,
-        legend: ILegend,
-        interactivityService: IInteractivityService<SelectableDataPoint>,
-        viewport: powerbi.IViewport = {
-            height: 100,
-            width: 500,
-        };
+            legend: ILegend,
+            interactivityService: IInteractivityService<SelectableDataPoint>,
+            viewport: powerbi.IViewport = {
+                height: 100,
+                width: 500,
+            };
 
         const dataPoints: LegendDataPoint[] = [
             {
@@ -1134,7 +1134,7 @@ describe("legend", () => {
             legend = createLegend(element, false, interactivityService);
         });
 
-        it("should render 3 legendText elements", (done) => {//failed
+        it("should render 3 legendText elements", (done) => {
             legend.drawLegend({ dataPoints }, viewport);
 
             setTimeout(() => {
@@ -1144,7 +1144,7 @@ describe("legend", () => {
             }, DefaultWaitForRender);
         });
 
-        it("should apply fontFamily via CSS for each legendText element", (done) => {//failed
+        it("should apply fontFamily via CSS for each legendText element", (done) => {
             const fontFamily: string = "Tahoma";
 
             legend.drawLegend(

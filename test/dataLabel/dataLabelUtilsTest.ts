@@ -34,7 +34,9 @@ import { VisualDataLabelsSettings, VisualDataLabelsSettingsOptions } from  "./..
 
 describe("dataLabel.utils", () => {
     afterEach(() => {
-        $(".data-labels").remove();
+        document.querySelectorAll(".data-labels").forEach((element) => {
+            element.remove();
+        });
     });
 
     describe("dataLabel.utils tests", () => {

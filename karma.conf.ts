@@ -40,7 +40,7 @@ module.exports = (config) => {
     config.set({
         mode: "development",
         browserNoActivityTimeout: 100000,
-        browsers: ["Chrome"],
+        browsers: ["ChromeHeadless"],
         colors: true,
         frameworks: ["jasmine"],
         reporters: [
@@ -52,7 +52,7 @@ module.exports = (config) => {
             combineBrowserReports: true,
             fixWebpackSourcePaths: true
         },
-        singleRun: false,
+        singleRun: true,
         plugins: [
             "karma-remap-istanbul",
             "karma-coverage",
