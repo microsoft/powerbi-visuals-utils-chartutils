@@ -2,6 +2,7 @@
 * Removed Jquery
 * D3.v6 code refactored
 * Packages update
+* Added new tests 
 
 ## 2.5.0
 * Packages update

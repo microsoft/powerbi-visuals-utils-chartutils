@@ -25,7 +25,7 @@
 */
 
 import { select } from "d3-selection";
-import * as d3scale from "d3-scale";
+import { scaleOrdinal } from "d3-scale";
 
 import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.visual
@@ -1178,7 +1178,7 @@ function getLotsOfLegendData(): LegendDataPoint[] {
         "AP"
     ];
 
-    let colors = d3scale.scaleOrdinal([0, 20]);
+    let colors = scaleOrdinal([0, 20]);
     let legendData: LegendDataPoint[] = [];
 
     for (let i = 0; i < states.length; i++) {
