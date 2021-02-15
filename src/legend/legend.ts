@@ -23,7 +23,7 @@
 *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 *  THE SOFTWARE.
 */
-
+import { Selection } from "d3-selection";
 import { interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
 import IInteractivityService = interactivityBaseService.IInteractivityService;
 import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
@@ -67,7 +67,7 @@ export function isTop(orientation: LegendPosition): boolean {
     }
 }
 
-export function positionChartArea(chartArea: d3.Selection<any, any, any, any>, legend: ILegend): void {
+export function positionChartArea(chartArea: Selection<any, any, any, any>, legend: ILegend): void {
     let legendMargins = legend.getMargins(),
         legendOrientation = legend.getOrientation();
 

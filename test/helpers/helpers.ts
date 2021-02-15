@@ -48,7 +48,7 @@ export function isInRange(val: number, min: number, max: number): Boolean {
     return min <= val && val <= max;
 }
 
-export function findElementTitle(element: JQuery): string {
-    return element.children("title").text();
+export function findElementTitle(element: HTMLElement): string {
+    return element.querySelector("title").textContent;
 }
 

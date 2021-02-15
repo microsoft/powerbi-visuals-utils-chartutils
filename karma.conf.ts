@@ -29,8 +29,6 @@
 const webpackConfig = require("./webpack.config.js");
 const tsconfig = require("./tsconfig.json");
 
-import { Config, ConfigOptions } from "karma";
-
 const testRecursivePath = "test/**/*.ts"
     , srcOriginalRecursivePath = "src/**/*.ts"
     , srcRecursivePath = "lib/**/*.js"
@@ -38,8 +36,8 @@ const testRecursivePath = "test/**/*.ts"
     , coverageFolder = "coverage";
 
 process.env.CHROME_BIN = require("puppeteer").executablePath();
-module.exports = (config: Config) => {
-    config.set(<ConfigOptions>{
+module.exports = (config) => {
+    config.set({
         browserNoActivityTimeout: 100000,
         browsers: ["ChromeHeadless"],
         colors: true,

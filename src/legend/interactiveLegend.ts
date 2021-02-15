@@ -24,9 +24,7 @@
 *  THE SOFTWARE.
 */
 
-import {
-    select
-} from "d3-selection";
+import { select, Selection } from "d3-selection";
 
 import powerbi from "powerbi-visuals-api";
 import { textUtil } from "powerbi-visuals-utils-formattingutils";
@@ -45,8 +43,8 @@ export class InteractiveLegend implements ILegend {
     private static legendItemNameClass = "itemName";
     private static legendItemMeasureClass = "itemMeasure";
 
-    private legendContainerParent: d3.Selection<any, any, any, any>;
-    private legendContainerDiv: d3.Selection<any, any, any, any>;
+    private legendContainerParent: Selection<any, any, any, any>;
+    private legendContainerDiv: Selection<any, any, any, any>;
 
     constructor(element: HTMLElement) {
         this.legendContainerParent = select(element);
@@ -109,12 +107,12 @@ export class InteractiveLegend implements ILegend {
      * Draw the legend title
      */
     private drawTitle(data: LegendDataPoint[]): void {
-        let titleDiv: d3.Selection<any, any, any, any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
-            item: d3.Selection<any, any, any, any> = titleDiv.data([data[0]]);
+        let titleDiv: Selection<any, any, any, any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
+            item: Selection<any, any, any, any> = titleDiv.data([data[0]]);
 
         // Enter
-        let itemEnter: d3.Selection<any, any, any, any> = item.enter(),
-            titleDivEnter: d3.Selection<any, any, any, any> = itemEnter
+        let itemEnter: Selection<any, any, any, any> = item.enter(),
+            titleDivEnter: Selection<any, any, any, any> = itemEnter
                 .append("div")
                 .attr("class", InteractiveLegend.LegendTitleClass);
 
@@ -146,23 +144,23 @@ export class InteractiveLegend implements ILegend {
         this.ensureLegendTableCreated();
 
         let dataPointsMatrix: LegendDataPoint[][] = [data];
-        let legendItemsContainer: d3.Selection<any, any, any, any> = this.legendContainerDiv
+        let legendItemsContainer: Selection<any, any, any, any> = this.legendContainerDiv
             .select("tbody")
             .selectAll("tr")
             .data(dataPointsMatrix);
 
         // Enter
-        let legendItemsEnter: d3.Selection<any, any, any, any> = legendItemsContainer.enter(),
-            rowEnter: d3.Selection<any, any, any, any> = legendItemsEnter.append("tr");
+        let legendItemsEnter: Selection<any, any, any, any> = legendItemsContainer.enter(),
+            rowEnter: Selection<any, any, any, any> = legendItemsEnter.append("tr");
 
-        let cellEnter: d3.Selection<any, any, any, any> = rowEnter
+        let cellEnter: Selection<any, any, any, any> = rowEnter
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label)
             .enter()
             .append("td")
             .attr("class", InteractiveLegend.LegendItem);
 
-        let cellSpanEnter: d3.Selection<any, any, any, any> = cellEnter.append("span");
+        let cellSpanEnter: Selection<any, any, any, any> = cellEnter.append("span");
 
         cellSpanEnter.filter((d: LegendDataPoint) => !d.iconOnlyOnLabel)
             .append("span")
@@ -185,7 +183,7 @@ export class InteractiveLegend implements ILegend {
             .attr("class", InteractiveLegend.legendItemMeasureClass);
 
         // Update
-        let legendCells: d3.Selection<any, any, any, any> = legendItemsContainer
+        let legendCells: Selection<any, any, any, any> = legendItemsContainer
             .merge(legendItemsEnter)
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label);
@@ -216,7 +214,7 @@ export class InteractiveLegend implements ILegend {
      */
     private ensureLegendTableCreated(): void {
         if (this.legendContainerDiv.select("div table").empty()) {
-            let legendTable: d3.Selection<any, any, any, any> = this.legendContainerDiv
+            let legendTable: Selection<any, any, any, any> = this.legendContainerDiv
                 .append("div")
                 .append("table");
 
@@ -230,7 +228,7 @@ export class InteractiveLegend implements ILegend {
     /**
      * Set Horizontal Pan gesture for the legend
      */
-    private setPanGestureOnLegend(legendTable: d3.Selection<any, any, any, any>): void {
+    private setPanGestureOnLegend(legendTable: Selection<any, any, any, any>): void {
         throw "Not implemented";
         // let parentNode = <HTMLElement>this.legendContainerParent.node();
         // let viewportWidth: number = parentNode.getBoundingClientRect().width;

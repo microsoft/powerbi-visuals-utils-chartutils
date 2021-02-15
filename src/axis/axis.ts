@@ -25,6 +25,10 @@
 */
 
 import {
+    ScaleLinear,
+    ScaleOrdinal,
+    ScaleBand,
+    ScaleLogarithmic,
     scaleLinear,
     scaleLog,
     scaleBand,
@@ -33,6 +37,7 @@ import {
 } from "d3-scale";
 
 import {
+    Axis,
     axisLeft,
     axisBottom,
     axisTop,
@@ -176,7 +181,7 @@ export function hasNonIntegerData(valuesMetadata: powerbi.DataViewMetadataColumn
 }
 
 export function getRecommendedTickValues(maxTicks: number,
-    scale: d3.ScaleLinear<number, number> | d3.ScaleOrdinal<any, any>,
+    scale: ScaleLinear<number, number> | ScaleOrdinal<any, any>,
     axisType: ValueType,
     isScalar: boolean,
     minTickInterval?: number): any[] {
@@ -185,10 +190,10 @@ export function getRecommendedTickValues(maxTicks: number,
         return getRecommendedTickValuesForAnOrdinalRange(maxTicks, scale.domain() as any);
     }
     else if (isDateTime(axisType)) {
-        return getRecommendedTickValuesForADateTimeRange(maxTicks, (scale as d3.ScaleLinear<number, number>).domain());
+        return getRecommendedTickValuesForADateTimeRange(maxTicks, (scale as ScaleLinear<number, number>).domain());
     }
 
-    return getRecommendedTickValuesForAQuantitativeRange(maxTicks, (scale as d3.ScaleLinear<number, number>), minTickInterval);
+    return getRecommendedTickValuesForAQuantitativeRange(maxTicks, (scale as ScaleLinear<number, number>), minTickInterval);
 }
 
 export function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labels: string[]): string[] {
@@ -208,14 +213,14 @@ export function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labe
     return tickLabels;
 }
 
-export function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: d3.ScaleLinear<any, any>, minInterval?: number): number[] {
+export function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, scale: ScaleLinear<any, any>, minInterval?: number): number[] {
     let tickLabels: number[] = [];
 
     // if maxticks is zero return none
     if (maxTicks === 0)
         return tickLabels;
 
-    let quantitiveScale = <d3.ScaleLinear<any, any>>scale;
+    let quantitiveScale = <ScaleLinear<any, any>>scale;
     if (quantitiveScale.ticks) {
         tickLabels = quantitiveScale.ticks(maxTicks);
         if (tickLabels.length > maxTicks && maxTicks > 1)
@@ -479,7 +484,7 @@ export function isOrdinal(dataType: powerbi.ValueTypeDescriptor): boolean {
 }
 
 export function isOrdinalScale(scale: any):
-    scale is d3.ScaleOrdinal<any, any> | d3.ScaleBand<any> | ScalePoint<any> {
+    scale is ScaleOrdinal<any, any> | ScaleBand<any> | ScalePoint<any> {
     return typeof (<any>scale).bandwidth === "function";
 }
 
@@ -496,12 +501,12 @@ export function invertScale(scale: any, x) {
 }
 
 export function extent(
-    scale: d3.ScaleBand<any> |
-        d3.ScaleOrdinal<any, any> |
-        d3.ScalePoint<any> |
-        d3.ScaleLinear<any, any> |
-        d3.ScaleLogarithmic<any, any> |
-        d3.ScaleBand<any>): number[] {
+    scale: ScaleBand<any> |
+        ScaleOrdinal<any, any> |
+        ScalePoint<any> |
+        ScaleLinear<any, any> |
+        ScaleLogarithmic<any, any> |
+        ScaleBand<any>): number[] {
     let range = (<any>scale).range();
     return [range[0], range[range.length - 1]];
 }
@@ -518,7 +523,7 @@ export function getCategoryThickness(scale: any): number {
         // We have 1 item if we don't have 2 edges. If we have 1 item, just use the entire axis length as the thickness.
         if (isOrdinalScale(scale)) {
             // We should only hit this if we have an ordinal scale. Other scales should always have 2 items in their range.
-            let rangeExtent = (scale as d3.ScaleOrdinal<any, any>).range();
+            let rangeExtent = (scale as ScaleOrdinal<any, any>).range();
             return rangeExtent[1] - rangeExtent[0];
         }
     }
@@ -530,7 +535,7 @@ export function getCategoryThickness(scale: any): number {
  * Inverts the ordinal scale. If x < scale.range()[0], then scale.domain()[0] is returned.
  * Otherwise, it returns the greatest item in scale.domain() that's <= x.
  */
-export function invertOrdinalScale(scale: d3.ScaleBand<any>, x: number) {
+export function invertOrdinalScale(scale: ScaleBand<any>, x: number) {
     let domain = scale.domain();
     let range = domain.map(d => scale(d));
 
@@ -572,7 +577,7 @@ export function findClosestXAxisIndex(categoryValue: number, categoryAxisValues:
     return closestValueIndex;
 }
 
-export function lookupOrdinalIndex(scale: d3.ScaleOrdinal<any, any>, pixelValue: number): number {
+export function lookupOrdinalIndex(scale: ScaleOrdinal<any, any>, pixelValue: number): number {
     let closestValueIndex: number = -1;
     let minDistance = Number.MAX_VALUE;
     let domain = scale.domain();
@@ -599,7 +604,7 @@ export function lookupOrdinalIndex(scale: d3.ScaleOrdinal<any, any>, pixelValue:
 
 /** scale(value1) - scale(value2) with zero checking and min(+/-1, result) */
 export function diffScaled(
-    scale: d3.ScaleLinear<any, any>,
+    scale: ScaleLinear<any, any>,
     value1: any,
     value2: any): number {
 
@@ -763,7 +768,7 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
  * Creates a D3 axis for stacked axis usage. `options.innerTickSize` and `options.outerTickSize` will be defaulted to 0 if not set.
  * `options.orientation` will be defaulted to "bottom" if not specified.
  */
-export function createStackedAxis(options: CreateStackedAxisOptions): d3.Axis<any> {
+export function createStackedAxis(options: CreateStackedAxisOptions): Axis<any> {
     let axis = options.axis;
     let orientation = options.orient;
 
@@ -787,7 +792,7 @@ export function createStackedAxis(options: CreateStackedAxisOptions): d3.Axis<an
         .tickFormat(options.tickFormat);
 }
 
-function getScalarLabelMaxWidth(scale: d3.ScaleLinear<any, any>, tickValues: number[]): number {
+function getScalarLabelMaxWidth(scale: ScaleLinear<any, any>, tickValues: number[]): number {
     // find the distance between two ticks. scalar ticks can be anywhere, such as:
     // |---50----------100--------|
     if (scale && !arrayIsEmpty(tickValues)) {
@@ -825,7 +830,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
     if (disableNice) {
         bestTickCount = null;
     }
-    let scale: d3.ScaleOrdinal<any, any> | d3.ScaleLinear<any, any> | d3.ScalePoint<any> | d3.ScaleBand<any>;
+    let scale: ScaleOrdinal<any, any> | ScaleLinear<any, any> | ScalePoint<any> | ScaleBand<any>;
     let usingDefaultDomain = false;
 
     if (dataDomain == null || (dataDomain.length === 2 && dataDomain[0] == null && dataDomain[1] == null) || (dataDomain.length !== 2 && isScalar)) {
@@ -888,7 +893,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
         (<any>scale).range(scale.range().reverse() as any);
     }
 
-    normalizeInfinityInScale(scale as d3.ScaleLinear<any, any>);
+    normalizeInfinityInScale(scale as ScaleLinear<any, any>);
 
     return {
         scale: scale as any,
@@ -897,7 +902,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
     };
 }
 
-export function normalizeInfinityInScale(scale: d3.ScaleLinear<any, any>): void {
+export function normalizeInfinityInScale(scale: ScaleLinear<any, any>): void {
     // When large values (eg Number.MAX_VALUE) are involved, a call to scale.nice occasionally
     // results in infinite values being included in the domain. To correct for that, we need to
     // re-normalize the domain now to not include infinities.
@@ -1070,7 +1075,7 @@ function numberOfDecimalPlaces(value: number, maxDecimalPlaces: number): number 
  * Format the linear tick labels or the category labels.
  */
 function formatAxisTickValues(
-    axis: d3.Axis<any>,
+    axis: Axis<any>,
     tickValues: any[],
     formatter: IValueFormatter,
     dataType: ValueType,
@@ -1164,7 +1169,7 @@ export {
     LabelLayoutStrategy
 };
 
-export function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): d3.ScalePoint<any> {
+export function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): ScalePoint<any> {
     return scalePoint()
         .range([0, pixelSpan])
         .padding(outerPaddingRatio)
@@ -1172,7 +1177,7 @@ export function createPointScale(pixelSpan: number, dataDomain: any[], outerPadd
         .domain(dataDomain);
 }
 
-export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): d3.ScaleOrdinal<any, any> | d3.ScalePoint<any> {
+export function createOrdinalScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): ScaleOrdinal<any, any> | ScalePoint<any> {
     if (useRangePoints) {
         return scalePoint()
             .rangeRound([0, pixelSpan])
@@ -1209,7 +1214,7 @@ export function createNumericalScale(
     dataType: ValueType,
     outerPadding: number = 0,
     niceCount?: number,
-    shouldClamp?: boolean): d3.ScaleLinear<any, any> {
+    shouldClamp?: boolean): ScaleLinear<any, any> {
 
     if (axisScaleType === axisScale.log && isLogScalePossible(dataDomain, dataType)) {
         return createLogScale(pixelSpan, dataDomain, outerPadding, niceCount);
@@ -1218,21 +1223,21 @@ export function createNumericalScale(
     return createLinearScale(pixelSpan, dataDomain, outerPadding, niceCount, shouldClamp);
 }
 
-function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): d3.ScaleLogarithmic<any, any> {
+function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): ScaleLogarithmic<any, any> {
     let logScale = scaleLog()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(true);
 
     if (niceCount) {
-        (logScale as d3.ScaleLogarithmic<any, any>).nice();
+        (logScale as ScaleLogarithmic<any, any>).nice();
     }
 
     return logScale;
 }
 
 // NOTE: export only for testing, do not access directly
-export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): d3.ScaleLinear<any, any> {
+export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): ScaleLinear<any, any> {
     let linearScale = scaleLinear()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])

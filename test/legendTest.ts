@@ -24,7 +24,8 @@
 *  THE SOFTWARE.
 */
 
-import * as d3 from "d3";
+import { select } from "d3-selection";
+import { scaleOrdinal } from "d3-scale";
 
 import powerbi from "powerbi-visuals-api";
 // powerbi.extensibility.visual
@@ -65,7 +66,6 @@ import * as legendPosition from "./../src/legend/legendPosition";
 import { assertColorsMatch, findElementTitle } from "./helpers/helpers";
 import MockBehavior from "./mocks/mockBehavior";
 
-import * as d3scale from "d3-scale";
 import MockOpacityBehavior from "./mocks/mockOpacityBehavior";
 import { LegendBehaviorOptions } from "../src/legend/behavior/legendBehavior";
 import { SelectableDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivitySelectionService";
@@ -84,7 +84,7 @@ function createSelectionIdentity(key?: number | string): powerbi.visuals.ISelect
 
 describe("legend", () => {
     describe("DOM validation", () => {
-        let element: JQuery,
+        let element: HTMLElement,
             viewport: powerbi.IViewport,
             legend: ILegend,
             interactivityService: IInteractivityService<SelectableDataPoint>,
@@ -93,15 +93,15 @@ describe("legend", () => {
             legendTitleClassSelector = ".legendTitle";
 
         beforeEach(() => {
-            element = $(testDom("500", "500"));
+            element = testDom("500", "500");
             hostServices = createVisualHost();
 
             interactivityService = createInteractivityService(hostServices);
-            legend = createLegend(element.get(0), false, interactivityService, true);
+            legend = createLegend(element, false, interactivityService, true);
 
             viewport = {
-                height: element.height(),
-                width: element.width()
+                height: parseFloat(element.getAttribute("height")),
+                width: parseFloat(element.getAttribute("width"))
             };
 
             legendData = [
@@ -134,9 +134,9 @@ describe("legend", () => {
             }, viewport);
 
             setTimeout(() => {
-                expect($(".legendItem").length).toBe(1);
-                expect($(".legendText").length).toBe(1);
-                expect($(".legendIcon").length).toBe(1);
+                expect(element.querySelectorAll(".legendItem").length).toBe(1);
+                expect(element.querySelectorAll(".legendText").length).toBe(1);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(1);
                 done();
             }, DefaultWaitForRender);
         });
@@ -145,9 +145,9 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendItem").length).toBe(3);
-                expect($(".legendText").length).toBe(3);
-                expect($(".legendIcon").length).toBe(3);
+                expect(element.querySelectorAll(".legendItem").length).toBe(3);
+                expect(element.querySelectorAll(".legendText").length).toBe(3);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
                 done();
             }, DefaultWaitForRender);
         });
@@ -157,7 +157,7 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendText").first().text()).toBe("California");
+                expect(element.querySelector(".legendText").textContent).toBe("California");
                 done();
             }, DefaultWaitForRender);
         });
@@ -166,7 +166,7 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendText").last().text()).toBe("Washington");
+                expect(element.querySelectorAll(".legendText")[legendData.length - 1].textContent).toBe("Washington");
                 done();
             }, DefaultWaitForRender);
         });
@@ -175,7 +175,7 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendIcon").length).toBe(3);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
                 done();
             }, DefaultWaitForRender);
         });
@@ -190,9 +190,9 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendItem").length).toBe(3);
-                expect($(".legendText").length).toBe(3);
-                expect($(".legendIcon").length).toBe(3);
+                expect(element.querySelectorAll(".legendItem").length).toBe(3);
+                expect(element.querySelectorAll(".legendText").length).toBe(3);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
                 done();
             }, DefaultWaitForRender);
         });
@@ -207,9 +207,9 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendItem").length).toBe(2);
-                expect($(".legendText").length).toBe(2);
-                expect($(".legendIcon").length).toBe(2);
+                expect(element.querySelectorAll(".legendItem").length).toBe(2);
+                expect(element.querySelectorAll(".legendText").length).toBe(2);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(2);
                 done();
             }, DefaultWaitForRender);
         });
@@ -224,9 +224,9 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
             setTimeout(() => {
-                expect($(".legendItem").length).toBe(3);
-                expect($(".legendText").length).toBe(3);
-                expect($(".legendIcon").length).toBe(3);
+                expect(element.querySelectorAll(".legendItem").length).toBe(3);
+                expect(element.querySelectorAll(".legendText").length).toBe(3);
+                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
                 done();
             }, DefaultWaitForRender);
         });
@@ -255,11 +255,11 @@ describe("legend", () => {
         });
 
         describe("Legend interactivity tests", () => {
-            let icons: JQuery;
+            let icons: NodeListOf<HTMLElement>;
 
             beforeEach(() => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
-                icons = $(".legendIcon");
+                icons = element.querySelectorAll(".legendIcon");
             });
 
             it("Default state", () => {
@@ -270,43 +270,43 @@ describe("legend", () => {
 
             // click to clearCatcher fires, test doesn't work
             xit("Click first legend", () => {
-                d3Click.call(icons.first(), icons.first(), 0, 0);
+                d3Click.call(icons[0], icons[0], 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#a6a6a6");
             });
 
             xit("Click the last legend item, should just select current and clear others", () => {
-                d3Click.call(icons.first(), icons.first(), 0, 0);
+                d3Click.call(icons[0], icons[0], 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#a6a6a6");
 
-                d3Click.call(icons.last(), icons.last(), 0, 0);
+                d3Click.call(icons[icons.length - 1], icons[icons.length - 1], 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
             });
 
             xit("Control + Click legend item, should multiselect", () => {
-                d3Click.call(icons.last(), icons.last(), 0, 0);
+                d3Click.call(icons[icons.length - 1], icons[icons.length - 1], 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
 
-                d3Click.call(icons.first(), icons.first(), 0, 0, ClickEventType.CtrlKey);
+                d3Click.call(icons[0], icons[0], 0, 0, ClickEventType.CtrlKey);
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
             });
 
             xit("Click the clear catcher should clear the legend selection", () => {
-                d3Click.call(icons.first(), icons.first(), 0, 0);
+                d3Click.call(icons[0], icons[0], 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#a6a6a6");
                 assertColorsMatch(icons[2].style.fill, "#a6a6a6");
 
-                d3Click.call($(".clearCatcher").first(), $(".clearCatcher").first(), 0, 0);
+                d3Click.call(element.querySelector(".clearCatcher"), element.querySelector(".clearCatcher"), 0, 0);
                 assertColorsMatch(icons[0].style.fill, "#ff0000");
                 assertColorsMatch(icons[1].style.fill, "#0000ff");
                 assertColorsMatch(icons[2].style.fill, "#00ff00");
@@ -320,7 +320,7 @@ describe("legend", () => {
                 ];
 
                 let behavior = new MockOpacityBehavior();
-                const svg = d3.select($("div#jasmine-fixtures svg").get(0));
+                const svg = select(element.querySelector("div#jasmine-fixtures svg"));
                 const clearCatcher = appendClearCatcher(svg);
                 const itemsSelection = svg.select("#legendGroup").selectAll(".legendItem");
 
@@ -372,7 +372,7 @@ describe("legend", () => {
                 });
 
                 it("click selects corresponding item", () => {
-                    d3Click.call(icons.first(), icons.first(), 0, 0);
+                    d3Click.call(icons[0], icons[0], 0, 0);
 
                     assertColorsMatch(icons[0].style.fill, "#ff0000");
                     assertColorsMatch(icons[1].style.fill, "#a6a6a6");
@@ -380,7 +380,7 @@ describe("legend", () => {
                 });
 
                 it("ctrl+click adds item to current selection", () => {
-                    d3Click.call(icons.first(), icons.first(), 0, 0, ClickEventType.CtrlKey);
+                    d3Click.call(icons[0], icons[0], 0, 0, ClickEventType.CtrlKey);
 
                     assertColorsMatch(icons[0].style.fill, "#ff0000");
                     assertColorsMatch(icons[1].style.fill, "#0000ff");
@@ -406,7 +406,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(legendTitleClassSelector).length).toBe(1);
+            expect(element.querySelectorAll(legendTitleClassSelector).length).toBe(1);
         });
 
         it("legend title tooltip", () => {
@@ -414,7 +414,7 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData, title: "states" }, viewport);
 
             flushAllD3Transitions();
-            expect(findElementTitle($(legendTitleClassSelector))).toBe("states");
+            expect(findElementTitle(element.querySelector(legendTitleClassSelector))).toBe("states");
         });
 
         it("legend truncated title tooltip", () => {
@@ -422,7 +422,7 @@ describe("legend", () => {
             legend.drawLegend({ dataPoints: legendData, title: "Very Long Legend Header Data" }, viewport);
 
             flushAllD3Transitions();
-            expect(findElementTitle($(legendTitleClassSelector))).toBe("Very Long Legend Header Data");
+            expect(findElementTitle(element.querySelector(legendTitleClassSelector))).toBe("Very Long Legend Header Data");
         });
 
         it("legend items tooltip", () => {
@@ -431,9 +431,9 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let lenOfLegendOnDom = $(".legendItem title").length;
+            let lenOfLegendOnDom = element.querySelectorAll(".legendItem title").length;
             for (let i = 0; i < lenOfLegendOnDom; i++) {
-                expect($(".legendItem title").eq(i).text()).toBe(legendData[i].label);
+                expect(element.querySelectorAll(".legendItem title")[i].textContent).toBe(legendData[i].label);
             }
         });
 
@@ -446,9 +446,9 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let lenOfLegendOnDom = $(".legendItem title").length;
+            let lenOfLegendOnDom = element.querySelectorAll(".legendItem title").length;
             for (let i = 0; i < lenOfLegendOnDom; i++) {
-                let legendItemText = $(".legendItem title").eq(i).text();
+                let legendItemText = element.querySelectorAll(".legendItem title")[i].textContent;
                 expect(legendItemText).toBe(legendData[i].label);
             }
 
@@ -461,7 +461,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendTitle").length).toBe(0);
+            expect(element.querySelectorAll(".legendTitle").length).toBe(0);
         });
 
         it("legend Top & horizontal trim", () => {
@@ -471,8 +471,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBeGreaterThan(5);
-            expect($(".legendItem").length).toBeLessThan(52);
+            expect(element.querySelectorAll(".legendItem").length).toBeGreaterThan(5);
+            expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
         it("legend Bottom & horizontal trim", () => {
@@ -482,8 +482,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBeGreaterThan(5);
-            expect($(".legendItem").length).toBeLessThan(52);
+            expect(element.querySelectorAll(".legendItem").length).toBeGreaterThan(5);
+            expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
         it("legend Left & vertical trim", () => {
@@ -493,8 +493,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBeGreaterThan(5);
-            expect($(".legendItem").length).toBeLessThan(52);
+            expect(element.querySelectorAll(".legendItem").length).toBeGreaterThan(5);
+            expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
         it("legend Right & vertical trim", () => {
@@ -504,8 +504,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBeGreaterThan(5);
-            expect($(".legendItem").length).toBeLessThan(52);
+            expect(element.querySelectorAll(".legendItem").length).toBeGreaterThan(5);
+            expect(element.querySelectorAll(".legendItem").length).toBeLessThan(52);
         });
 
         it("Intelligent Layout: Low label count should result in longer max-width", () => {
@@ -523,9 +523,9 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBe(1);
-            expect($($(".legendText")[0]).text()).not.toContain("…");
-            expect($($(".legendText")[0]).text()).not.toContain("...");
+            expect(element.querySelectorAll(".legendItem").length).toBe(1);
+            expect(element.querySelector(".legendText").textContent).not.toContain("…");
+            expect(element.querySelector(".legendText").textContent).not.toContain("...");
         });
 
         it("Intelligent Layout: Long label must be cut off", () => {
@@ -542,9 +542,9 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBe(1);
-            expect($($(".legendText")[0]).text()).toContain("...");
-            expect($($(".legendText")[0]).text().length).toBeGreaterThan(3);
+            expect(element.querySelectorAll(".legendItem").length).toBe(1);
+            expect(element.querySelector(".legendText").textContent).toContain("...");
+            expect(element.querySelector(".legendText").textContent.length).toBeGreaterThan(3);
         });
 
         it("Intelligent Layout: Lots of small labels should get compacted in horizontal layout", () => {
@@ -554,8 +554,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".legendItem").length).toBeLessThan(33);
-            expect($(".legendItem").length).toBeGreaterThan(20);
+            expect(element.querySelectorAll(".legendItem").length).toBeLessThan(33);
+            expect(element.querySelectorAll(".legendItem").length).toBeGreaterThan(20);
         });
 
         it("Intelligent Layout: If labels in horizontal layout have small widths, width of legend should be small", () => {
@@ -593,7 +593,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: No arrows when you have enough horizontal space ", () => {
@@ -616,7 +616,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(0);
+            expect(element.querySelectorAll(".navArrow").length).toBe(0);
         });
 
         it("Intelligent Layout: No arrows when you have enough vertical space ", () => {
@@ -639,7 +639,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(0);
+            expect(element.querySelectorAll(".navArrow").length).toBe(0);
         });
 
         it("Intelligent Layout: No arrows when you have enough horizontal space, but appears on resize ", () => {
@@ -662,13 +662,13 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(0);
+            expect(element.querySelectorAll(".navArrow").length).toBe(0);
 
             legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 100 });
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: No arrows when you have enough vertical space, but appears on resize ", () => {
@@ -691,13 +691,13 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(0);
+            expect(element.querySelectorAll(".navArrow").length).toBe(0);
 
             legend.drawLegend({ dataPoints: legendData }, { height: 20, width: 100 });
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: Only down arrow shown at start ", () => {
@@ -708,7 +708,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: Only down arrow shown at start ", () => {
@@ -719,7 +719,7 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: Second arrow appears when you page right", () => {
@@ -730,12 +730,12 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
 
-            let element = $(".navArrow").first();
-            d3Click.call(element, element, 0, 0);
+            let elementToClick = element.querySelector(".navArrow");
+            d3Click.call(elementToClick, elementToClick, 0, 0);
 
-            expect($(".navArrow").length).toBe(2);
+            expect(element.querySelectorAll(".navArrow").length).toBe(2);
         });
 
         it("Intelligent Layout: Second arrow appears when you page down", () => {
@@ -746,12 +746,12 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let element = $(".navArrow");
-            expect(element.length).toBe(1);
+            let elementToClick = element.querySelectorAll(".navArrow");
+            expect(elementToClick.length).toBe(1);
 
-            d3Click.call(element.first(), element.first(), 0, 0);
+            d3Click.call(elementToClick[0], elementToClick[0], 0, 0);
 
-            expect($(".navArrow").length).toBe(2);
+            expect(element.querySelectorAll(".navArrow").length).toBe(2);
         });
 
         it("Intelligent Layout: Second arrow disappears when you page rigth to last page", () => {
@@ -762,16 +762,21 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let element = $(".navArrow");
-            expect(element.length).toBe(1);
+            let elementToClick = element.querySelectorAll(".navArrow");
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
 
-            d3Click.call(element.first(), element.first(), 0, 0);
+            d3Click.call(elementToClick[0], elementToClick[0], 0, 0);
 
-            expect($(".navArrow").length).toBe(2);
+            expect(element.querySelectorAll(".navArrow").length).toBe(2);
 
-            d3Click.call($(".navArrow").last(), $(".navArrow").last(), 0, 0);
+            d3Click.call(
+                element.querySelectorAll(".navArrow")[element.querySelectorAll(".navArrow").length - 1],
+                element.querySelectorAll(".navArrow")[element.querySelectorAll(".navArrow").length - 1],
+                0,
+                0
+            );
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         it("Intelligent Layout: Second arrow disappears when you page down to last page", () => {
@@ -782,16 +787,16 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
 
-            d3Click.call($(".navArrow").first(), $(".navArrow").first(), 0, 0);
+            d3Click.call(element.querySelector(".navArrow"), element.querySelector(".navArrow"), 0, 0);
 
-            expect($(".navArrow").length).toBe(2);
+            expect(element.querySelectorAll(".navArrow").length).toBe(2);
 
-            let element = $(".navArrow").last();
-            d3Click.call(element, element, 0, 0);
+            let elementToClick = element.querySelectorAll(".navArrow")[element.querySelectorAll(".navArrow").length - 1];
+            d3Click.call(elementToClick, elementToClick, 0, 0);
 
-            expect($(".navArrow").length).toBe(1);
+            expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
         xit("Intelligent Layout: Both arrows are Horizontally Centered", () => {
@@ -802,16 +807,16 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let element = $(".navArrow").first();
-            d3Click.call(element, element, 0, 0);
+            let elementToClick = element.querySelector(".navArrow");
+            d3Click.call(elementToClick, elementToClick, 0, 0);
 
-            let firstArrowPosition = getPosition($(".navArrow").first()[0]),
+            let firstArrowPosition = getPosition(element.querySelector(".navArrow")),
                 firstArrowY = firstArrowPosition.top,
                 firstArrowHeight = firstArrowPosition.height,
-                lastArrowPosition = getPosition($(".navArrow").last()[0]),
+                lastArrowPosition = getPosition(<HTMLElement>element.querySelectorAll(".navArrow")[element.querySelectorAll(".navArrow").length - 1]),
                 lastArrowY = lastArrowPosition.top,
                 lastArrowHeight = lastArrowPosition.height,
-                labelPosition = getPosition($(".legendText").first()[0]),
+                labelPosition = getPosition(element.querySelector(".legendText")),
                 labelY = labelPosition.top,
                 labelHeight = labelPosition.height;
 
@@ -829,8 +834,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let iconPosition = getPosition($(".legendIcon").first()[0]),
-                labelPosition = getPosition($(".legendText").first()[0]),
+            let iconPosition = getPosition(element.querySelector(".legendIcon")),
+                labelPosition = getPosition(element.querySelector(".legendText")),
                 iconY = iconPosition.top,
                 iconHeight = iconPosition.height,
                 labelY = labelPosition.top,
@@ -848,8 +853,8 @@ describe("legend", () => {
 
             flushAllD3Transitions();
 
-            let iconPosition = getPosition($(".legendIcon").first()[0]),
-                labelPosition = getPosition($(".legendText").first()[0]),
+            let iconPosition = getPosition(element.querySelector(".legendIcon")),
+                labelPosition = getPosition(element.querySelector(".legendText")),
                 iconY = iconPosition.top,
                 iconHeight = iconPosition.height,
                 labelY = labelPosition.top,
@@ -861,19 +866,19 @@ describe("legend", () => {
 
         function validateLegendDOM(expectedData: LegendDataPoint[]): void {
             let len = expectedData.length;
-            let labels = $(".legendText");
+            let labels = element.querySelectorAll(".legendText");
 
             expect(labels.length).toBe(len);
 
-            let icons = $(".legendIcon");
+            let icons = element.querySelectorAll(".legendIcon");
 
             expect(icons.length).toBe(len);
 
             for (let i = 0; i < len; ++i) {
                 let expectedDatum = expectedData[i];
 
-                expect($(labels.get(i)).text()).toBe(expectedDatum.label);
-                assertColorsMatch(icons.eq(i).css("fill"), expectedDatum.color);
+                expect(labels[i].textContent).toBe(expectedDatum.label);
+                assertColorsMatch(select(icons[i]).style("fill"), expectedDatum.color);
             }
         }
 
@@ -884,7 +889,7 @@ describe("legend", () => {
     });
 
     describe("Mobile: interactive legend DOM validation", () => {
-        let element: JQuery,
+        let element: HTMLElement,
             viewport: powerbi.IViewport,
             legend: ILegend,
             colorStyle = "color: {0};",
@@ -922,9 +927,9 @@ describe("legend", () => {
         ];
 
         beforeEach(() => {
-            element = $(testDom("500", "500"));
+            element = testDom("500", "500");
             interactivityService = createInteractivityService(createVisualHost());
-            legend = createLegend(element.get(0), true, interactivityService);
+            legend = createLegend(element, true, interactivityService);
         });
 
         describe("3 item legend", () => {
@@ -936,18 +941,20 @@ describe("legend", () => {
                 }, viewport);
 
                 setTimeout(() => {
-                    expect($(".interactive-legend .title").length).toBe(1);
-                    expect($(".interactive-legend .item").length).toBe(1);
+                    expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
+                    expect(element.querySelectorAll(".interactive-legend .item").length).toBe(1);
                     done();
                 }, DefaultWaitForRender);
             });
 
             it("legend dom validation three legend items count validation", (done) => {
+                // debugger;
+                // console.log("LOGLOGO")
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
-                    expect($(".interactive-legend .title").length).toBe(1);
-                    expect($(".interactive-legend .item").length).toBe(3);
+                    expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
+                    expect(element.querySelectorAll(".interactive-legend .item").length).toBe(3);
                     done();
                 }, DefaultWaitForRender);
             });
@@ -956,9 +963,9 @@ describe("legend", () => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
-                    expect($(".interactive-legend .title").text()).toBe(legendData[0].category);
-                    expect($(".interactive-legend .item").first().find(".itemName").text().trim()).toBe("Alaska");
-                    expect($(".interactive-legend .item").first().find(".itemMeasure").text().trim()).toBe("0");
+                    expect(element.querySelector(".interactive-legend .title").textContent).toBe(legendData[0].category);
+                    expect(element.querySelector(".interactive-legend .item .itemName").textContent.trim()).toBe("Alaska");
+                    expect(element.querySelector(".interactive-legend .item .itemMeasure").textContent.trim()).toBe("0");
                     done();
                 }, DefaultWaitForRender);
             });
@@ -966,9 +973,9 @@ describe("legend", () => {
             it("legend dom validation three legend items last item name and measure", (done) => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
                 setTimeout(() => {
-                    expect($(".interactive-legend .title").text()).toBe(legendData[0].category);
-                    expect($(".interactive-legend .item").last().find(".itemName").text().trim()).toBe("Texas");
-                    expect($(".interactive-legend .item").last().find(".itemMeasure").text().trim()).toBe("10");
+                    expect(element.querySelector(".interactive-legend .title").textContent).toBe(legendData[0].category);
+                    expect(element.querySelectorAll(".interactive-legend .item .itemName")[legendData.length - 1].textContent.trim()).toBe("Texas");
+                    expect(element.querySelectorAll(".interactive-legend .item .itemMeasure")[legendData.length - 1].textContent.trim()).toBe("10");
                     done();
                 }, DefaultWaitForRender);
             });
@@ -977,7 +984,7 @@ describe("legend", () => {
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
-                    expect($(".interactive-legend .icon").length).toBe(3);
+                    expect(element.querySelectorAll(".interactive-legend .icon").length).toBe(3);
                     done();
                 }, DefaultWaitForRender);
             });
@@ -1045,12 +1052,12 @@ describe("legend", () => {
 
         function validateLegendDOM(expectedData: LegendDataPoint[]): void {
             let len = expectedData.length,
-                items = $(".interactive-legend .item");
+                items = element.querySelectorAll(".interactive-legend .item");
 
-            expect($(".interactive-legend .title").length).toBe(1);
+            expect(element.querySelectorAll(".interactive-legend .title").length).toBe(1);
             expect(items.length).toBe(len);
 
-            let icons = $(".interactive-legend .icon");
+            let icons = element.querySelectorAll(".interactive-legend .icon");
             expect(icons.length).toBe(len);
 
             // items are returned from the table, first row and then second row.
@@ -1059,8 +1066,8 @@ describe("legend", () => {
                 rearrangedIcons = [];
 
             for (let i = 0; i < len; i++) {
-                rearrangedItems.push($(items.get(i)));
-                rearrangedIcons.push($(icons.get(i)));
+                rearrangedItems.push(items[i]);
+                rearrangedIcons.push(icons[i]);
             }
 
             for (let i = 0; i < len; ++i) {
@@ -1068,12 +1075,12 @@ describe("legend", () => {
                     item = rearrangedItems[i],
                     icon = rearrangedIcons[i];
 
-                expect(item.find(".itemName").text()).toBe(expectedDatum.label);
-                expect(item.find(".itemMeasure").text().trim()).toBe(expectedDatum.measure.toString());
+                expect(item.querySelector(".itemName").textContent).toBe(expectedDatum.label);
+                expect(item.querySelector(".itemMeasure").textContent.trim()).toBe(expectedDatum.measure.toString());
 
                 let color = icon
-                    .attr("style")
-                    .substring(icon.attr("style").indexOf("color:"))
+                    .getAttribute("style")
+                    .substring(icon.getAttribute("style").indexOf("color:"))
                     .trim();
 
                 expect(color).toBe(stringExtensions.format(colorStyle, expectedDatum.color));
@@ -1082,6 +1089,14 @@ describe("legend", () => {
     });
 
     describe("SVGLegend DOM", () => {
+        let element: HTMLElement,
+            legend: ILegend,
+            interactivityService: IInteractivityService<SelectableDataPoint>,
+            viewport: powerbi.IViewport = {
+                height: 100,
+                width: 500,
+            };
+
         const dataPoints: LegendDataPoint[] = [
             {
                 category: "state",
@@ -1112,25 +1127,18 @@ describe("legend", () => {
             },
         ];
 
-        const viewport: powerbi.IViewport = {
-            height: 100,
-            width: 500,
-        };
-
-        let legend: ILegend;
-
         beforeEach(() => {
-            const element: JQuery = $(testDom("500", "500"));
-            const interactivityService: IInteractivityService<SelectableDataPoint> = createInteractivityService(createVisualHost());
+            element = testDom("500", "500");
+            interactivityService = createInteractivityService(createVisualHost());
 
-            legend = createLegend(element.get(0), false, interactivityService);
+            legend = createLegend(element, false, interactivityService);
         });
 
         it("should render 3 legendText elements", (done) => {
             legend.drawLegend({ dataPoints }, viewport);
 
             setTimeout(() => {
-                expect($(".legendText").length).toBe(3);
+                expect(element.querySelectorAll(".legendText").length).toBe(3);
 
                 done();
             }, DefaultWaitForRender);
@@ -1148,8 +1156,8 @@ describe("legend", () => {
             );
 
             setTimeout(() => {
-                $(".legendText").toArray().forEach((legendTextElement: Element) => {
-                    expect($(legendTextElement).css("font-family")).toBe(fontFamily);
+                element.querySelectorAll(".legendText").forEach((legendTextElement: Element) => {
+                    expect(select(legendTextElement).style("font-family")).toBe(fontFamily);
                 });
 
                 done();
@@ -1170,7 +1178,7 @@ function getLotsOfLegendData(): LegendDataPoint[] {
         "AP"
     ];
 
-    let colors = d3scale.scaleOrdinal([0, 20]);
+    let colors = scaleOrdinal([0, 20]);
     let legendData: LegendDataPoint[] = [];
 
     for (let i = 0; i < states.length; i++) {

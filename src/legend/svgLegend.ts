@@ -25,7 +25,9 @@
 */
 
 import {
-    select
+    select,
+    Selection,
+    BaseType
 } from "d3-selection";
 import powerbi from "powerbi-visuals-api";
 import * as formatting from "powerbi-visuals-utils-formattingutils";
@@ -107,9 +109,9 @@ export class SVGLegend implements ILegend {
     private orientation: LegendPosition;
     private viewport: powerbi.IViewport;
     private parentViewport: powerbi.IViewport;
-    private svg: d3.Selection<any, any, any, any>;
-    private group: d3.Selection<any, any, any, any>;
-    private clearCatcher: d3.Selection<any, any, any, any>;
+    private svg: Selection<any, any, any, any>;
+    private group: Selection<any, any, any, any>;
+    private clearCatcher: Selection<any, any, any, any>;
     private element: HTMLElement;
     private interactivityService: IInteractivityService<LegendDataPoint>;
     private interactiveBehavior?: IInteractiveBehavior;
@@ -957,7 +959,7 @@ export class SVGLegend implements ILegend {
     }
 
     private drawNavigationArrows(layout: NavigationArrow[]): void {
-        let arrows: d3.Selection<d3.BaseType, NavigationArrow, HTMLElement, any> = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
+        let arrows: Selection<BaseType, NavigationArrow, HTMLElement, any> = this.group.selectAll(SVGLegend.NavigationArrow.selectorName)
             .data(layout);
 
         arrows.exit().remove();
@@ -967,7 +969,7 @@ export class SVGLegend implements ILegend {
             .append("g")
             .classed(SVGLegend.NavigationArrow.className, true)
         )
-            .on("click", (d: NavigationArrow) => {
+            .on("click", (event, d: NavigationArrow) => {
                 let pos = this.legendDataStartIndex;
                 this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
@@ -975,7 +977,7 @@ export class SVGLegend implements ILegend {
             })
             .attr("transform", (d: NavigationArrow) => svgManipulation.translate(d.x, d.y));
 
-        let path: d3.Selection<SVGPathElement, NavigationArrow, d3.BaseType, any> = arrows.selectAll<SVGPathElement, NavigationArrow>("path")
+        let path: Selection<SVGPathElement, NavigationArrow, BaseType, any> = arrows.selectAll<SVGPathElement, NavigationArrow>("path")
             .data((data) => [data]);
 
         path.exit().remove();
