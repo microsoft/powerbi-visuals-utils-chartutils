@@ -38,7 +38,6 @@ const testRecursivePath = "test/**/*.ts"
 process.env.CHROME_BIN = require("puppeteer").executablePath();
 module.exports = (config) => {
     config.set({
-        mode: "development",
         browserNoActivityTimeout: 100000,
         browsers: ["ChromeHeadless"],
         colors: true,
