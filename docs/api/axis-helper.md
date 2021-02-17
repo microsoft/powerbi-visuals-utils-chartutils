@@ -326,7 +326,7 @@ var domain = axisHelper.createDomain(cartesianSeries, ValueType.fromDescriptor({
 This function gets the ValueType of a category column, defaults to Text if the type is not present.
 
 ```typescript
-function getCategoryValueType(data: any[], axisType: ValueTypeDescriptor, isScalar: boolean, forcedScalarDomain: any[], ensureDomain?: NumberRange): number[];
+function getCategoryValueType(metadataColumn: DataViewMetadataColumn, isScalar?: boolean): ValueType;
 ```
 
 ### Example
@@ -334,19 +334,14 @@ function getCategoryValueType(data: any[], axisType: ValueTypeDescriptor, isScal
 ```typescript
 import axisHelper = powerbi.extensibility.utils.chart.axis;
 
-var cartesianSeries = [
-    {
-        data: [{ categoryValue: 7, value: 11, categoryIndex: 0, seriesIndex: 0, }, {
-            categoryValue: 9, value: 9, categoryIndex: 1, seriesIndex: 0,
-        }, {
-            categoryValue: 15, value: 6, categoryIndex: 2, seriesIndex: 0,
-        }, { categoryValue: 22, value: 7, categoryIndex: 3, seriesIndex: 0, }]
-    },
-];
+var source: DataViewMetadataColumn = {
+    "displayName": "salesDate",
+    "type":{"dateTime":true}
+};
+            
+axisHelper.getCategoryValueType(source, true);
 
-axisHelper.getCategoryValueType(cartesianSeries, ValueType.fromDescriptor({ text: true }), false, []);
-
-// returns: [0, 1, 2, 3]
+// returns datetime ValueType
 ```
 
 ## createAxis
