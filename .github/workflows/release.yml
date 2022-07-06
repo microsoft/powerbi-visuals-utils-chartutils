@@ -1,0 +1,33 @@
+name: build
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      GH_TOKEN: ${{secrets.GH_TOKEN}}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Move release to draft
+      id: info
+      run: |
+        release=$(gh release view --json tagName)
+        value=$(echo $release | jq -r '.tagName')
+        gh release edit $value --draft=true
+        echo "::set-output name=tag-name::$value"
+    - name: Run npm install, build and test
+      run: |
+        npm i --force
+        npm run build --if-present
+        npm run lint
+        npm test
+    - run: zip -r lib.zip lib
+    - name: Upload production artifacts
+      run: |
+        gh release upload $TAG_NAME "lib.zip#build"
+        gh release edit $TAG_NAME --draft=false
+      env:
+        TAG_NAME: ${{steps.info.outputs.tag-name}}
