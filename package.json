@@ -68,7 +68,7 @@
   "dependencies": {
     "d3-array": "^2.11.0",
     "d3-axis": "^2.0.0",
-    "d3-scale": "^3.2.3",
+    "d3-scale": "^4.0.2",
     "d3-selection": "^2.0.0",
     "powerbi-visuals-utils-formattingutils": "^4.7.1",
     "powerbi-visuals-utils-interactivityutils": "^5.7.1",
