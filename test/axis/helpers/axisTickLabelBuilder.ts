@@ -96,8 +96,8 @@ export class AxisTickLabelBuilder {
         renderXAxis: boolean = false,
         renderYAxes: boolean = false,
         renderY2Axis: boolean = false,
-        categoryThickness: number = undefined,
-        outerPadding: number = undefined,
+        categoryThickness?: number,
+        outerPadding?: number,
         isScalar: boolean = false) {
 
         this.xAxisProperties.willLabelsFit = !rotateX;

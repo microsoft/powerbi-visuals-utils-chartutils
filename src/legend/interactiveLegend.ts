@@ -58,7 +58,7 @@ export class InteractiveLegend implements ILegend {
     }
 
     public drawLegend(legendData: LegendData) {
-        let data = legendData.dataPoints;
+        const data = legendData.dataPoints;
         if (data.length < 1) {
             return;
         }
@@ -97,6 +97,7 @@ export class InteractiveLegend implements ILegend {
     /**
      * Not supported
      */
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
     public changeOrientation(orientation: LegendPosition) { }
 
     public getOrientation(): LegendPosition {
@@ -107,11 +108,11 @@ export class InteractiveLegend implements ILegend {
      * Draw the legend title
      */
     private drawTitle(data: LegendDataPoint[]): void {
-        let titleDiv: Selection<any, any, any, any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
+        const titleDiv: Selection<any, any, any, any> = this.legendContainerDiv.selectAll(`div.${InteractiveLegend.LegendTitleClass}`),
             item: Selection<any, any, any, any> = titleDiv.data([data[0]]);
 
         // Enter
-        let itemEnter: Selection<any, any, any, any> = item.enter(),
+        const itemEnter: Selection<any, any, any, any> = item.enter(),
             titleDivEnter: Selection<any, any, any, any> = itemEnter
                 .append("div")
                 .attr("class", InteractiveLegend.LegendTitleClass);
@@ -143,24 +144,24 @@ export class InteractiveLegend implements ILegend {
         // Add Mesaures - the items of the category in the legend
         this.ensureLegendTableCreated();
 
-        let dataPointsMatrix: LegendDataPoint[][] = [data];
-        let legendItemsContainer: Selection<any, any, any, any> = this.legendContainerDiv
+        const dataPointsMatrix: LegendDataPoint[][] = [data];
+        const legendItemsContainer: Selection<any, any, any, any> = this.legendContainerDiv
             .select("tbody")
             .selectAll("tr")
             .data(dataPointsMatrix);
 
         // Enter
-        let legendItemsEnter: Selection<any, any, any, any> = legendItemsContainer.enter(),
+        const legendItemsEnter: Selection<any, any, any, any> = legendItemsContainer.enter(),
             rowEnter: Selection<any, any, any, any> = legendItemsEnter.append("tr");
 
-        let cellEnter: Selection<any, any, any, any> = rowEnter
+        const cellEnter: Selection<any, any, any, any> = rowEnter
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label)
             .enter()
             .append("td")
             .attr("class", InteractiveLegend.LegendItem);
 
-        let cellSpanEnter: Selection<any, any, any, any> = cellEnter.append("span");
+        const cellSpanEnter: Selection<any, any, any, any> = cellEnter.append("span");
 
         cellSpanEnter.filter((d: LegendDataPoint) => !d.iconOnlyOnLabel)
             .append("span")
@@ -183,7 +184,7 @@ export class InteractiveLegend implements ILegend {
             .attr("class", InteractiveLegend.legendItemMeasureClass);
 
         // Update
-        let legendCells: Selection<any, any, any, any> = legendItemsContainer
+        const legendCells: Selection<any, any, any, any> = legendItemsContainer
             .merge(legendItemsEnter)
             .selectAll("td")
             .data((d: LegendDataPoint[]) => d, (d: LegendDataPoint) => d.label);
@@ -214,7 +215,7 @@ export class InteractiveLegend implements ILegend {
      */
     private ensureLegendTableCreated(): void {
         if (this.legendContainerDiv.select("div table").empty()) {
-            let legendTable: Selection<any, any, any, any> = this.legendContainerDiv
+            const legendTable: Selection<any, any, any, any> = this.legendContainerDiv
                 .append("div")
                 .append("table");
 
@@ -228,6 +229,8 @@ export class InteractiveLegend implements ILegend {
     /**
      * Set Horizontal Pan gesture for the legend
      */
+    
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     private setPanGestureOnLegend(legendTable: Selection<any, any, any, any>): void {
         throw "Not implemented";
         // let parentNode = <HTMLElement>this.legendContainerParent.node();

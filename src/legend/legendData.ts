@@ -49,7 +49,7 @@ export function update(legendData: LegendData, legendObject: powerbi.DataViewObj
 
     if (legendObject[legendProps.labelColor] !== undefined) {
 
-        let fillColor = <powerbi.Fill>legendObject[legendProps.labelColor];
+        const fillColor = <powerbi.Fill>legendObject[legendProps.labelColor];
 
         if (fillColor != null) {
             legendData.labelColor = fillColor.solid.color;

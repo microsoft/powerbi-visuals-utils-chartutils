@@ -59,7 +59,7 @@ export class FamilyInfo {
 }
 
 // These should map to the fonts in src\clients\externals\StyleLibrary\less\fontFaces.less
-export let Family = {
+export const Family = {
     light: new FamilyInfo(["Segoe UI Light", "wf_segoe-ui_light", "helvetica", "arial", "sans-serif"]),
     semilight: new FamilyInfo(["Segoe UI Semilight", "wf_segoe-ui_semilight", "helvetica", "arial", "sans-serif"]),
     regular: new FamilyInfo(["Segoe UI", "wf_segoe-ui_normal", "helvetica", "arial", "sans-serif"]),

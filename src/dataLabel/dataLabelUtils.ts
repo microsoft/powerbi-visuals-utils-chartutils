@@ -40,7 +40,6 @@ import font = formatting.font;
 import numberFormat = formatting.formattingService.numberFormat;
 import formattingService = formatting.formattingService.formattingService;
 import textMeasurementService = formatting.textMeasurementService;
-import IValueFormatter = formatting.valueFormatter.IValueFormatter;
 import valueFormatter = formatting.valueFormatter;
 import DisplayUnitSystemType = formatting.displayUnitSystemType.DisplayUnitSystemType;
 import ValueFormatterOptions = formatting.valueFormatter.ValueFormatterOptions;
@@ -62,7 +61,6 @@ import VisualDataLabelsSettings = dataLabelInterfaces.VisualDataLabelsSettings;
 import DataLabelManager from "./dataLabelManager";
 
 import {
-    select,
     Selection,
     BaseType
 } from "d3-selection";
@@ -155,8 +153,9 @@ export function getDefaultLabelSettings(show: boolean = false, labelColor?: stri
     };
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function getDefaultColumnLabelSettings(isLabelPositionInside: boolean): dataLabelInterfaces.VisualDataLabelsSettings {
-    let labelSettings = getDefaultLabelSettings(false, undefined);
+    const labelSettings = getDefaultLabelSettings(false, undefined);
 
     labelSettings.position = null;
     labelSettings.labelColor = undefined;
@@ -186,7 +185,7 @@ export function getLabelPrecision(precision: number, format: string): number {
 
     if (format) {
         // Calculate precision from positive format by default
-        let positiveFormat = numberFormat.getComponents(format).positive,
+        const positiveFormat = numberFormat.getComponents(format).positive,
             formatMetadata = numberFormat.getCustomFormatMetadata(positiveFormat, true /*calculatePrecision*/);
 
         if (formatMetadata.hasDots) {
@@ -202,9 +201,9 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
     viewport: powerbi.IViewport, isAnimator: boolean = false, animationDuration?: number, hasSelection?: boolean, hideCollidedLabels: boolean = true): Selection<any, any, any, any> {
 
     // Hide and reposition labels that overlap
-    let dataLabelManager = new DataLabelManager();
-    let filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
-    let hasAnimation: boolean = isAnimator && !!animationDuration;
+    const dataLabelManager = new DataLabelManager();
+    const filteredData = dataLabelManager.hideCollidedLabels(viewport, data, layout, false, hideCollidedLabels);
+    const hasAnimation: boolean = isAnimator && !!animationDuration;
     let selectedLabels: Selection<BaseType, any, BaseType, any> = selectLabels(filteredData, context, false, hasAnimation, animationDuration);
 
     if (!selectedLabels) {
@@ -256,15 +255,15 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
     }
 
     // line chart ViewModel has a special "key" property for point identification since the "identity" field is set to the series identity
-    let hasKey: boolean = (<any>filteredData)[0].key != null;
-    let hasDataPointIdentity: boolean = (<any>filteredData)[0].identity != null;
-    let getIdentifier = hasKey ?
+    const hasKey: boolean = (<any>filteredData)[0].key != null;
+    const hasDataPointIdentity: boolean = (<any>filteredData)[0].identity != null;
+    const getIdentifier = hasKey ?
         (d: any) => d.key
         : hasDataPointIdentity ?
             (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
             : undefined;
 
-    let labels: Selection<any, any, any, any> = isDonut ?
+    const labels: Selection<any, any, any, any> = isDonut ?
         context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, (d: any) => d.data.identity.getKey())
         : getIdentifier != null ?
             context.select(labelGraphicsContextClass.selectorName).selectAll(labelsClass.selectorName).data(filteredData, getIdentifier)
@@ -281,7 +280,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
         labels.exit().remove();
     }
 
-    let allLabels = labels.enter()
+    const allLabels = labels.enter()
         .append("text")
         .classed(labelsClass.className, true)
         .merge(labels);
@@ -294,7 +293,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
 }
 
 export function cleanDataLabels(context: Selection<any, any, any, any>, removeLines: boolean = false): void {
-    let empty = [],
+    const empty = [],
         labels = context.selectAll(labelsClass.selectorName).data(empty);
 
     labels
@@ -306,7 +305,7 @@ export function cleanDataLabels(context: Selection<any, any, any, any>, removeLi
         .remove();
 
     if (removeLines) {
-        let lines = context
+        const lines = context
             .selectAll(lineClass.selectorName)
             .data(empty);
 
@@ -324,7 +323,7 @@ export function setHighlightedLabelsOpacity(context: Selection<any, any, any, an
     context
         .selectAll(labelsClass.selectorName)
         .style("fill-opacity", (d: any) => {
-            let labelOpacity = getFillOpacity(
+            const labelOpacity = getFillOpacity(
                 d.selected,
                 d.highlight,
                 !d.highlight && hasSelection,
@@ -335,7 +334,7 @@ export function setHighlightedLabelsOpacity(context: Selection<any, any, any, an
 }
 
 export function getLabelFormattedText(options: LabelFormattedTextOptions): string {
-    let properties: TextProperties = {
+    const properties: TextProperties = {
         text: options.formatter
             ? options.formatter.format(options.label)
             : formattingService.formatValue(options.label, options.format),
@@ -358,7 +357,7 @@ export function enumerateDataLabels(
         return;
     }
 
-    let instance: powerbi.VisualObjectInstance = {
+    const instance: powerbi.VisualObjectInstance = {
         objectName: "labels",
         selector: options.selector,
         properties: {},
@@ -378,7 +377,7 @@ export function enumerateDataLabels(
     }
 
     if (options.precision) {
-        let precision = options.dataLabelsSettings.precision;
+        const precision = options.dataLabelsSettings.precision;
         instance.properties["labelPrecision"] = precision === defaultLabelPrecision ? null : precision;
     }
 
@@ -398,7 +397,7 @@ export function enumerateDataLabels(
     }
 
     if (options.labelDensity) {
-        let lineChartSettings = <any>options.dataLabelsSettings;
+        const lineChartSettings = <any>options.dataLabelsSettings;
 
         if (lineChartSettings) {
             instance.properties["labelDensity"] = lineChartSettings.labelDensity;
@@ -422,11 +421,11 @@ export function enumerateCategoryLabels(
     isShowCategory: boolean = false,
     fontSize?: number): void {
 
-    let labelSettings = (dataLabelsSettings)
+    const labelSettings = (dataLabelsSettings)
         ? dataLabelsSettings
         : getDefaultPointLabelSettings();
 
-    let instance: powerbi.VisualObjectInstance = {
+    const instance: powerbi.VisualObjectInstance = {
         objectName: "categoryLabels",
         selector: null,
         properties: {
@@ -450,27 +449,19 @@ export function enumerateCategoryLabels(
     enumeration.instances.push(instance);
 }
 
-function getDisplayUnitValueFromAxisFormatter(axisFormatter: IValueFormatter, labelSettings: VisualDataLabelsSettings): number {
-    if (axisFormatter && axisFormatter.displayUnit && labelSettings.displayUnits === 0) {
-        return axisFormatter.displayUnit.value;
-    }
-
-    return null;
-}
-
 export function createColumnFormatterCacheManager(): dataLabelInterfaces.IColumnFormatterCacheManager {
     return <dataLabelInterfaces.IColumnFormatterCacheManager>{
         cache: { defaultFormatter: null },
         getOrCreate(formatString: string, labelSetting: VisualDataLabelsSettings, value2?: number) {
             if (formatString) {
-                let cacheKeyObject = {
+                const cacheKeyObject = {
                     formatString: formatString,
                     displayUnits: labelSetting.displayUnits,
                     precision: getLabelPrecision(labelSetting.precision, formatString),
                     value2: value2
                 };
 
-                let cacheKey = JSON.stringify(cacheKeyObject);
+                const cacheKey = JSON.stringify(cacheKeyObject);
 
                 if (!this.cache[cacheKey]) {
                     this.cache[cacheKey] = valueFormatter.create(getOptionsForLabelFormatter(
