@@ -24,6 +24,7 @@
 *  THE SOFTWARE.
 */
 
+/* eslint-disable powerbi-visuals/no-implied-inner-html */
 import { select, Selection } from "d3-selection";
 
 import powerbi from "powerbi-visuals-api";
@@ -132,9 +133,9 @@ export class InteractiveLegend implements ILegend {
             .style(InteractiveLegend.legendColorCss, (d: LegendDataPoint) => d.color);
 
         item
-        .merge(itemEnter)
-        .select("span:last-child")
-        .text((d: LegendDataPoint) => d.category);
+            .merge(itemEnter)
+            .select("span:last-child")
+            .text((d: LegendDataPoint) => d.category);
     }
 
     /**
