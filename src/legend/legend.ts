@@ -68,7 +68,7 @@ export function isTop(orientation: LegendPosition): boolean {
 }
 
 export function positionChartArea(chartArea: Selection<any, any, any, any>, legend: ILegend): void {
-    let legendMargins = legend.getMargins(),
+    const legendMargins = legend.getMargins(),
         legendOrientation = legend.getOrientation();
 
     chartArea.style(

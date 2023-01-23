@@ -292,7 +292,7 @@ export interface ILabelLayout {
     labelText: (d: any) => string;
     labelLayout: LabelPosition;
     filter: (d: any) => boolean;
-    style: {};
+    style: object;
 }
 
 export interface DataLabelObject extends powerbi.DataViewObject {

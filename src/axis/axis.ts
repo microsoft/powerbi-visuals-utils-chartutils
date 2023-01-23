@@ -73,7 +73,7 @@ import * as axisStyle from "./axisStyle";
 
 // powerbi.extensibility.utils.formatting
 import {
-    valueFormatter as vf, textMeasurementService as tms, wordBreaker, dateTimeSequence, formattingService,
+    valueFormatter as vf, wordBreaker, dateTimeSequence, formattingService,
     interfaces
 } from "powerbi-visuals-utils-formattingutils";
 import DateTimeSequence = dateTimeSequence.DateTimeSequence;
@@ -153,7 +153,7 @@ export function getBestNumberOfTicks(
 
     if (min === max) {
         // datetime needs to only show one tick value in this case so formatting works correctly
-        if (!!isDateTime) {
+        if (isDateTime) {
             return 1;
         }
 
@@ -170,7 +170,7 @@ export function getBestNumberOfTicks(
 
 export function hasNonIntegerData(valuesMetadata: powerbi.DataViewMetadataColumn[]): boolean {
     for (let i = 0, len = valuesMetadata.length; i < len; i++) {
-        let currentMetadata: powerbi.DataViewMetadataColumn = valuesMetadata[i];
+        const currentMetadata: powerbi.DataViewMetadataColumn = valuesMetadata[i];
 
         if (currentMetadata && currentMetadata.type && !currentMetadata.type.integer) {
             return true;
@@ -197,13 +197,13 @@ export function getRecommendedTickValues(maxTicks: number,
 }
 
 export function getRecommendedTickValuesForAnOrdinalRange(maxTicks: number, labels: string[]): string[] {
-    let tickLabels: string[] = [];
+    const tickLabels: string[] = [];
 
     // return no ticks in this case
     if (maxTicks <= 0)
         return tickLabels;
 
-    let len = labels.length;
+    const len = labels.length;
     if (maxTicks > len)
         return labels;
 
@@ -220,7 +220,7 @@ export function getRecommendedTickValuesForAQuantitativeRange(maxTicks: number, 
     if (maxTicks === 0)
         return tickLabels;
 
-    let quantitiveScale = <ScaleLinear<any, any>>scale;
+    const quantitiveScale = <ScaleLinear<any, any>>scale;
     if (quantitiveScale.ticks) {
         tickLabels = quantitiveScale.ticks(maxTicks);
         if (tickLabels.length > maxTicks && maxTicks > 1)
@@ -266,7 +266,7 @@ function createTrueZeroTickLabel(ticks: number[], epsilon: number = 1e-5): numbe
     if (!ticks || ticks.length < 2)
         return ticks;
 
-    let closeZero = epsilon * Math.abs(ticks[1] - ticks[0]);
+    const closeZero = epsilon * Math.abs(ticks[1] - ticks[0]);
 
     return ticks.map((tick) => Math.abs(tick) <= closeZero ? 0 : tick);
 }
@@ -277,7 +277,7 @@ function getRecommendedTickValuesForADateTimeRange(maxTicks: number, dataDomain:
     if (dataDomain[0] === 0 && dataDomain[1] === 0)
         return [];
 
-    let dateTimeTickLabels = DateTimeSequence.CALCULATE(new Date(dataDomain[0]), new Date(dataDomain[1]), maxTicks).sequence;
+    const dateTimeTickLabels = DateTimeSequence.CALCULATE(new Date(dataDomain[0]), new Date(dataDomain[1]), maxTicks).sequence;
 
     tickLabels = dateTimeTickLabels.map(d => d.getTime());
     tickLabels = ensureValuesInRange(tickLabels, dataDomain[0], dataDomain[1]);
@@ -308,6 +308,7 @@ function normalizeLinearDomain(domain: powerbi.NumberRange): powerbi.NumberRange
     return domain;
 }
 
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function getMargin(availableWidth: number, availableHeight: number, xMargin: number, yMargin: number): IMargin {
     return {
         top: 20,
@@ -318,6 +319,7 @@ export function getMargin(availableWidth: number, availableHeight: number, xMarg
 }
 
 // TODO: Put the parameters into one object
+/* eslint-disable-next-line max-lines-per-function*/
 export function getTickLabelMargins(
     viewport: powerbi.IViewport,
     yMarginLimit: number,
@@ -330,24 +332,25 @@ export function getTickLabelMargins(
     showOnRight?: boolean,
     renderXAxis?: boolean,
     renderY1Axis?: boolean,
-    renderY2Axis?: boolean): TickLabelMargins /*IMargin - can't update this because custom visuals use it*/ {
+    renderY2Axis?: boolean
+): TickLabelMargins /*IMargin - can't update this because custom visuals use it*/ {
 
-    let xAxisProperties: IAxisProperties = axes.x;
-    let y1AxisProperties: IAxisProperties = axes.y1;
-    let y2AxisProperties: IAxisProperties = axes.y2;
+    const xAxisProperties: IAxisProperties = axes.x;
+    const y1AxisProperties: IAxisProperties = axes.y1;
+    const y2AxisProperties: IAxisProperties = axes.y2;
 
-    let xLabels = xAxisProperties.values;
-    let y1Labels = y1AxisProperties.values;
+    const xLabels = xAxisProperties.values;
+    const y1Labels = y1AxisProperties.values;
 
     let leftOverflow = 0;
     let rightOverflow = 0;
     let maxWidthY1 = 0;
     let maxWidthY2 = 0;
     let xMax = 0; // bottom margin
-    let ordinalLabelOffset = xAxisProperties.categoryThickness ? xAxisProperties.categoryThickness / 2 : 0;
-    let scaleIsOrdinal = isOrdinalScale(xAxisProperties.scale);
+    const ordinalLabelOffset = xAxisProperties.categoryThickness ? xAxisProperties.categoryThickness / 2 : 0;
+    const scaleIsOrdinal = isOrdinalScale(xAxisProperties.scale);
 
-    let hasHierarchy = !arrayIsEmpty(axes.xStack);
+    const hasHierarchy = !arrayIsEmpty(axes.xStack);
 
     let xLabelOuterPadding = 0;
     if (xAxisProperties.outerPadding !== undefined) {
@@ -357,7 +360,6 @@ export function getTickLabelMargins(
         xLabelOuterPadding = Math.max(0, (viewport.width - xAxisProperties.xLabelMaxWidth * xLabels.length) / 2);
     }
 
-    let textHeight: number;
     let rotation;
     if (scrollbarVisible || hasHierarchy)
         rotation = LabelLayoutStrategy.DefaultRotationWithScrollbar;
@@ -367,22 +369,23 @@ export function getTickLabelMargins(
     if (renderY1Axis) {
         for (let i = 0, len = y1Labels.length; i < len; i++) {
             properties.text = y1Labels[i];
+            
             maxWidthY1 = Math.max(maxWidthY1, textWidthMeasurer(properties));
         }
     }
 
     if (y2AxisProperties && renderY2Axis) {
-        let y2Labels = y2AxisProperties.values;
+        const y2Labels = y2AxisProperties.values;
         for (let i = 0, len = y2Labels.length; i < len; i++) {
             properties.text = y2Labels[i];
             maxWidthY2 = Math.max(maxWidthY2, textWidthMeasurer(properties));
         }
     }
 
-    textHeight = textHeightMeasurer(properties);
-    let maxNumLines = Math.floor(bottomMarginLimit / textHeight);
-    let xScale = xAxisProperties.scale;
-    let xDomain = xScale.domain();
+    const textHeight = textHeightMeasurer(properties);
+    const maxNumLines = Math.floor(bottomMarginLimit / textHeight);
+    const xScale = xAxisProperties.scale;
+    const xDomain = xScale.domain();
     if (renderXAxis && xLabels.length > 0) {
         for (let i = 0, len = xLabels.length; i < len; i++) {
             // find the max height of the x-labels, perhaps rotated or wrapped
@@ -391,7 +394,7 @@ export function getTickLabelMargins(
             let width = textWidthMeasurer(properties);
             if (xAxisProperties.willLabelsWordBreak) {
                 // Split label and count rows
-                let wordBreaks = wordBreaker.splitByWidth(properties.text, properties, textWidthMeasurer, xAxisProperties.xLabelMaxWidth, maxNumLines);
+                const wordBreaks = wordBreaker.splitByWidth(properties.text, properties, textWidthMeasurer, xAxisProperties.xLabelMaxWidth, maxNumLines);
                 height = wordBreaks.length * textHeight;
                 // word wrapping will truncate at xLabelMaxWidth
                 width = xAxisProperties.xLabelMaxWidth;
@@ -416,7 +419,7 @@ export function getTickLabelMargins(
                 }
                 else if (xDomain.length > 1) {
                     // Scalar - do some math
-                    let xPos = xScale(xDomain[0]);
+                    const xPos = xScale(xDomain[0]);
                     // xPos already incorporates xLabelOuterPadding, don't subtract it twice
                     leftOverflow = (width / 2) - xPos;
                     leftOverflow = Math.max(leftOverflow, 0);
@@ -432,7 +435,7 @@ export function getTickLabelMargins(
                 }
                 else if (xDomain.length > 1) {
                     // Scalar - do some math
-                    let xPos = xScale(xDomain[1]);
+                    const xPos = xScale(xDomain[1]);
                     // xPos already incorporates xLabelOuterPadding, don't subtract it twice
                     rightOverflow = (width / 2) - (viewport.width - xPos);
                     rightOverflow = Math.max(rightOverflow, 0);
@@ -507,7 +510,7 @@ export function extent(
         ScaleLinear<any, any> |
         ScaleLogarithmic<any, any> |
         ScaleBand<any>): number[] {
-    let range = (<any>scale).range();
+    const range = (<any>scale).range();
     return [range[0], range[range.length - 1]];
 }
 
@@ -517,13 +520,13 @@ export function extent(
  * Otherwise, the length of the entire range.
  */
 export function getCategoryThickness(scale: any): number {
-    let leftEdges = scale.range();
+    const leftEdges = scale.range();
 
     if (leftEdges.length < 2) {
         // We have 1 item if we don't have 2 edges. If we have 1 item, just use the entire axis length as the thickness.
         if (isOrdinalScale(scale)) {
             // We should only hit this if we have an ordinal scale. Other scales should always have 2 items in their range.
-            let rangeExtent = (scale as ScaleOrdinal<any, any>).range();
+            const rangeExtent = (scale as ScaleOrdinal<any, any>).range();
             return rangeExtent[1] - rangeExtent[0];
         }
     }
@@ -536,18 +539,18 @@ export function getCategoryThickness(scale: any): number {
  * Otherwise, it returns the greatest item in scale.domain() that's <= x.
  */
 export function invertOrdinalScale(scale: ScaleBand<any>, x: number) {
-    let domain = scale.domain();
-    let range = domain.map(d => scale(d));
+    const domain = scale.domain();
+    const range = domain.map(d => scale(d));
 
     if (range.length < 2) {
         return 0;
     }
 
-    let leftEdges = [];
+    const leftEdges = [];
     leftEdges[0] = range[0];
     leftEdges[1] = range[range.length - 1];
 
-    let halfInnerPadding = 0;
+    const halfInnerPadding = 0;
 
     // If x is less than the range, just return the 1st item in the domain
     if (range[0] > x) {
@@ -565,8 +568,8 @@ export function findClosestXAxisIndex(categoryValue: number, categoryAxisValues:
     let closestValueIndex: number = -1,
         minDistance = Number.MAX_VALUE;
 
-    for (let i in categoryAxisValues) {
-        let distance = Math.abs(categoryValue - categoryAxisValues[i].categoryValue);
+    for (const i in categoryAxisValues) {
+        const distance = Math.abs(categoryValue - categoryAxisValues[i].categoryValue);
 
         if (distance < minDistance) {
             minDistance = distance;
@@ -580,18 +583,18 @@ export function findClosestXAxisIndex(categoryValue: number, categoryAxisValues:
 export function lookupOrdinalIndex(scale: ScaleOrdinal<any, any>, pixelValue: number): number {
     let closestValueIndex: number = -1;
     let minDistance = Number.MAX_VALUE;
-    let domain = scale.domain();
+    const domain = scale.domain();
 
     if (domain.length < 2) {
         return 0;
     }
 
-    let halfWidth = (scale(1) - scale(0)) / 2;
+    const halfWidth = (scale(1) - scale(0)) / 2;
 
-    for (let idx in domain) {
-        let leftEdgeInPixels = scale(idx);
-        let midPoint = leftEdgeInPixels + halfWidth;
-        let distance = Math.abs(pixelValue - midPoint);
+    for (const idx in domain) {
+        const leftEdgeInPixels = scale(idx);
+        const midPoint = leftEdgeInPixels + halfWidth;
+        const distance = Math.abs(pixelValue - midPoint);
 
         if (distance < minDistance) {
             minDistance = distance;
@@ -608,7 +611,7 @@ export function diffScaled(
     value1: any,
     value2: any): number {
 
-    let value: number = scale(value1) - scale(value2);
+    const value: number = scale(value1) - scale(value2);
     if (value === 0) {
         return 0;
     }
@@ -663,7 +666,7 @@ export function getCategoryValueType(metadataColumn: powerbi.DataViewMetadataCol
  * @param options The properties used to create the axis.
  */
 export function createAxis(options: CreateAxisOptions): IAxisProperties {
-    let pixelSpan = options.pixelSpan,
+    const pixelSpan = options.pixelSpan,
         dataDomain = options.dataDomain,
         metaDataColumn = options.metaDataColumn,
         formatString = options.formatString,
@@ -673,25 +676,23 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
         isVertical = !!options.isVertical,
         useTickIntervalForDisplayUnits = !!options.useTickIntervalForDisplayUnits, // DEPRECATE: same meaning as isScalar?
         getValueFn = options.getValueFn,
-        categoryThickness = options.categoryThickness,
         axisDisplayUnits = options.axisDisplayUnits,
         axisPrecision = options.axisPrecision,
         is100Pct = !!options.is100Pct,
-        disableNice = options.disableNice;
+        dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
-    let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
-
+    let categoryThickness = options.categoryThickness;
     // Create the Scale
-    let scaleResult: CreateScaleResult = createScale(options);
-    let scale = scaleResult.scale;
-    let bestTickCount = scaleResult.bestTickCount;
-    let scaleDomain = scale.domain();
-    let isLogScaleAllowed = isLogScalePossible(dataDomain, dataType);
+    const scaleResult: CreateScaleResult = createScale(options);
+    const scale = scaleResult.scale;
+    const bestTickCount = scaleResult.bestTickCount;
+    const scaleDomain = scale.domain();
+    const isLogScaleAllowed = isLogScalePossible(dataDomain, dataType);
 
     // fix categoryThickness if scalar and the domain was adjusted when making the scale "nice"
     if (categoryThickness && isScalar && dataDomain && dataDomain.length === 2) {
-        let oldSpan = dataDomain[1] - dataDomain[0];
-        let newSpan = scaleDomain[1] - scaleDomain[0];
+        const oldSpan = dataDomain[1] - dataDomain[0];
+        const newSpan = scaleDomain[1] - scaleDomain[0];
         if (oldSpan > 0 && newSpan > 0) {
             categoryThickness = categoryThickness * oldSpan / newSpan;
         }
@@ -703,7 +704,7 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
         tickValues = [dataDomain[0]];
     }
     else {
-        let minTickInterval = isScalar ? getMinTickValueInterval(formatString, dataType, is100Pct) : undefined;
+        const minTickInterval = isScalar ? getMinTickValueInterval(formatString, dataType, is100Pct) : undefined;
         tickValues = getRecommendedTickValues(bestTickCount, scale, dataType, isScalar, minTickInterval);
     }
 
@@ -711,7 +712,7 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
         tickValues = tickValues.filter((d) => { return powerOfTen(d); });
     }
 
-    let formatter = createFormatter(
+    const formatter = createFormatter(
         scaleDomain,
         dataDomain,
         dataType,
@@ -726,8 +727,8 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
 
     // sets default orientation only, cartesianChart will fix y2 for comboChart
     // tickSize(pixelSpan) is used to create gridLines
-    let axisFunction = isVertical ? axisLeft : axisBottom;
-    let axis = axisFunction(scale)
+    const axisFunction = isVertical ? axisLeft : axisBottom;
+    const axis = axisFunction(scale)
         .tickSize(6)
         .ticks(bestTickCount)
         .tickValues(tickValues);
@@ -769,18 +770,21 @@ export function createAxis(options: CreateAxisOptions): IAxisProperties {
  * `options.orientation` will be defaulted to "bottom" if not specified.
  */
 export function createStackedAxis(options: CreateStackedAxisOptions): Axis<any> {
-    let axis = options.axis;
-    let orientation = options.orient;
+    const axis = options.axis;
+    const orientation = options.orient;
 
     let axisFunction;
-
+// TODO: possible breaking changes
     switch (orientation) {
         case AxisOrientation.bottom:
             axisFunction = axisBottom;
+            break;
         case AxisOrientation.top:
             axisFunction = axisTop;
+            break;
         case AxisOrientation.left:
             axisFunction = axisLeft;
+            break;
         case AxisOrientation.right:
             axisFunction = axisRight;
     }
@@ -803,8 +807,7 @@ function getScalarLabelMaxWidth(scale: ScaleLinear<any, any>, tickValues: number
 }
 
 export function createScale(options: CreateAxisOptions): CreateScaleResult {
-    let pixelSpan = options.pixelSpan,
-        dataDomain = options.dataDomain,
+    const pixelSpan = options.pixelSpan,
         metaDataColumn = options.metaDataColumn,
         outerPadding = options.outerPadding || 0,
         isScalar = !!options.isScalar,
@@ -816,9 +819,10 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
         disableNice = options.disableNice,
         disableNiceOnlyForScale = options.disableNiceOnlyForScale,
         innerPadding = options.innerPadding,
-        useRangePoint = options.useRangePoints;
+        useRangePoint = options.useRangePoints,
+        dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
 
-    let dataType: ValueType = getCategoryValueType(metaDataColumn, isScalar);
+    let dataDomain = options.dataDomain;
 
     let maxTicks = isVertical ? getRecommendedNumberOfTicksForYAxis(pixelSpan) : getRecommendedNumberOfTicksForXAxis(pixelSpan);
     if (maxTickCount &&
@@ -855,7 +859,7 @@ export function createScale(options: CreateAxisOptions): CreateScaleResult {
                     ? (maxTicks !== 0 ? forcedTickCount : 0)
                     : getBestNumberOfTicks(dataDomain[0], dataDomain[dataDomain.length - 1], [metaDataColumn], maxTicks, dataType.dateTime);
             }
-            let normalizedRange = normalizeLinearDomain({ min: dataDomain[0], max: dataDomain[dataDomain.length - 1] });
+            const normalizedRange = normalizeLinearDomain({ min: dataDomain[0], max: dataDomain[dataDomain.length - 1] });
             scalarDomain = [normalizedRange.min, normalizedRange.max];
         }
 
@@ -906,7 +910,7 @@ export function normalizeInfinityInScale(scale: ScaleLinear<any, any>): void {
     // When large values (eg Number.MAX_VALUE) are involved, a call to scale.nice occasionally
     // results in infinite values being included in the domain. To correct for that, we need to
     // re-normalize the domain now to not include infinities.
-    let scaledDomain = scale.domain();
+    const scaledDomain = scale.domain();
     for (let i = 0, len = scaledDomain.length; i < len; ++i) {
         if (scaledDomain[i] === Number.POSITIVE_INFINITY) {
             scaledDomain[i] = Number.MAX_VALUE;
@@ -957,9 +961,9 @@ export function createFormatter(
     }
     else {
         if (useTickIntervalForDisplayUnits && isScalar && tickValues.length > 1) {
-            let value1 = axisDisplayUnits ? axisDisplayUnits : tickValues[1] - tickValues[0];
+            const value1 = axisDisplayUnits ? axisDisplayUnits : tickValues[1] - tickValues[0];
 
-            let options: ValueFormatterOptions = {
+            const options: ValueFormatterOptions = {
                 format: formatString,
                 value: value1,
                 value2: 0, // force tickInterval or display unit to be used
@@ -986,7 +990,7 @@ export function createFormatter(
 // returns # of decimal places necessary to distinguish between tick mark values
 export function calculateAxisPrecision(tickValue0: number, tickValue1: number, axisDisplayUnits: number, formatString?: string): number {
     if (!axisDisplayUnits) {
-        let displayUnitSystem = valueFormatter.createDisplayUnitSystem();
+        const displayUnitSystem = valueFormatter.createDisplayUnitSystem();
         displayUnitSystem.update(tickValue1 - tickValue0);
         axisDisplayUnits = displayUnitSystem.displayUnit && displayUnitSystem.displayUnit.value || 1;
     }
@@ -995,7 +999,7 @@ export function calculateAxisPrecision(tickValue0: number, tickValue1: number, a
     let value1 = (tickValue1 || 0) / axisDisplayUnits;
 
     if (formatString) {
-        let partsPerScale = numberFormat.getCustomFormatMetadata(formatString, false, false, true).partsPerScale;
+        const partsPerScale = numberFormat.getCustomFormatMetadata(formatString, false, false, true).partsPerScale;
         value0 *= partsPerScale;
         value1 *= partsPerScale;
     }
@@ -1013,18 +1017,18 @@ function calculateAxisPrecisionForValue(value: number): number {
     // 1 means tens digit
     // 0 means the ones digit
     // -1 means tenths digit
-    let mostSignificantDigit = Math.floor(Double.log10(value));
+    const mostSignificantDigit = Math.floor(Double.log10(value));
 
     // rounding in various calculations can introduce extraneous amounts of precision in the number
     // no need in an axis label to allow more than this number of digits as the *difference* between
     // ticks
-    let MaxDigits = 5;
+    const MaxDigits = 5;
 
     if (mostSignificantDigit >= 0) {
         // value has an integer part but may also have a fraction part. get the number of significant
         // digits in the integer part then see how many that leaves us for the fractional part
-        let integerSignificantDigits = mostSignificantDigit + 1;
-        let maxFractionDigits = MaxDigits - integerSignificantDigits;
+        const integerSignificantDigits = mostSignificantDigit + 1;
+        const maxFractionDigits = MaxDigits - integerSignificantDigits;
         if (maxFractionDigits <= 0) {
             // the value's integer part has at least MaxDigits of precision
             // so there aren't any left for the fractional part
@@ -1039,13 +1043,13 @@ function calculateAxisPrecisionForValue(value: number): number {
 
         // knowing where there most significant digit is in the fraction, we can scale
         // the number to the range [0.1, 1)
-        let rescaledValue = value / Double.pow10(mostSignificantDigit + 1);
+        const rescaledValue = value / Double.pow10(mostSignificantDigit + 1);
 
         // get the actual number of significant digits respecting the maximum
-        let fractionSignificantDigits = numberOfDecimalPlaces(rescaledValue, MaxDigits);
+        const fractionSignificantDigits = numberOfDecimalPlaces(rescaledValue, MaxDigits);
 
         // this is the number of zeroes that are required due to the true scale of the decimal fraction
-        let fractionScaleDigits = -mostSignificantDigit - 1;
+        const fractionScaleDigits = -mostSignificantDigit - 1;
 
         // number of decimal places is the number of zeros plus the limited number of significant digits
         return fractionScaleDigits + fractionSignificantDigits;
@@ -1057,8 +1061,8 @@ function calculateAxisPrecisionForValue(value: number): number {
 // we want a maximum of three decimal places, the number rounded to three places is 1.500
 // so only one decimal place is necessary.
 function numberOfDecimalPlaces(value: number, maxDecimalPlaces: number): number {
-    let formattedValue = value.toFixed(maxDecimalPlaces);
-    let decimalPoint = formattedValue.indexOf(".");
+    const formattedValue = value.toFixed(maxDecimalPlaces);
+    const decimalPoint = formattedValue.indexOf(".");
 
     if (decimalPoint !== -1) {
         for (let i = formattedValue.length; i-- > decimalPoint;) {
@@ -1098,7 +1102,7 @@ function formatAxisTickValues(
 }
 
 export function getMinTickValueInterval(formatString: string, columnType: ValueType, is100Pct?: boolean): number {
-    let isCustomFormat = formatString && !numberFormat.isStandardFormat(formatString);
+    const isCustomFormat = formatString && !numberFormat.isStandardFormat(formatString);
     if (isCustomFormat) {
         let precision = numberFormat.getCustomFormatMetadata(formatString, true /*calculatePrecision*/).precision;
         if (formatString.indexOf("%") > -1)
@@ -1120,8 +1124,8 @@ function createScalarDomain(data: AxisHelperSeries[], userMin: powerbi.DataViewP
         return null;
     }
 
-    let defaultMinX = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.categoryValue; }); });
-    let defaultMaxX = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.categoryValue; }); });
+    const defaultMinX = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.categoryValue; }); });
+    const defaultMaxX = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.categoryValue; }); });
 
     return combineDomain([userMin, userMax], [defaultMinX, defaultMaxX], ensureDomain);
 }
@@ -1136,8 +1140,8 @@ export function createValueDomain(data: AxisHelperSeries[], includeZero: boolean
     if (data.length === 0)
         return null;
 
-    let minY = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.value; }); });
-    let maxY = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.value; }); });
+    const minY = <number>min(data, (kv) => { return min(kv.data, d => { return d && d.value; }); });
+    const maxY = <number>max(data, (kv) => { return max(kv.data, d => { return d && d.value; }); });
 
     if (includeZero) {
         return [Math.min(minY, 0), Math.max(maxY, 0)];
@@ -1152,9 +1156,9 @@ function createOrdinalDomain(data: AxisHelperSeries[]): number[] {
     }
 
     // each series shares the same categories for oridinal axes (even if a series has some nulls)
-    let domain = [];
-    let firstSeries = data[0];
-    for (let dp of firstSeries.data) {
+    const domain = [];
+    const firstSeries = data[0];
+    for (const dp of firstSeries.data) {
         if (!dp.highlight) {
             domain.push(dp.categoryIndex);
         }
@@ -1169,6 +1173,7 @@ export {
     LabelLayoutStrategy
 };
 
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0, innerPaddingRatio: number = 0.2, useRangePoints: boolean = false): ScalePoint<any> {
     return scalePoint()
         .range([0, pixelSpan])
@@ -1224,7 +1229,7 @@ export function createNumericalScale(
 }
 
 function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number): ScaleLogarithmic<any, any> {
-    let logScale = scaleLog()
+    const logScale = scaleLog()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(true);
@@ -1238,7 +1243,7 @@ function createLogScale(pixelSpan: number, dataDomain: any[], outerPadding: numb
 
 // NOTE: export only for testing, do not access directly
 export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPadding: number = 0, niceCount?: number, shouldClamp?: boolean): ScaleLinear<any, any> {
-    let linearScale = scaleLinear()
+    const linearScale = scaleLinear()
         .range([outerPadding, pixelSpan - outerPadding])
         .domain([dataDomain[0], dataDomain[1]])
         .clamp(shouldClamp);
@@ -1253,7 +1258,7 @@ export function createLinearScale(pixelSpan: number, dataDomain: any[], outerPad
 }
 
 export function getRangeForColumn(sizeColumn: powerbi.DataViewValueColumn): powerbi.NumberRange {
-    let result: powerbi.NumberRange = {};
+    const result: powerbi.NumberRange = {};
 
     if (sizeColumn) {
         result.min = <number>((<any>sizeColumn).min == null
@@ -1315,7 +1320,7 @@ export function combineDomain(forcedDomain: any[], domain: any[], ensureDomain?:
             combinedDomain[1] = ensureDomain.max;
     }
 
-    let domainBeforeForced: any[] = [combinedDomain[0], combinedDomain[1]];
+    const domainBeforeForced: any[] = [combinedDomain[0], combinedDomain[1]];
 
     if (forcedDomain && forcedDomain.length === 2) {
         if (forcedDomain[0] != null) {
@@ -1332,7 +1337,7 @@ export function combineDomain(forcedDomain: any[], domain: any[], ensureDomain?:
 }
 
 export function createAxisLabel(properties: powerbi.DataViewObject, label: string, unitType: string, y2: boolean = false): string {
-    let propertyName = y2 ? "secAxisStyle" : "axisStyle";
+    const propertyName = y2 ? "secAxisStyle" : "axisStyle";
     if (!properties || !properties[propertyName]) {
         return label;
     }
@@ -1378,7 +1383,7 @@ export function normalizeNonFiniteNumber(value: powerbi.PrimitiveValue): number 
  * Indicates whether the number is power of 10.
  */
 export function powerOfTen(d: any): boolean {
-    let value = Math.abs(d);
+    const value = Math.abs(d);
     // formula log2(Y)/log2(10) = log10(Y)
     // because double issues this won't return exact value
     // we need to ceil it to nearest number.

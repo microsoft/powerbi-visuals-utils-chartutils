@@ -44,15 +44,15 @@ import {
  * (Private) Contains methods for calculating the bounding box of a data label
  */
 
-export namespace LabelOverflowingConsts {
-    export const equalityPrecision = 0.09; // one decimal point
-    export const minIntersectionRatio = 0.2;
-    export const parentToLabelOverflowRatioThreshold = 1 / 50;
+export class LabelOverflowingConsts {
+    public static equalityPrecision = 0.09; // one decimal point
+    public static minIntersectionRatio = 0.2;
+    public static parentToLabelOverflowRatioThreshold = 1 / 50;
 }
 
 export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, position: RectLabelPosition, offset: number): IRect {
-    let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
-    let parentRect: LabelParentRect = <LabelParentRect>labelDataPoint.parentShape;
+    const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+    const parentRect: LabelParentRect = <LabelParentRect>labelDataPoint.parentShape;
     if (parentRect != null) {
         // Each combination of position and orientation results in a different actual positioning, which is then called.
         switch (position) {
@@ -68,6 +68,7 @@ export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo,
                     case NewRectOrientation.None:
                     // TODO: which of the above cases should we default to for rects with no orientation?
                 }
+                break;
             case RectLabelPosition.InsideBase:
             case RectLabelPosition.OverflowInsideBase:
                 switch (parentRect.orientation) {
@@ -82,6 +83,7 @@ export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo,
                     case NewRectOrientation.None:
                     // TODO: which of the above cases should we default to for rects with no orientation?
                 }
+                break;
             case RectLabelPosition.InsideEnd:
             case RectLabelPosition.OverflowInsideEnd:
                 switch (parentRect.orientation) {
@@ -96,6 +98,7 @@ export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo,
                     case NewRectOrientation.None:
                     // TODO: which of the above cases should we default to for rects with no orientation?
                 }
+                break;
             case RectLabelPosition.OutsideBase:
                 switch (parentRect.orientation) {
                     case NewRectOrientation.VerticalBottomBased:
@@ -109,6 +112,7 @@ export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo,
                     case NewRectOrientation.None:
                     // TODO: which of the above cases should we default to for rects with no orientation?
                 }
+                break;
             case RectLabelPosition.OutsideEnd:
                 switch (parentRect.orientation) {
                     case NewRectOrientation.VerticalBottomBased:
@@ -131,18 +135,18 @@ export function getLabelRect(labelDataPointLayoutInfo: LabelDataPointLayoutInfo,
 }
 
 export function canFitWithinParent(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, horizontalPadding: number, verticalPadding: number): boolean {
-    let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+    const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
     return (labelDataPointLayoutInfo.labelSize.width + 2 * horizontalPadding < (<LabelParentRect>labelDataPoint.parentShape).rect.width) ||
         (labelDataPointLayoutInfo.labelSize.height + 2 * verticalPadding < (<LabelParentRect>labelDataPoint.parentShape).rect.height);
 }
 
 export function isLabelWithinParent(labelRect: IRect, labelPoint: LabelDataPoint, horizontalPadding: number, verticalPadding: number): boolean {
-    let parentRect = (<LabelParentRect>labelPoint.parentShape).rect;
-    let labelRectWithPadding = shapes.Rect.inflate(labelRect, { left: horizontalPadding, right: horizontalPadding, top: verticalPadding, bottom: verticalPadding });
-    return shapes.Rect.containsPoint(parentRect, {
+    const parentRect = (<LabelParentRect>labelPoint.parentShape).rect;
+    const labelRectWithPadding = shapes.inflate(labelRect, { left: horizontalPadding, right: horizontalPadding, top: verticalPadding, bottom: verticalPadding });
+    return shapes.containsPoint(parentRect, {
         x: labelRectWithPadding.left,
         y: labelRectWithPadding.top,
-    }) && shapes.Rect.containsPoint(parentRect, {
+    }) && shapes.containsPoint(parentRect, {
         x: labelRectWithPadding.left + labelRectWithPadding.width,
         y: labelRectWithPadding.top + labelRectWithPadding.height,
     });
@@ -151,11 +155,11 @@ export function isLabelWithinParent(labelRect: IRect, labelPoint: LabelDataPoint
 export function isValidLabelOverflowing(labelRect: IRect, labelPoint: LabelDataPoint, hasMultipleDataSeries: boolean): boolean {
     const parentRect = (<LabelParentRect>labelPoint.parentShape).rect;
 
-    if (!shapes.Rect.isIntersecting(labelRect, parentRect)) {
+    if (!shapes.isIntersecting(labelRect, parentRect)) {
         return false; // label isn't overflowing from within parent
     }
 
-    const intersection = shapes.Rect.intersect(labelRect, parentRect);
+    const intersection = shapes.intersect(labelRect, parentRect);
     const precision = LabelOverflowingConsts.equalityPrecision;
     const isLabelContainedVertically =
         double.equalWithPrecision(intersection.top, labelRect.top, precision) &&
@@ -212,7 +216,7 @@ export function maximalIntersectionRatio(labelRect: IRect, parentRect: IRect): n
     const minArea = Math.min(parentRectArea, labelPointArea);
     const minimalAreaNotZero = (minArea !== 0) ? minArea : maxArea;
 
-    const intersectionRect = shapes.Rect.intersect(parentRect, labelRect);
+    const intersectionRect = shapes.intersect(parentRect, labelRect);
     const intersectionRectArea = intersectionRect.width * intersectionRect.height;
 
     // Dividing by the minimal area yields the maximal intersection ratio

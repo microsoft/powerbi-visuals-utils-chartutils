@@ -30,7 +30,7 @@ import {
     BaseType
 } from "d3-selection";
 import powerbi from "powerbi-visuals-api";
-import * as formatting from "powerbi-visuals-utils-formattingutils";
+import { textMeasurementService, interfaces } from "powerbi-visuals-utils-formattingutils";
 import { pixelConverter as PixelConverter, prototype as Prototype } from "powerbi-visuals-utils-typeutils";
 
 import {
@@ -57,9 +57,7 @@ import {
 import ISelectionId = powerbi.visuals.ISelectionId;
 
 // powerbi.extensibility.utils.formatting
-import TextProperties = formatting.interfaces.TextProperties;
-import textMeasurementService = formatting.textMeasurementService;
-import font = formatting.font;
+import TextProperties = interfaces.TextProperties;
 
 // powerbi.extensibility.utils.svg
 import ClassAndSelector = CssConstants.ClassAndSelector;
@@ -68,7 +66,8 @@ import createClassAndSelector = CssConstants.createClassAndSelector;
 // powerbi.extensibility.utils.interactivity
 import appendClearCatcher = interactivityBaseService.appendClearCatcher;
 import dataHasSelection = interactivityBaseService.dataHasSelection;
-import { BaseDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivityBaseService";
+
+/* eslint-disable no-case-declarations */
 
 export interface TitleLayout {
     x: number;
@@ -182,8 +181,8 @@ export class SVGLegend implements ILegend {
     }
 
     private updateLayout() {
-        let legendViewport = this.viewport;
-        let orientation = this.orientation;
+        const legendViewport = this.viewport;
+        const orientation = this.orientation;
 
         this.svg.attr(
             "height", legendViewport.height || (orientation === LegendPosition.None ? 0 : this.parentViewport.height)
@@ -192,7 +191,7 @@ export class SVGLegend implements ILegend {
             "width", legendViewport.width || (orientation === LegendPosition.None ? 0 : this.parentViewport.width)
         );
 
-        let isRight = orientation === LegendPosition.Right || orientation === LegendPosition.RightCenter,
+        const isRight = orientation === LegendPosition.Right || orientation === LegendPosition.RightCenter,
             isBottom = orientation === LegendPosition.Bottom || orientation === LegendPosition.BottomCenter;
 
         this.svg.style(
@@ -209,18 +208,18 @@ export class SVGLegend implements ILegend {
             case LegendPosition.Bottom:
             case LegendPosition.TopCenter:
             case LegendPosition.BottomCenter:
-                let pixelHeight = PixelConverter.fromPointToPixel(this.data && this.data.fontSize
+                const pixelHeight = PixelConverter.fromPointToPixel(this.data && this.data.fontSize
                     ? this.data.fontSize
                     : SVGLegend.DefaultFontSizeInPt);
 
-                let fontHeightSize = SVGLegend.TopLegendHeight + (pixelHeight - SVGLegend.DefaultFontSizeInPt);
+                const fontHeightSize = SVGLegend.TopLegendHeight + (pixelHeight - SVGLegend.DefaultFontSizeInPt);
                 this.viewport = { height: fontHeightSize, width: 0 };
                 return;
             case LegendPosition.Right:
             case LegendPosition.Left:
             case LegendPosition.RightCenter:
             case LegendPosition.LeftCenter:
-                let width = this.lastCalculatedWidth
+                const width = this.lastCalculatedWidth
                     ? this.lastCalculatedWidth
                     : this.parentViewport.width * SVGLegend.LegendMaxWidthFactor;
 
@@ -256,10 +255,10 @@ export class SVGLegend implements ILegend {
 
     public drawLegend(data: LegendData, viewport: powerbi.IViewport): void {
         // clone because we modify legend item label with ellipsis if it is truncated
-        let clonedData = Prototype.inherit(data),
+        const clonedData = Prototype.inherit(data),
             newDataPoints: LegendDataPoint[] = [];
 
-        for (let dp of data.dataPoints) {
+        for (const dp of data.dataPoints) {
             newDataPoints.push(Prototype.inherit(dp));
         }
 
@@ -269,6 +268,7 @@ export class SVGLegend implements ILegend {
         this.drawLegendInternal(clonedData, viewport, true /* perform auto width */);
     }
 
+    /* eslint-disable-next-line max-lines-per-function */
     public drawLegendInternal(data: LegendData, viewport: powerbi.IViewport, autoWidth: boolean): void {
         this.parentViewport = viewport;
         this.data = data;
@@ -285,22 +285,22 @@ export class SVGLegend implements ILegend {
         }
 
         // Adding back the workaround for Legend Left/Right position for Map
-        let mapControls = this.element.getElementsByClassName("mapControl");
+        const mapControls = this.element.getElementsByClassName("mapControl");
         if (mapControls.length > 0 && !this.isTopOrBottom(this.orientation)) {
             for (let i = 0; i < mapControls.length; ++i) {
-                let element = <HTMLElement>mapControls[i];
+                const element = <HTMLElement>mapControls[i];
                 element.style.display = "inline-block";
             }
         }
 
         this.calculateViewport();
 
-        let layout = this.calculateLayout(data, autoWidth);
-        let titleLayout = layout.title;
-        let titleData = titleLayout ? [titleLayout] : [];
-        let hasSelection = this.interactivityService && dataHasSelection(data.dataPoints);
+        const layout = this.calculateLayout(data, autoWidth);
+        const titleLayout = layout.title;
+        const titleData = titleLayout ? [titleLayout] : [];
+        const hasSelection = this.interactivityService && dataHasSelection(data.dataPoints);
 
-        let group = this.group;
+        const group = this.group;
 
         // transform the wrapping group if position is centered
         if (this.isCentered(this.orientation)) {
@@ -318,12 +318,12 @@ export class SVGLegend implements ILegend {
             group.attr("transform", null);
         }
 
-        let legendTitle = group
+        const legendTitle = group
             .selectAll(SVGLegend.LegendTitle.selectorName);
 
-        let legendTitleData = legendTitle.data(titleData);
+        const legendTitleData = legendTitle.data(titleData);
 
-        let enteredLegendTitle = legendTitleData
+        const enteredLegendTitle = legendTitleData
             .enter()
             .append("text")
             .classed(SVGLegend.LegendTitle.className, true);
@@ -343,17 +343,17 @@ export class SVGLegend implements ILegend {
             .exit()
             .remove();
 
-        let virtualizedDataPoints = data.dataPoints.slice(
+        const virtualizedDataPoints = data.dataPoints.slice(
             this.legendDataStartIndex,
             this.legendDataStartIndex + layout.numberOfItems);
 
-        let legendItems = group
+        const legendItems = group
             .selectAll(SVGLegend.LegendItem.selectorName)
             .data(virtualizedDataPoints, (d: LegendDataPoint) => {
                 return (d.identity as ISelectionId).getKey() + (d.layerNumber != null ? d.layerNumber : "");
             });
 
-        let itemsEnter = legendItems.enter()
+        const itemsEnter = legendItems.enter()
             .append("g")
             .classed(SVGLegend.LegendItem.className, true);
 
@@ -369,7 +369,7 @@ export class SVGLegend implements ILegend {
             .append("title")
             .text((d: LegendDataPoint) => d.tooltip);
 
-        let mergedLegendIcons = legendItems
+        const mergedLegendIcons = legendItems
             .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
             .attr("transform", (dataPoint: LegendDataPoint) => {
@@ -423,7 +423,7 @@ export class SVGLegend implements ILegend {
             .style("font-family", data.fontFamily);
 
         if (this.interactivityService) {
-            let behaviorOptions: LegendBehaviorOptions = {
+            const behaviorOptions: LegendBehaviorOptions = {
                 legendItems: mergedLegendItems,
                 legendIcons: mergedLegendIcons,
                 clearCatcher: this.clearCatcher,
@@ -478,13 +478,13 @@ export class SVGLegend implements ILegend {
     }
 
     private calculateTitleLayout(title: string): TitleLayout {
-        let width = 0,
-            hasTitle = !!title;
+        let width = 0;
+        const hasTitle = !!title;
 
         if (hasTitle) {
-            let isHorizontal = this.isTopOrBottom(this.orientation);
+            const isHorizontal = this.isTopOrBottom(this.orientation);
 
-            let textProperties = SVGLegend.getTextProperties(title, this.data.fontSize, this.data.fontFamily);
+            const textProperties = SVGLegend.getTextProperties(title, this.data.fontSize, this.data.fontFamily);
             let text = title;
             width = textMeasurementService.measureSvgTextWidth(textProperties);
 
@@ -525,7 +525,7 @@ export class SVGLegend implements ILegend {
             dataPoints = dataPoints.slice(this.legendDataStartIndex);
         }
 
-        let title: TitleLayout = this.calculateTitleLayout(data.title);
+        const title: TitleLayout = this.calculateTitleLayout(data.title);
 
         let navArrows: NavigationArrow[];
         let numberOfItems: number;
@@ -551,7 +551,7 @@ export class SVGLegend implements ILegend {
             navigationArrows.shift();
         }
 
-        let lastWindow = this.arrowPosWindow;
+        const lastWindow = this.arrowPosWindow;
         this.arrowPosWindow = visibleDataLength;
 
         if (navigationArrows && navigationArrows.length > 0 && this.arrowPosWindow === remainingDataLength) {
@@ -561,14 +561,14 @@ export class SVGLegend implements ILegend {
     }
 
     private calculateHorizontalNavigationArrowsLayout(title: TitleLayout): NavigationArrow[] {
-        let height = SVGLegend.LegendArrowHeight;
-        let width = SVGLegend.LegendArrowWidth;
-        let translateY = (this.viewport.height / 2) - (height / 2);
+        const height = SVGLegend.LegendArrowHeight;
+        const width = SVGLegend.LegendArrowWidth;
+        const translateY = (this.viewport.height / 2) - (height / 2);
 
-        let data: NavigationArrow[] = [];
-        let rightShift = title ? title.x + title.width : 0;
-        let arrowLeft = svgManipulation.createArrow(width, height, 180 /*angle*/);
-        let arrowRight = svgManipulation.createArrow(width, height, 0 /*angle*/);
+        const data: NavigationArrow[] = [];
+        const rightShift = title ? title.x + title.width : 0;
+        const arrowLeft = svgManipulation.createArrow(width, height, 180 /*angle*/);
+        const arrowRight = svgManipulation.createArrow(width, height, 0 /*angle*/);
 
         data.push({
             x: rightShift,
@@ -590,15 +590,15 @@ export class SVGLegend implements ILegend {
     }
 
     private calculateVerticalNavigationArrowsLayout(title: TitleLayout): NavigationArrow[] {
-        let height = SVGLegend.LegendArrowHeight;
-        let width = SVGLegend.LegendArrowWidth;
+        const height = SVGLegend.LegendArrowHeight;
+        const width = SVGLegend.LegendArrowWidth;
 
-        let verticalCenter = this.viewport.height / 2;
-        let data: NavigationArrow[] = [];
-        let rightShift = verticalCenter + height / 2;
-        let arrowTop = svgManipulation.createArrow(width, height, 270 /*angle*/);
-        let arrowBottom = svgManipulation.createArrow(width, height, 90 /*angle*/);
-        let titleHeight = title ? title.height : 0;
+        const verticalCenter = this.viewport.height / 2;
+        const data: NavigationArrow[] = [];
+        const rightShift = verticalCenter + height / 2;
+        const arrowTop = svgManipulation.createArrow(width, height, 270 /*angle*/);
+        const arrowBottom = svgManipulation.createArrow(width, height, 90 /*angle*/);
+        const titleHeight = title ? title.height : 0;
 
         data.push({
             x: rightShift,
@@ -630,7 +630,7 @@ export class SVGLegend implements ILegend {
         fontFamily: string,
     ): LegendItem[] {
 
-        let dataPointsLength = dataPoints.length;
+        const dataPointsLength = dataPoints.length;
 
         // Set the maximum amount of space available to each item. They can use less, but can"t go over this number.
         let maxItemWidth = dataPointsLength > 0 ? availableWidth / dataPointsLength | 0 : 0;
@@ -651,16 +651,16 @@ export class SVGLegend implements ILegend {
         }
 
         let occupiedWidth = 0;
-        let legendItems: LegendItem[] = [];
+        const legendItems: LegendItem[] = [];
 
         // Add legend items until we can"t fit any more (the last one doesn"t fit) or we"ve added all of them
-        for (let dataPoint of dataPoints) {
+        for (const dataPoint of dataPoints) {
 
-            let textProperties = SVGLegend.getTextProperties(dataPoint.label, fontSize, fontFamily);
-            let itemTextWidth = textMeasurementService.measureSvgTextWidth(textProperties);
-            let desiredWidth = itemTextWidth + iconPadding;
-            let overMaxWidth = desiredWidth > maxItemWidth;
-            let actualWidth = overMaxWidth ? maxItemWidth : desiredWidth;
+            const textProperties = SVGLegend.getTextProperties(dataPoint.label, fontSize, fontFamily);
+            const itemTextWidth = textMeasurementService.measureSvgTextWidth(textProperties);
+            const desiredWidth = itemTextWidth + iconPadding;
+            const overMaxWidth = desiredWidth > maxItemWidth;
+            const actualWidth = overMaxWidth ? maxItemWidth : desiredWidth;
             occupiedWidth += actualWidth;
 
             if (occupiedWidth >= availableWidth) {
@@ -695,17 +695,17 @@ export class SVGLegend implements ILegend {
         }
 
         // If there are items at max width, evenly redistribute the extra space to them
-        let itemsOverMax = legendItems.filter((li: LegendItem) => li.desiredOverMaxWidth);
+        const itemsOverMax = legendItems.filter((li: LegendItem) => li.desiredOverMaxWidth);
         let numItemsOverMax = itemsOverMax.length;
 
         if (numItemsOverMax > 0) {
             let extraWidth = availableWidth - occupiedWidth;
 
-            for (let item of itemsOverMax) {
+            for (const item of itemsOverMax) {
                 // Divvy up the extra space and add it to the max
                 // We need to do this calculation in every loop since the remainingWidth may not be changed by the same amount every time
-                let extraWidthPerItem = extraWidth / numItemsOverMax;
-                let newMaxItemWidth = maxItemWidth + extraWidthPerItem;
+                const extraWidthPerItem = extraWidth / numItemsOverMax;
+                const newMaxItemWidth = maxItemWidth + extraWidthPerItem;
 
                 let usedExtraWidth: number;
                 if (item.desiredWidth <= newMaxItemWidth) {
@@ -727,9 +727,9 @@ export class SVGLegend implements ILegend {
     }
 
     private calculateHorizontalLayout(dataPoints: LegendDataPoint[], title: TitleLayout, navigationArrows: NavigationArrow[]): number {
-        let fontSizeBiggerThanDefault = this.legendFontSizeMarginDifference > 0;
+        const fontSizeBiggerThanDefault = this.legendFontSizeMarginDifference > 0;
 
-        let fontSizeMargin = fontSizeBiggerThanDefault
+        const fontSizeMargin = fontSizeBiggerThanDefault
             ? SVGLegend.TextAndIconPadding + this.legendFontSizeMarginDifference
             : SVGLegend.TextAndIconPadding;
 
@@ -737,13 +737,13 @@ export class SVGLegend implements ILegend {
 
         const firstDataPointMarkerShape: MarkerShape = dataPoints && dataPoints[0] && dataPoints[0].markerShape;
 
-        let iconTotalItemPadding = this.getMarkerShapeWidth(firstDataPointMarkerShape) + fontSizeMargin * 1.5;
+        const iconTotalItemPadding = this.getMarkerShapeWidth(firstDataPointMarkerShape) + fontSizeMargin * 1.5;
 
         let numberOfItems: number = dataPoints.length;
         // get the Y coordinate which is the middle of the container + the middle of the text height - the delta of the text
-        let defaultTextProperties = SVGLegend.getTextProperties("", this.data.fontSize, this.data.fontFamily);
-        let verticalCenter = this.viewport.height / 2;
-        let textYCoordinate = verticalCenter + textMeasurementService.estimateSvgTextHeight(defaultTextProperties) / 2
+        const defaultTextProperties = SVGLegend.getTextProperties("", this.data.fontSize, this.data.fontFamily);
+        const verticalCenter = this.viewport.height / 2;
+        const textYCoordinate = verticalCenter + textMeasurementService.estimateSvgTextHeight(defaultTextProperties) / 2
             - textMeasurementService.estimateSvgTextBaselineDelta(defaultTextProperties);
 
         if (title) {
@@ -760,7 +760,7 @@ export class SVGLegend implements ILegend {
         }
 
         // Calculate the width for each of the legend items
-        let dataPointsLength = dataPoints.length;
+        const dataPointsLength = dataPoints.length;
         let availableWidth = this.parentViewport.width - occupiedWidth;
 
         let legendItems = SVGLegend.calculateHorizontalLegendItemsWidths(
@@ -788,7 +788,7 @@ export class SVGLegend implements ILegend {
             numberOfItems = legendItems.length;
         }
 
-        for (let legendItem of legendItems) {
+        for (const legendItem of legendItems) {
             const { dataPoint } = legendItem;
 
             const markerShapeWidth: number = this.getMarkerShapeWidth(dataPoint.markerShape);
@@ -809,7 +809,7 @@ export class SVGLegend implements ILegend {
 
             // If we're over the max width, process it so it fits
             if (legendItem.desiredOverMaxWidth) {
-                let textWidth = legendItem.width - iconTotalItemPadding;
+                const textWidth = legendItem.width - iconTotalItemPadding;
 
                 dataPoint.label = textMeasurementService.getTailoredTextOrDefault(legendItem.textProperties, textWidth);
             }
@@ -865,12 +865,12 @@ export class SVGLegend implements ILegend {
         autoWidth: boolean
     ): number {
         // check if we need more space for the margin, or use the default text padding
-        let fontSizeBiggerThenDefault = this.legendFontSizeMarginDifference > 0;
-        let fontFactor = fontSizeBiggerThenDefault ? this.legendFontSizeMarginDifference : 0;
+        const fontSizeBiggerThenDefault = this.legendFontSizeMarginDifference > 0;
+        const fontFactor = fontSizeBiggerThenDefault ? this.legendFontSizeMarginDifference : 0;
         // calculate the size needed after font size change
-        let verticalLegendHeight = 20 + fontFactor;
-        let spaceNeededByTitle = 15 + fontFactor;
-        let extraShiftForTextAlignmentToIcon = 4 + fontFactor;
+        const verticalLegendHeight = 20 + fontFactor;
+        const spaceNeededByTitle = 15 + fontFactor;
+        const extraShiftForTextAlignmentToIcon = 4 + fontFactor;
         let totalSpaceOccupiedThusFar = verticalLegendHeight;
         // the default space for text and icon radius + the margin after the font size change
 
@@ -880,9 +880,9 @@ export class SVGLegend implements ILegend {
             + this.getMarkerShapeWidth(firstDataPointMarkerShape) / 2
             + this.legendFontSizeMarginDifference;
 
-        let fixedHorizontalTextShift = fixedHorizontalIconShift * 2;
+        const fixedHorizontalTextShift = fixedHorizontalIconShift * 2;
         // check how much space is needed
-        let maxHorizontalSpaceAvaliable = autoWidth
+        const maxHorizontalSpaceAvaliable = autoWidth
             ? this.parentViewport.width * SVGLegend.LegendMaxWidthFactor
             - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth
             : this.lastCalculatedWidth
@@ -890,7 +890,7 @@ export class SVGLegend implements ILegend {
         let numberOfItems: number = dataPoints.length;
 
         let maxHorizontalSpaceUsed = 0;
-        let parentHeight = this.parentViewport.height;
+        const parentHeight = this.parentViewport.height;
 
         if (title) {
             totalSpaceOccupiedThusFar += spaceNeededByTitle;
@@ -902,10 +902,10 @@ export class SVGLegend implements ILegend {
         if (this.legendDataStartIndex > 0)
             totalSpaceOccupiedThusFar += SVGLegend.LegendArrowOffset;
 
-        let dataPointsLength = dataPoints.length;
+        const dataPointsLength = dataPoints.length;
         for (let i = 0; i < dataPointsLength; i++) {
-            let dp = dataPoints[i];
-            let textProperties = SVGLegend.getTextProperties(dp.label, this.data.fontSize, this.data.fontFamily);
+            const dp = dataPoints[i];
+            const textProperties = SVGLegend.getTextProperties(dp.label, this.data.fontSize, this.data.fontFamily);
 
             dp.glyphPosition = {
                 x: fixedHorizontalIconShift,
@@ -919,13 +919,13 @@ export class SVGLegend implements ILegend {
 
             // TODO: [PERF] Get rid of this extra measurement, and modify
             // getTailoredTextToReturnWidth + Text
-            let width = textMeasurementService.measureSvgTextWidth(textProperties);
+            const width = textMeasurementService.measureSvgTextWidth(textProperties);
             if (width > maxHorizontalSpaceUsed) {
                 maxHorizontalSpaceUsed = width;
             }
 
             if (width > maxHorizontalSpaceAvaliable) {
-                let text = textMeasurementService.getTailoredTextOrDefault(
+                const text = textMeasurementService.getTailoredTextOrDefault(
                     textProperties,
                     maxHorizontalSpaceAvaliable);
                 dp.label = text;
@@ -970,7 +970,7 @@ export class SVGLegend implements ILegend {
             .classed(SVGLegend.NavigationArrow.className, true)
         )
             .on("click", (event, d: NavigationArrow) => {
-                let pos = this.legendDataStartIndex;
+                const pos = this.legendDataStartIndex;
                 this.legendDataStartIndex = d.dataType === NavigationArrowType.Increase
                     ? pos + this.arrowPosWindow : pos - this.arrowPosWindow;
                 this.drawLegendInternal(this.data, this.parentViewport, false);
@@ -1014,6 +1014,7 @@ export class SVGLegend implements ILegend {
         }
     }
 
+    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     public reset(): void { }
 
     private static getTextProperties(
@@ -1030,7 +1031,7 @@ export class SVGLegend implements ILegend {
 
     private setTooltipToLegendItems(data: LegendData) {
         // we save the values to tooltip before cut
-        for (let dataPoint of data.dataPoints) {
+        for (const dataPoint of data.dataPoints) {
             dataPoint.tooltip = dataPoint.label;
         }
     }
