@@ -27,7 +27,6 @@ import powerbi from "powerbi-visuals-api";
 
 // powerbi.extensibility.utils.svg
 import  { shapesInterfaces, IRect, shapes } from "powerbi-visuals-utils-svgutils";
-import Rect = shapes.Rect;
 import IPoint = shapesInterfaces.IPoint;
 import IVector = shapesInterfaces.IVector;
 import ISize = shapesInterfaces.ISize;
@@ -75,9 +74,9 @@ export default class DataLabelManager {
     public hideCollidedLabels(viewport: powerbi.IViewport, data: any[], layout: any, addTransform: boolean = false, hideCollidedLabels: boolean = true): LabelEnabledDataPoint[] {
 
         // Split size into a grid
-        let arrangeGrid = new DataLabelArrangeGrid(viewport, data, layout);
-        let filteredData = [];
-        let transform: IVector = { x: 0, y: 0 };
+        const arrangeGrid = new DataLabelArrangeGrid(viewport, data, layout);
+        const filteredData = [];
+        const transform: IVector = { x: 0, y: 0 };
 
         if (addTransform) {
             transform.x = viewport.width / 2;
@@ -92,14 +91,14 @@ export default class DataLabelManager {
             }
 
             // Set default values where properties values are undefined
-            let info = this.getLabelInfo(data[i]);
+            const info = this.getLabelInfo(data[i]);
 
             info.anchorPoint = {
                 x: layout.labelLayout.x(data[i]) + transform.x,
                 y: layout.labelLayout.y(data[i]) + transform.y,
             };
 
-            let position: IRect = this.calculateContentPosition(info, info.contentPosition, data[i].size, info.anchorMargin);
+            const position: IRect = this.calculateContentPosition(info, info.contentPosition, data[i].size, info.anchorMargin);
 
             if (DataLabelManager.isValid(position) && (!this.hasCollisions(arrangeGrid, info, position, viewport) || !hideCollidedLabels)) {
                 data[i].labelX = position.left - transform.x;
@@ -121,7 +120,7 @@ export default class DataLabelManager {
      * @param source The label info.
      */
     public getLabelInfo(source: IDataLabelInfo): IDataLabelInfo {
-        let settings = this.defaultDataLabelSettings;
+        const settings = this.defaultDataLabelSettings;
 
         source.anchorMargin = source.anchorMargin !== undefined
             ? source.anchorMargin
@@ -164,7 +163,7 @@ export default class DataLabelManager {
     * (Private) Calculates element position using anchor point..
     */
     private calculateContentPositionFromPoint(anchorPoint: IPoint, contentPosition: ContentPositions, contentSize: ISize, offset: number): IRect {
-        let position: IPoint = { x: 0, y: 0 };
+        const position: IPoint = { x: 0, y: 0 };
 
         if (anchorPoint) {
             if (anchorPoint.x !== undefined && isFinite(anchorPoint.x)) {
@@ -371,11 +370,11 @@ export default class DataLabelManager {
 
         // Since we divide the height by 2 we add it back to the top of the view port so labels won't be cut off
         let intersection = { left: 0, top: position.height / 2, width: size.width, height: size.height };
-        intersection = Rect.inflate(intersection, { left: DataLabelManager.InflateAmount, top: 0, right: DataLabelManager.InflateAmount, bottom: 0 });
+        intersection = shapes.inflate(intersection, { left: DataLabelManager.InflateAmount, top: 0, right: DataLabelManager.InflateAmount, bottom: 0 });
 
-        intersection = Rect.intersect(intersection, position);
+        intersection = shapes.intersect(intersection, position);
 
-        if (Rect.isEmpty(intersection)) {
+        if (shapes.isEmpty(intersection)) {
             // Empty rectangle means there is a collision
             return true;
         }
@@ -395,6 +394,6 @@ export default class DataLabelManager {
     }
 
     public static isValid(rect: IRect): boolean {
-        return !Rect.isEmpty(rect) && (rect.width > 0 && rect.height > 0);
+        return !shapes.isEmpty(rect) && (rect.width > 0 && rect.height > 0);
     }
 }

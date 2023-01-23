@@ -28,7 +28,7 @@ import { Selection } from "d3-selection";
 
 // powerbi.extensibility.utils.interactivity
 import { LegendDataPoint } from  "../legendInterfaces";
-import { interactivityBaseService, interactivityUtils, interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
+import { interactivityBaseService, interactivityUtils } from "powerbi-visuals-utils-interactivityutils";
 import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 import ISelectionHandler = interactivityBaseService.ISelectionHandler;
 import IBehaviorOptions = interactivityBaseService.IBehaviorOptions;
@@ -44,9 +44,9 @@ export class LegendBehavior implements IInteractiveBehavior {
     protected legendIcons;
 
     public bindEvents(options: LegendBehaviorOptions, selectionHandler: ISelectionHandler): void {
-        let legendItems = options.legendItems;
+        const legendItems = options.legendItems;
         this.legendIcons = options.legendIcons;
-        let clearCatcher = options.clearCatcher;
+        const clearCatcher = options.clearCatcher;
 
         interactivityUtils.registerStandardSelectionHandler(legendItems, selectionHandler);
 

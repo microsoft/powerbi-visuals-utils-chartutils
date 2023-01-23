@@ -1,3 +1,9 @@
+## 3.0.0
+* Updated powerbi-visuals-utils
+* Fixed vulnerabilities
+* Migrated to Eslint
+* Migrated to playwright
+
 ## 2.6.0
 * Removed Jquery
 * D3.v6 code refactored

@@ -37,25 +37,25 @@ import {
 import { CartesianChartType } from "./labelUtils";
 
 export const DefaultLabelFontSizeInPt = 9;
-export let startingLabelOffset = 8;
-export let maxLabelOffset = 8;
+export const startingLabelOffset = 8;
+export const maxLabelOffset = 8;
 
 export const horizontalLabelBackgroundPadding = 4;
 export const verticalLabelBackgroundPadding = 2;
 
-let labelsClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("label");
+const labelsClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("label");
 
 function getLabelX(label: LabelOld) {
-    let isVertical = label.labelOrientation === LabelOrientation.Vertical;
-    let orientationOffset = isVertical ? label.boundingBox.width : (label.boundingBox.width / 2);
-    let backgroundOffset = label.hasBackground && isVertical ? horizontalLabelBackgroundPadding : 0;
+    const isVertical = label.labelOrientation === LabelOrientation.Vertical;
+    const orientationOffset = isVertical ? label.boundingBox.width : (label.boundingBox.width / 2);
+    const backgroundOffset = label.hasBackground && isVertical ? horizontalLabelBackgroundPadding : 0;
     return label.boundingBox.left + orientationOffset - backgroundOffset;
 }
 
 function getLabelY(label: LabelOld) {
-    let isVertical = label.labelOrientation === LabelOrientation.Vertical;
-    let orientationOffset = isVertical ? (label.boundingBox.height / 2) : label.boundingBox.height;
-    let backgroundOffset = label.hasBackground && !isVertical ? verticalLabelBackgroundPadding : 0;
+    const isVertical = label.labelOrientation === LabelOrientation.Vertical;
+    const orientationOffset = isVertical ? (label.boundingBox.height / 2) : label.boundingBox.height;
+    const backgroundOffset = label.hasBackground && !isVertical ? verticalLabelBackgroundPadding : 0;
     return label.boundingBox.top + orientationOffset - backgroundOffset;
 }
 
@@ -95,7 +95,7 @@ export function drawDefaultLabels(
         .interrupt()
         .text((label: LabelOld) => label.text)
         .attr("transform", (d: LabelOld) => {
-            let translate = "translate(" + getLabelX(d) + "," + getLabelY(d) + ")";
+            const translate = "translate(" + getLabelX(d) + "," + getLabelY(d) + ")";
             return (d.labelOrientation === LabelOrientation.Vertical) ? (translate + "rotate(-90)") : translate;
         })
         .attr("dy", dy)
@@ -129,9 +129,9 @@ export interface DataLabelLayoutOptions {
     attemptToMoveLabelsIntoViewport?: boolean;
 }
 
-export let dataLabelLayoutStartingOffset: number = 2;
-export let dataLabelLayoutOffsetIterationDelta: number = 6;
-export let dataLabelLayoutMaximumOffset: number = dataLabelLayoutStartingOffset + (2 * dataLabelLayoutOffsetIterationDelta);
+export const dataLabelLayoutStartingOffset: number = 2;
+export const dataLabelLayoutOffsetIterationDelta: number = 6;
+export const dataLabelLayoutMaximumOffset: number = dataLabelLayoutStartingOffset + (2 * dataLabelLayoutOffsetIterationDelta);
 
 export function getDataLabelLayoutOptions(chartType: CartesianChartType): DataLabelLayoutOptions {
     switch (chartType) {
@@ -156,8 +156,8 @@ export function getNumberOfLabelsToRender(viewportWidth: number, labelDensity: n
     if (labelDensity == null || labelDensity === 0) {
         return minimumLabelsToRender;
     }
-    let parsedAndNormalizedDensity = labelDensity / 100;
-    let maxNumberForViewport = Math.ceil(viewportWidth / estimatedLabelWidth);
+    const parsedAndNormalizedDensity = labelDensity / 100;
+    const maxNumberForViewport = Math.ceil(viewportWidth / estimatedLabelWidth);
     if (parsedAndNormalizedDensity === 1) {
         return maxNumberForViewport;
     }

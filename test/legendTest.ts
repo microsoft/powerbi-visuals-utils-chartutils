@@ -948,8 +948,6 @@ describe("legend", () => {
             });
 
             it("legend dom validation three legend items count validation", (done) => {
-                // debugger;
-                // console.log("LOGLOGO")
                 legend.drawLegend({ dataPoints: legendData }, viewport);
 
                 setTimeout(() => {
