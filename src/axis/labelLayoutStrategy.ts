@@ -26,11 +26,11 @@ export function willLabelsFit(
     textMeasurer: ITextAsSVGMeasurer,
     properties: TextProperties): boolean {
 
-    let labels = axisProperties.values;
+    const labels = axisProperties.values;
     if (labels.length === 0)
         return false;
 
-    let labelMaxWidth = axisProperties.xLabelMaxWidth !== undefined
+    const labelMaxWidth = axisProperties.xLabelMaxWidth !== undefined
         ? axisProperties.xLabelMaxWidth
         : availableWidth / labels.length;
 
@@ -49,19 +49,19 @@ export function willLabelsWordBreak(
     textTruncator: (properties: TextProperties, maxWidth: number) => string,
     properties: TextProperties) {
 
-    let labels = axisProperties.values;
-    let labelMaxWidth = axisProperties.xLabelMaxWidth !== undefined
+    const labels = axisProperties.values;
+    const labelMaxWidth = axisProperties.xLabelMaxWidth !== undefined
         ? axisProperties.xLabelMaxWidth
         : availableWidth / labels.length;
-    let maxRotatedLength = margin.bottom / DefaultRotation.sine;
-    let height = textHeightMeasurer(properties);
-    let maxNumLines = Math.max(1, Math.floor(margin.bottom / height));
+    const maxRotatedLength = margin.bottom / DefaultRotation.sine;
+    const height = textHeightMeasurer(properties);
+    const maxNumLines = Math.max(1, Math.floor(margin.bottom / height));
 
     if (labels.length === 0)
         return false;
 
     // If no break character and exceeds max width, word breaking will not work, return false
-    let mustRotate = labels.some(label => {
+    const mustRotate = labels.some(label => {
         // Detect must rotate and return immediately
         properties.text = label;
         return !wordBreaker.hasBreakers(label) && textWidthMeasurer(properties) > labelMaxWidth;
@@ -71,9 +71,9 @@ export function willLabelsWordBreak(
         return false;
     }
 
-    let moreWordBreakChars = labels.filter((label, index: number) => {
+    const moreWordBreakChars = labels.filter((label, index: number) => {
         // ...otherwise compare rotation versus word breaking
-        let allowedLengthProjectedOnXAxis =
+        const allowedLengthProjectedOnXAxis =
             // Left margin is the width of Y axis.
             margin.left
             // There could be a padding before the first category.
@@ -83,11 +83,11 @@ export function willLabelsWordBreak(
             // Subtracting the left padding space from the allowed length
             - LeftPadding;
 
-        let allowedLength = allowedLengthProjectedOnXAxis / DefaultRotation.cosine;
-        let rotatedLength = Math.min(allowedLength, maxRotatedLength);
+        const allowedLength = allowedLengthProjectedOnXAxis / DefaultRotation.cosine;
+        const rotatedLength = Math.min(allowedLength, maxRotatedLength);
 
         // Which shows more characters? Rotated or maxNumLines truncated to labelMaxWidth?
-        let wordBreakChars = wordBreaker.splitByWidth(
+        const wordBreakChars = wordBreaker.splitByWidth(
             label,
             properties,
             textWidthMeasurer,
@@ -96,7 +96,7 @@ export function willLabelsWordBreak(
             textTruncator).join(" ");
 
         properties.text = label;
-        let rotateChars = textTruncator(properties, rotatedLength);
+        const rotateChars = textTruncator(properties, rotatedLength);
 
         // prefer word break (>=) as it takes up less plot area
         return textUtil.removeEllipses(wordBreakChars).length >= textUtil.removeEllipses(rotateChars).length;
@@ -149,7 +149,7 @@ export function rotate(
 
     let rotatedLength;
     let defaultRotation: any;
-    let tickSize = axisProperties.axis.tickSize();
+    const tickSize = axisProperties.axis.tickSize();
 
     if (scrollbarVisible) {
         if (!tickSize) // zero or undefined
@@ -166,11 +166,11 @@ export function rotate(
     }
 
     labelSelection.each(function (datum) {
-        let axisLabel = select(this);
+        const axisLabel = select(this);
         let labelText = axisLabel.text();
         textProperties.text = labelText;
         if (needRotate) {
-            let textContentIndex = axisProperties.values.indexOf(this.textContent);
+            const textContentIndex = axisProperties.values.indexOf(this.textContent);
             let allowedLengthProjectedOnXAxis =
                 // Left margin is the width of Y axis.
                 margin.left
@@ -184,7 +184,7 @@ export function rotate(
                 allowedLengthProjectedOnXAxis -= LeftPadding;
 
             // Truncate if scrollbar is visible or rotatedLength exceeds allowedLength
-            let allowedLength = allowedLengthProjectedOnXAxis / defaultRotation.cosine;
+            const allowedLength = allowedLengthProjectedOnXAxis / defaultRotation.cosine;
             if (scrollbarVisible || needEllipsis || (allowedLength < rotatedLength)) {
                 labelText = textTruncator(textProperties, Math.min(allowedLength, rotatedLength));
                 axisLabel.text(labelText);
@@ -197,8 +197,8 @@ export function rotate(
                 .attr("dy", defaultRotation.dy)
                 .attr("transform", defaultRotation.transform);
         } else {
-            let maxLabelWidth = !arrayIsEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
-            let newLabelText = textTruncator(textProperties, maxLabelWidth);
+            const maxLabelWidth = !arrayIsEmpty(axisProperties.xLabelMaxWidths) ? axisProperties.xLabelMaxWidths[datum] : axisProperties.xLabelMaxWidth;
+            const newLabelText = textTruncator(textProperties, maxLabelWidth);
             if (newLabelText !== labelText)
                 axisLabel.text(newLabelText);
             // TODO don't do these rotations if we already did them
@@ -215,10 +215,10 @@ export function wordBreak(
     axisProperties: IAxisProperties,
     maxHeight: number) {
 
-    let allowedLength = axisProperties.xLabelMaxWidth;
+    const allowedLength = axisProperties.xLabelMaxWidth;
 
     text.each(function () {
-        let node = select(this);
+        const node = select(this);
 
         // Reset style of text node
         node
@@ -237,7 +237,7 @@ export function clip(text: Selection<any, any, any, any>, availableWidth: number
     }
 
     text.each(function () {
-        let text = select(this);
+        const text = select(this);
         svgEllipsis(text.node() as any, availableWidth);
     });
 }

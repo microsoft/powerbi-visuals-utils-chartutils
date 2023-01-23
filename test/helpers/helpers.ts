@@ -29,12 +29,16 @@ import { parseColorString , RgbColor} from "powerbi-visuals-utils-colorutils";
 export function assertColorsMatch(actual: string, expected: string, invert: boolean = false): boolean {
     const rgbActual: RgbColor = parseColorString(actual),
         rgbExpected: RgbColor = parseColorString(expected);
-
-    if (invert) {
-        return expect(rgbActual).not.toEqual(rgbExpected);
+    try {
+        if (invert) {
+            expect(rgbActual).not.toEqual(rgbExpected);
+        } else {
+            expect(rgbActual).toEqual(rgbExpected);
+        }
+        return true
+    } catch (error) {
+        return false
     }
-
-    return expect(rgbActual).toEqual(rgbExpected);
 }
 
 /**
@@ -49,6 +53,6 @@ export function isInRange(val: number, min: number, max: number): Boolean {
 }
 
 export function findElementTitle(element: HTMLElement): string {
-    return element.querySelector("title").textContent;
+    return element.querySelector("title")?.textContent ?? "";
 }
 

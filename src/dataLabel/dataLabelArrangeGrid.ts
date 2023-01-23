@@ -25,9 +25,8 @@
 */
 
 // powerbi.extensibility.utils.svg.shapes
-import { shapesInterfaces, IRect, manipulation, shapes } from "powerbi-visuals-utils-svgutils";
+import { shapesInterfaces, IRect, shapes } from "powerbi-visuals-utils-svgutils";
 
-import Rect = shapes.Rect;
 import ISize = shapesInterfaces.ISize;
 import IThickness = shapesInterfaces.IThickness;
 
@@ -66,7 +65,7 @@ export default class DataLabelArrangeGrid {
             this.rowCount = this.colCount = 0;
         }
 
-        let baseProperties: TextProperties = {
+        const baseProperties: TextProperties = {
             fontFamily: LabelTextProperties.fontFamily,
             fontSize: LabelTextProperties.fontSize,
             fontWeight: LabelTextProperties.fontWeight,
@@ -75,12 +74,12 @@ export default class DataLabelArrangeGrid {
         // sets the cell size to be twice of the Max with and Max height of the elements
         this.cellSize = { width: 0, height: 0 };
         for (let i = 0, len = elements.length; i < len; i++) {
-            let child = elements[i];
+            const child = elements[i];
 
             // Fill label field
             child.labeltext = layout.labelText(child);
 
-            let properties: TextProperties = Prototype.inherit(baseProperties);
+            const properties: TextProperties = Prototype.inherit(baseProperties);
             properties.text = child.labeltext;
             properties.fontSize = child.data
                 ? child.data.labelFontSize
@@ -93,7 +92,7 @@ export default class DataLabelArrangeGrid {
                 height: textMeasurementService.estimateSvgTextHeight(properties),
             };
 
-            let w = child.size.width * 2,
+            const w = child.size.width * 2,
                 h = child.size.height * 2;
 
             if (w > this.cellSize.width) {
@@ -128,7 +127,7 @@ export default class DataLabelArrangeGrid {
         this.cellSize.width = size.width / this.colCount;
         this.cellSize.height = size.height / this.rowCount;
 
-        let grid = this.grid;
+        const grid = this.grid;
 
         for (let x = 0; x < this.colCount; x++) {
             grid[x] = [];
@@ -145,7 +144,7 @@ export default class DataLabelArrangeGrid {
      * @param rect The label element position rectangle.
      */
     public add(element: IDataLabelInfo, rect: IRect) {
-        let indexRect = this.getGridIndexRect(rect),
+        const indexRect = this.getGridIndexRect(rect),
             grid = this.grid;
 
         for (let x = indexRect.left; x < indexRect.right; x++) {
@@ -161,14 +160,14 @@ export default class DataLabelArrangeGrid {
      * @return True if conflict is detected.
      */
     public hasConflict(rect: IRect): boolean {
-        let indexRect = this.getGridIndexRect(rect),
+        const indexRect = this.getGridIndexRect(rect),
             grid = this.grid,
-            isIntersecting = Rect.isIntersecting;
+            isIntersecting = shapes.isIntersecting;
 
         for (let x = indexRect.left; x < indexRect.right; x++) {
             for (let y = indexRect.top; y < indexRect.bottom; y++) {
                 for (let z = 0; z < grid[x][y].length; z++) {
-                    let item = grid[x][y][z];
+                    const item = grid[x][y][z];
                     if (isIntersecting(item.rect, rect)) {
                         return true;
                     }
@@ -197,7 +196,7 @@ export default class DataLabelArrangeGrid {
      * @return grid index as a thickness object.
      */
     private getGridIndexRect(rect: IRect): IThickness {
-        let restrict = (n, min, max) => Math.min(Math.max(n, min), max);
+        const restrict = (n, min, max) => Math.min(Math.max(n, min), max);
 
         return {
             left: restrict(Math.floor(rect.left / this.cellSize.width), 0, this.colCount),

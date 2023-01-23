@@ -435,9 +435,9 @@ export class LabelArrangeGrid {
         this.viewport = viewport;
         let maxLabelWidth = 0;
         let maxLabelHeight = 0;
-        for (let labelDataPointsGroup of labelDataPointGroups) {
-            for (let labelDataPoint of labelDataPointsGroup.labelDataPoints) {
-                let dataLabelSize: shapesInterfaces.ISize = labelDataPoint.labelSize;
+        for (const labelDataPointsGroup of labelDataPointGroups) {
+            for (const labelDataPoint of labelDataPointsGroup.labelDataPoints) {
+                const dataLabelSize: shapesInterfaces.ISize = labelDataPoint.labelSize;
                 if (dataLabelSize.width > maxLabelWidth) {
                     maxLabelWidth = dataLabelSize.width;
                 }
@@ -453,10 +453,10 @@ export class LabelArrangeGrid {
         if (maxLabelHeight === 0) {
             maxLabelHeight = viewport.height;
         }
-        let cellSize = this.cellSize = { width: maxLabelWidth * LabelArrangeGrid.cellSizeMultiplier, height: maxLabelHeight * LabelArrangeGrid.cellSizeMultiplier };
+        const cellSize = this.cellSize = { width: maxLabelWidth * LabelArrangeGrid.cellSizeMultiplier, height: maxLabelHeight * LabelArrangeGrid.cellSizeMultiplier };
         this.columnCount = LabelArrangeGrid.getCellCount(cellSize.width, viewport.width, 1, 100);
         this.rowCount = LabelArrangeGrid.getCellCount(cellSize.height, viewport.height, 1, 100);
-        let grid: IRect[][][] = [];
+        const grid: IRect[][][] = [];
         for (let i = 0, ilen = this.columnCount; i < ilen; i++) {
             grid[i] = [];
             for (let j = 0, jlen = this.rowCount; j < jlen; j++) {
@@ -470,7 +470,7 @@ export class LabelArrangeGrid {
      * Add a rectangle to check collision against
      */
     public add(rect: IRect): void {
-        let containingIndexRect = this.getContainingGridSubsection(rect);
+        const containingIndexRect = this.getContainingGridSubsection(rect);
 
         for (let x = containingIndexRect.xMin; x < containingIndexRect.xMax; x++) {
             for (let y = containingIndexRect.yMin; y < containingIndexRect.yMax; y++) {
@@ -516,12 +516,12 @@ export class LabelArrangeGrid {
      * Returns true if there is a collision.
      */
     private hasCollision(rect: IRect): boolean {
-        let containingIndexRect = this.getContainingGridSubsection(rect);
-        let grid = this.grid;
-        let isIntersecting = shapes.Rect.isIntersecting;
+        const containingIndexRect = this.getContainingGridSubsection(rect);
+        const grid = this.grid;
+        const isIntersecting = shapes.isIntersecting;
         for (let x = containingIndexRect.xMin; x < containingIndexRect.xMax; x++) {
             for (let y = containingIndexRect.yMin; y < containingIndexRect.yMax; y++) {
-                for (let currentGridRect of grid[x][y]) {
+                for (const currentGridRect of grid[x][y]) {
                     if (isIntersecting(currentGridRect, rect)) {
                         return true;
                     }
@@ -560,8 +560,8 @@ export class LabelArrangeGrid {
      * null if it couldn't fit regardless.
      */
     private tryMoveInsideViewport(rect: IRect): IRect {
-        let result: IRect = shapes.Rect.clone(rect);
-        let viewport = this.viewport;
+        const result: IRect = shapes.clone(rect);
+        const viewport = this.viewport;
 
         // Return null if it's too big to fit regardless of positioning
         if (rect.width > viewport.width || rect.height > viewport.height) {
@@ -701,12 +701,12 @@ export class LabelLayout {
         }
 
         // Clear data labels for a new layout
-        let labelDataPointsGroupsLayoutInfo: LabelDataPointGroup<LabelDataPointLayoutInfo[]>[] = [];
-        for (let labelDataPointsGroup of labelDataPointsGroups) {
-            let labelDataPointsLayoutInfo: LabelDataPointLayoutInfo[] = labelDataPointsGroup.labelDataPoints.map((labelDataPoint) => ({ labelDataPoint: labelDataPoint }));
-            let labelGroupOrientation = labelDataPointsGroup.labelOrientation;
-            for (let labelDataPointLayoutInfo of labelDataPointsLayoutInfo) {
-                let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+        const labelDataPointsGroupsLayoutInfo: LabelDataPointGroup<LabelDataPointLayoutInfo[]>[] = [];
+        for (const labelDataPointsGroup of labelDataPointsGroups) {
+            const labelDataPointsLayoutInfo: LabelDataPointLayoutInfo[] = labelDataPointsGroup.labelDataPoints.map((labelDataPoint) => ({ labelDataPoint: labelDataPoint }));
+            const labelGroupOrientation = labelDataPointsGroup.labelOrientation;
+            for (const labelDataPointLayoutInfo of labelDataPointsLayoutInfo) {
+                const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
                 labelDataPointLayoutInfo.hasBeenRendered = false;
                 let textWidth = labelDataPoint.textSize.width;
                 let textHeight = labelDataPoint.textSize.height;
@@ -735,20 +735,20 @@ export class LabelLayout {
         }
 
         let resultingDataLabels: Label[] = [];
-        let grid = new LabelArrangeGrid(labelDataPointsGroupsLayoutInfo, viewport);
+        const grid = new LabelArrangeGrid(labelDataPointsGroupsLayoutInfo, viewport);
 
         const hasMultipleDataSeries = labelDataPointsGroupsLayoutInfo.length > 1;
 
         // Iterates on every series
-        for (let labelDataPointsGroupLayoutInfo of labelDataPointsGroupsLayoutInfo) {
+        for (const labelDataPointsGroupLayoutInfo of labelDataPointsGroupsLayoutInfo) {
             let maxLabelsToRender = labelDataPointsGroupLayoutInfo.maxNumberOfLabels;
             // NOTE: we create a copy and modify the copy to keep track of preferred vs. non-preferred labels.
-            let labelDataPointsLayoutInfo = [...labelDataPointsGroupLayoutInfo.labelDataPoints];
-            let preferredLabels: LabelDataPointLayoutInfo[] = [];
-            let labelGroupOrientation = labelDataPointsGroupLayoutInfo.labelOrientation;
+            const labelDataPointsLayoutInfo = [...labelDataPointsGroupLayoutInfo.labelDataPoints];
+            const preferredLabels: LabelDataPointLayoutInfo[] = [];
+            const labelGroupOrientation = labelDataPointsGroupLayoutInfo.labelOrientation;
             // Exclude preferred labels
             for (let j = labelDataPointsLayoutInfo.length - 1, localMax = maxLabelsToRender; j >= 0 && localMax > 0; j--) {
-                let labelDataPoint = labelDataPointsLayoutInfo[j].labelDataPoint;
+                const labelDataPoint = labelDataPointsLayoutInfo[j].labelDataPoint;
                 if (labelDataPoint.isPreferred) {
                     preferredLabels.unshift(labelDataPointsLayoutInfo.splice(j, 1)[0]);
                     localMax--;
@@ -757,7 +757,7 @@ export class LabelLayout {
 
             // First iterate all the preferred labels
             if (preferredLabels.length > 0) {
-                let positionedLabels = this.positionDataLabels(preferredLabels, viewport, grid, maxLabelsToRender, labelGroupOrientation, hasMultipleDataSeries);
+                const positionedLabels = this.positionDataLabels(preferredLabels, viewport, grid, maxLabelsToRender, labelGroupOrientation, hasMultipleDataSeries);
                 maxLabelsToRender -= positionedLabels.length;
                 resultingDataLabels = resultingDataLabels.concat(positionedLabels);
             }
@@ -765,13 +765,13 @@ export class LabelLayout {
             // While there are invisible not preferred labels and label distance is less than the max
             // allowed distance
             if (labelDataPointsLayoutInfo.length > 0) {
-                let labels = this.positionDataLabels(labelDataPointsLayoutInfo, viewport, grid, maxLabelsToRender, labelGroupOrientation, hasMultipleDataSeries);
+                const labels = this.positionDataLabels(labelDataPointsLayoutInfo, viewport, grid, maxLabelsToRender, labelGroupOrientation, hasMultipleDataSeries);
                 resultingDataLabels = resultingDataLabels.concat(labels);
             }
             // TODO: Add reference lines if we want them
         }
 
-        let filtedResultingDataLabels = resultingDataLabels.filter((d: Label) => d.isVisible);
+        const filtedResultingDataLabels = resultingDataLabels.filter((d: Label) => d.isVisible);
 
         return this.isOldLabelDataPointGroups(arg0) ? LabelUtils.downgradeToOldLabels(filtedResultingDataLabels) : filtedResultingDataLabels;
     }
@@ -784,8 +784,8 @@ export class LabelLayout {
         labelOrientation: LabelOrientation,
         hasMultipleDataSeries: boolean
     ): Label[] {
-        let resultingDataLabels: Label[] = [];
-        let offsetDelta = this.offsetIterationDelta;
+        const resultingDataLabels: Label[] = [];
+        const offsetDelta = this.offsetIterationDelta;
         let currentOffset = this.startingOffset;
         let currentCenteredOffset = 0;
         let drawLeaderLinesOnIteration: boolean;
@@ -793,8 +793,8 @@ export class LabelLayout {
 
         while (currentOffset <= this.maximumOffset && labelsRendered < maxLabelsToRender) {
             drawLeaderLinesOnIteration = this.allowLeaderLines && currentOffset > this.startingOffset;
-            for (let labelDataPointLayoutInfo of labelDataPointsLayoutInfo) {
-                let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+            for (const labelDataPointLayoutInfo of labelDataPointsLayoutInfo) {
+                const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
                 if (labelDataPointLayoutInfo.hasBeenRendered) {
                     continue;
                 }
@@ -823,8 +823,8 @@ export class LabelLayout {
 
     private tryPositionForRectPositions(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, grid: LabelArrangeGrid, currentLabelOffset: number, currentCenteredLabelOffset: number, labelOrientation: LabelOrientation, hasMultipleDataSeries: boolean): Label {
         // Function declared and reused to reduce code duplication
-        let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
-        let tryPosition = (position: RectLabelPosition, adjustForViewport: boolean) => {
+        const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+        const tryPosition = (position: RectLabelPosition, adjustForViewport: boolean) => {
             const isInsidePosition = !!(position & RectLabelPosition.InsideAll);
             const isOverflowPosition = !!(position & RectLabelPosition.OverflowAll);
             const canFitWithinParent = DataLabelRectPositioner.canFitWithinParent(labelDataPointLayoutInfo, this.horizontalPadding, this.verticalPadding);
@@ -833,7 +833,7 @@ export class LabelLayout {
                 return;
             }
 
-            let resultingBoundingBox = LabelLayout.tryPositionRect(grid, position, labelDataPointLayoutInfo, currentLabelOffset, currentCenteredLabelOffset, adjustForViewport);
+            const resultingBoundingBox = LabelLayout.tryPositionRect(grid, position, labelDataPointLayoutInfo, currentLabelOffset, currentCenteredLabelOffset, adjustForViewport);
             if (resultingBoundingBox) {
                 if (isInsidePosition && !DataLabelRectPositioner.isLabelWithinParent(resultingBoundingBox, labelDataPoint, this.horizontalPadding, this.verticalPadding)) {
                     return;
@@ -861,15 +861,15 @@ export class LabelLayout {
         };
 
         // Iterate over all positions that are valid for the data point
-        for (let position of (<LabelParentRect>labelDataPoint.parentShape).validPositions) {
-            let label = tryPosition(position, false /* adjustForViewport */);
+        for (const position of (<LabelParentRect>labelDataPoint.parentShape).validPositions) {
+            const label = tryPosition(position, false /* adjustForViewport */);
             if (label)
                 return label;
         }
         // If no position has been found and the option is enabled, try any outside positions while moving the label inside the viewport
         if (this.attemptToMoveLabelsIntoViewport) {
-            for (let position of (<LabelParentRect>labelDataPoint.parentShape).validPositions) {
-                let label = tryPosition(position, true /* adjustForViewport */);
+            for (const position of (<LabelParentRect>labelDataPoint.parentShape).validPositions) {
+                const label = tryPosition(position, true /* adjustForViewport */);
                 if (label)
                     return label;
             }
@@ -895,7 +895,7 @@ export class LabelLayout {
             offsetForPosition = centerOffset;
         }
         let labelRect = DataLabelRectPositioner.getLabelRect(labelDataPointLayoutInfo, position, offsetForPosition);
-        let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+        const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
         if (!isCenterPosition || (<LabelParentRect>labelDataPoint.parentShape).orientation === NewRectOrientation.None) {
             if (!grid.hasConflict(labelRect)) {
                 return labelRect;
@@ -920,9 +920,9 @@ export class LabelLayout {
 
     private tryPositionForPointPositions(labelDataPointLayoutInfo: LabelDataPointLayoutInfo, grid: LabelArrangeGrid, currentLabelOffset: number, drawLeaderLines: boolean, labelOrientation: LabelOrientation): Label {
         // Function declared and reused to reduce code duplication
-        let labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
-        let tryPosition = (position: NewPointLabelPosition, parentShape: LabelParentPoint, adjustForViewport: boolean) => {
-            let resultingBoundingBox = LabelLayout.tryPositionPoint(grid, position, labelDataPointLayoutInfo, currentLabelOffset, adjustForViewport);
+        const labelDataPoint = labelDataPointLayoutInfo.labelDataPoint;
+        const tryPosition = (position: NewPointLabelPosition, parentShape: LabelParentPoint, adjustForViewport: boolean) => {
+            const resultingBoundingBox = LabelLayout.tryPositionPoint(grid, position, labelDataPointLayoutInfo, currentLabelOffset, adjustForViewport);
             if (resultingBoundingBox) {
                 grid.add(resultingBoundingBox);
                 labelDataPointLayoutInfo.hasBeenRendered = true;
@@ -949,16 +949,16 @@ export class LabelLayout {
         };
 
         // Iterate over all positions that are valid for the data point
-        let parentShape = (<LabelParentPoint>labelDataPoint.parentShape);
-        let validPositions = parentShape.validPositions;
-        for (let position of validPositions) {
-            let label = tryPosition(position, parentShape, false /* adjustForViewport */);
+        const parentShape = (<LabelParentPoint>labelDataPoint.parentShape);
+        const validPositions = parentShape.validPositions;
+        for (const position of validPositions) {
+            const label = tryPosition(position, parentShape, false /* adjustForViewport */);
             if (label)
                 return label;
         }
         // Attempt to position at the most preferred position by simply moving it inside the viewport
         if (this.attemptToMoveLabelsIntoViewport && validPositions && validPositions.length) {
-            let label = tryPosition(validPositions[0], parentShape, true /* adjustForViewport */);
+            const label = tryPosition(validPositions[0], parentShape, true /* adjustForViewport */);
             if (label)
                 return label;
         }
@@ -966,7 +966,7 @@ export class LabelLayout {
     }
 
     private static tryPositionPoint(grid: LabelArrangeGrid, position: NewPointLabelPosition, labelDataPointLayoutInfo: LabelDataPointLayoutInfo, offset: number, adjustForViewport: boolean): IRect {
-        let labelRect = DataLabelPointPositioner.getLabelRect(labelDataPointLayoutInfo.labelSize, <LabelParentPoint>labelDataPointLayoutInfo.labelDataPoint.parentShape, position, offset);
+        const labelRect = DataLabelPointPositioner.getLabelRect(labelDataPointLayoutInfo.labelSize, <LabelParentPoint>labelDataPointLayoutInfo.labelDataPoint.parentShape, position, offset);
 
         if (!grid.hasConflict(labelRect)) {
             return labelRect;
@@ -979,19 +979,19 @@ export class LabelLayout {
     }
 
     private isOldLabelDataPoint(labelDataPoint: LabelDataPoint | LabelDataPointOld): labelDataPoint is LabelDataPointOld {
-        let newLabelDataPoint = <LabelDataPoint>labelDataPoint;
+        const newLabelDataPoint = <LabelDataPoint>labelDataPoint;
         return !newLabelDataPoint.fontProperties;
     }
 
     private isOldLabelDataPointGroups(labelDataPointGroups: LabelDataPointGroup<LabelDataPoint[]>[] | LabelDataPointGroup<LabelDataPointOld[]>[]): labelDataPointGroups is LabelDataPointGroup<LabelDataPointOld[]>[] {
-        let newLabelDataPointGroups = <LabelDataPointGroup<LabelDataPoint[]>[]>labelDataPointGroups;
+        const newLabelDataPointGroups = <LabelDataPointGroup<LabelDataPoint[]>[]>labelDataPointGroups;
         if (newLabelDataPointGroups.length !== 0) {
-            let labelDataPointGroup = newLabelDataPointGroups.filter((labelDataPointGroup) => {
+            const labelDataPointGroup = newLabelDataPointGroups.filter((labelDataPointGroup) => {
                 return labelDataPointGroup.labelDataPoints && labelDataPointGroup.labelDataPoints.length;
             })[0];
 
             if (labelDataPointGroup) {
-                let labelDataPoint = labelDataPointGroup.labelDataPoints[0];
+                const labelDataPoint = labelDataPointGroup.labelDataPoints[0];
                 return this.isOldLabelDataPoint(labelDataPoint);
             }
         }
@@ -999,10 +999,9 @@ export class LabelLayout {
     }
 
     public upgradeToNewLabelDataPointsGroups(labelDataPointsGroups: LabelDataPointGroup<LabelDataPointOld[]>[]): LabelDataPointGroup<LabelDataPoint[]>[] {
-        let newLabelDataPointsGroups: LabelDataPointGroup<LabelDataPoint[]>[] = [];
-        for (let labelDataPointsGroup of labelDataPointsGroups) {
-            let newLabelDataPointsGroup: LabelDataPointGroup<LabelDataPoint[]>;
-            newLabelDataPointsGroup = {
+        const newLabelDataPointsGroups: LabelDataPointGroup<LabelDataPoint[]>[] = [];
+        for (const labelDataPointsGroup of labelDataPointsGroups) {
+            const newLabelDataPointsGroup = {
                 labelOrientation: labelDataPointsGroup.labelOrientation,
                 maxNumberOfLabels: labelDataPointsGroup.maxNumberOfLabels,
                 labelDataPoints: []

@@ -104,15 +104,15 @@ export const DefaultFontSizeInPt = 9;
 export const horizontalLabelBackgroundPadding = 4;
 export const verticalLabelBackgroundPadding = 2;
 
-export let labelGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelGraphicsContext");
-export let labelBackgroundGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelBackgroundGraphicsContext");
+export const labelGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelGraphicsContext");
+export const labelBackgroundGraphicsContextClass: CssConstants.ClassAndSelector = CssConstants.createClassAndSelector("labelBackgroundGraphicsContext");
 
 export function downgradeToOldLabels(labels: Label[]): LabelOld[] {
     if (!labels) return;
     return labels.map((label) => {
-        let inheritedLabel: Label = { ...label };
+        const inheritedLabel: Label = { ...label };
         inheritedLabel.fontProperties = null;
-        let oldLabel: LabelOld = <any>inheritedLabel;
+        const oldLabel: LabelOld = <any>inheritedLabel;
         oldLabel.fill = label.fontProperties ? label.fontProperties.color : undefined;
         oldLabel.fontSize = (label.fontProperties && label.fontProperties.size) ? label.fontProperties.size.pt : undefined;
         oldLabel.fontFamily = label.fontProperties ? label.fontProperties.family : undefined;
