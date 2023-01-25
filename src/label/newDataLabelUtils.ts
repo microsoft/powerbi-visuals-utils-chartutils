@@ -25,6 +25,7 @@
  */
 
 import { Selection } from "d3-selection";
+import { interrupt } from "d3-transition";
 
 import { pixelConverter } from "powerbi-visuals-utils-typeutils";
 import { CssConstants } from "powerbi-visuals-utils-svgutils";
@@ -91,8 +92,9 @@ export function drawDefaultLabels(
         .classed(labelsClass.className, true)
         .merge(labels);
 
+    interrupt(mergedLabels.node())
+
     mergedLabels
-        .interrupt()
         .text((label: LabelOld) => label.text)
         .attr("transform", (d: LabelOld) => {
             const translate = "translate(" + getLabelX(d) + "," + getLabelY(d) + ")";
