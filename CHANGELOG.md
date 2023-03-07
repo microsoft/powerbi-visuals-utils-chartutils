@@ -1,3 +1,7 @@
+## 6.0.0
+* Packages update
+* Vulnerabilities fixes
+
 ## 3.0.0
 * Updated powerbi-visuals-utils
 * Fixed vulnerabilities
