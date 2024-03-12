@@ -1,3 +1,6 @@
+## 6.0.3
+* Fixed legend title bug
+
 ## 6.0.2
 * Fixed vulnerabilities
 * Packages update

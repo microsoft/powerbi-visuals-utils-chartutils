@@ -489,6 +489,12 @@ export class SVGLegend implements ILegend {
             width = textMeasurementService.measureSvgTextWidth(textProperties);
 
             if (isHorizontal) {
+                const maxTitleWidth = this.parentViewport.width * SVGLegend.LegendMaxWidthFactor - SVGLegend.TitlePadding;
+                text = textMeasurementService.getTailoredTextOrDefault(textProperties, maxTitleWidth);
+
+                if (width > maxTitleWidth){
+                    width = maxTitleWidth;
+                }
                 width += SVGLegend.TitlePadding;
             } else {
                 text = textMeasurementService.getTailoredTextOrDefault(textProperties, this.viewport.width);
