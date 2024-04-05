@@ -94,7 +94,7 @@ describe("legend", () => {
 
         beforeEach(() => {
             element = testDom("500", "500");
-            hostServices = createVisualHost();
+            hostServices = createVisualHost({});
 
             interactivityService = createInteractivityService(hostServices);
             legend = createLegend(element, false, interactivityService, true);
@@ -928,7 +928,7 @@ describe("legend", () => {
 
         beforeEach(() => {
             element = testDom("500", "500");
-            interactivityService = createInteractivityService(createVisualHost());
+            interactivityService = createInteractivityService(createVisualHost({}));
             legend = createLegend(element, true, interactivityService);
         });
 
@@ -1127,7 +1127,7 @@ describe("legend", () => {
 
         beforeEach(() => {
             element = testDom("500", "500");
-            interactivityService = createInteractivityService(createVisualHost());
+            interactivityService = createInteractivityService(createVisualHost({}));
 
             legend = createLegend(element, false, interactivityService);
         });
