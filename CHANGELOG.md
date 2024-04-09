@@ -1,3 +1,6 @@
+## 6.0.4
+* Updated powerbi-visuals-api to 5.9.0 and other utils
+
 ## 6.0.3
 * Fixed legend title bug
 
