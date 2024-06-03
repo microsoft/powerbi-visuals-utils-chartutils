@@ -168,7 +168,7 @@ export class SVGLegend implements ILegend {
 
         this.group = this.svg
             .append("g")
-            .attr("id", "legendGroup");
+            .classed("legendGroup", true);
 
         this.interactiveBehavior = interactiveBehavior ? interactiveBehavior : new LegendBehavior();
         this.interactivityService = interactivityService;

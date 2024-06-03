@@ -322,7 +322,7 @@ describe("legend", () => {
                 let behavior = new MockOpacityBehavior();
                 const svg = select(element.querySelector("div#jasmine-fixtures svg"));
                 const clearCatcher = appendClearCatcher(svg);
-                const itemsSelection = svg.select("#legendGroup").selectAll(".legendItem");
+                const itemsSelection = svg.select(".legendGroup").selectAll(".legendItem");
 
                 let behaviorOptions: LegendBehaviorOptions = {
                     legendItems: itemsSelection,
