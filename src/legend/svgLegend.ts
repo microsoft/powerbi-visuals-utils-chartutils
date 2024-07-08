@@ -39,12 +39,6 @@ import {
 } from "powerbi-visuals-utils-svgutils";
 
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
-import { LegendBehavior, LegendBehaviorOptions } from "./behavior/legendBehavior";
-import {
-    interactivityBaseService
-} from "powerbi-visuals-utils-interactivityutils";
-import IInteractivityService = interactivityBaseService.IInteractivityService;
-import IInteractiveBehavior = interactivityBaseService.IInteractiveBehavior;
 
 import * as Markers from "./markers";
 
@@ -62,10 +56,6 @@ import TextProperties = interfaces.TextProperties;
 // powerbi.extensibility.utils.svg
 import ClassAndSelector = CssConstants.ClassAndSelector;
 import createClassAndSelector = CssConstants.createClassAndSelector;
-
-// powerbi.extensibility.utils.interactivity
-import appendClearCatcher = interactivityBaseService.appendClearCatcher;
-import dataHasSelection = interactivityBaseService.dataHasSelection;
 
 /* eslint-disable no-case-declarations */
 
@@ -110,10 +100,7 @@ export class SVGLegend implements ILegend {
     private parentViewport: powerbi.IViewport;
     private svg: Selection<any, any, any, any>;
     private group: Selection<any, any, any, any>;
-    private clearCatcher: Selection<any, any, any, any>;
     private element: HTMLElement;
-    private interactivityService: IInteractivityService<LegendDataPoint>;
-    private interactiveBehavior?: IInteractiveBehavior;
     private legendDataStartIndex = 0;
     private arrowPosWindow = 1;
     private data: LegendData;
@@ -150,9 +137,7 @@ export class SVGLegend implements ILegend {
     constructor(
         element: HTMLElement,
         legendPosition: LegendPosition,
-        interactivityService: IInteractivityService<LegendDataPoint>,
-        isScrollable: boolean,
-        interactiveBehavior?: IInteractiveBehavior
+        isScrollable: boolean
     ) {
 
         this.svg = select(element)
@@ -162,16 +147,10 @@ export class SVGLegend implements ILegend {
         this.svg.style("display", "inherit");
         this.svg.classed("legend", true);
 
-        if (interactivityService) {
-            this.clearCatcher = appendClearCatcher(this.svg);
-        }
-
         this.group = this.svg
             .append("g")
             .attr("id", "legendGroup");
 
-        this.interactiveBehavior = interactiveBehavior ? interactiveBehavior : new LegendBehavior();
-        this.interactivityService = interactivityService;
         this.isScrollable = isScrollable;
         this.element = element;
         this.changeOrientation(legendPosition);
@@ -273,9 +252,6 @@ export class SVGLegend implements ILegend {
         this.parentViewport = viewport;
         this.data = data;
 
-        if (this.interactivityService)
-            this.interactivityService.applySelectionStateToData(data.dataPoints);
-
         if (data.dataPoints.length === 0) {
             this.changeOrientation(LegendPosition.None);
         }
@@ -298,7 +274,6 @@ export class SVGLegend implements ILegend {
         const layout = this.calculateLayout(data, autoWidth);
         const titleLayout = layout.title;
         const titleData = titleLayout ? [titleLayout] : [];
-        const hasSelection = this.interactivityService && dataHasSelection(data.dataPoints);
 
         const group = this.group;
 
@@ -369,7 +344,7 @@ export class SVGLegend implements ILegend {
             .append("title")
             .text((d: LegendDataPoint) => d.tooltip);
 
-        const mergedLegendIcons = legendItems
+        legendItems
             .merge(itemsEnter)
             .select(SVGLegend.LegendIcon.selectorName)
             .attr("transform", (dataPoint: LegendDataPoint) => {
@@ -421,22 +396,6 @@ export class SVGLegend implements ILegend {
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize))
             .style("font-family", data.fontFamily);
-
-        if (this.interactivityService) {
-            const behaviorOptions: LegendBehaviorOptions = {
-                legendItems: mergedLegendItems,
-                legendIcons: mergedLegendIcons,
-                clearCatcher: this.clearCatcher,
-                dataPoints: data.dataPoints,
-                behavior: this.interactiveBehavior,
-                interactivityServiceOptions: {
-                    isLegend: true
-                }
-            };
-
-            this.interactivityService.bind(behaviorOptions);
-            this.interactiveBehavior.renderSelection(hasSelection);
-        }
 
         legendItems
             .exit()
