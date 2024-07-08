@@ -32,16 +32,14 @@ import {
     IRect,
 } from "powerbi-visuals-utils-svgutils";
 
-import {
-    interactivitySelectionService
-} from "powerbi-visuals-utils-interactivityutils";
-
 import { FontProperties, inherit } from "./fontProperties";
 import * as LabelUtils from "./labelUtils";
 import * as Units from "./units";
 
 import * as DataLabelRectPositioner from "./dataLabelRectPositioner";
 import * as DataLabelPointPositioner from "./dataLabelPointPositioner";
+
+import ISelectionId = powerbi.visuals.ISelectionId;
 
 export enum LabelOrientation {
     Vertical = 0,
@@ -324,7 +322,7 @@ export interface LabelDataPointGroup<TLabelDataPoint> {
     labelOrientation?: LabelOrientation;
 }
 
-export interface Label extends interactivitySelectionService.SelectableDataPoint {
+export interface Label {
     /** Text to be displayed in the label */
     text: string;
 
@@ -361,9 +359,13 @@ export interface Label extends interactivitySelectionService.SelectableDataPoint
     backgroundColor?: string;
 
     backgroundTransparency?: number;
+
+    selected: boolean;
+
+    identity: ISelectionId;
 }
 
-export interface LabelOld extends interactivitySelectionService.SelectableDataPoint {
+export interface LabelOld {
     /** Text to be displayed in the label */
     text: string;
 
@@ -406,6 +408,10 @@ export interface LabelOld extends interactivitySelectionService.SelectableDataPo
     backgroundColor?: string;
 
     backgroundTransparency?: number;
+
+    selected: boolean;
+
+    identity: ISelectionId;
 }
 
 export interface GridSubsection {

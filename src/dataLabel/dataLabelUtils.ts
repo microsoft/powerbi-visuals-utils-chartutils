@@ -49,10 +49,6 @@ import * as svg from "powerbi-visuals-utils-svgutils";
 import ClassAndSelector = svg.CssConstants.ClassAndSelector;
 import createClassAndSelector = svg.CssConstants.createClassAndSelector;
 
-// powerbi.extensibility.utils.interactivity
-import { interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
-import SelectionDataPoint = interactivitySelectionService.SelectableDataPoint;
-
 import * as dataLabelInterfaces from "./dataLabelInterfaces";
 import LabelFormattedTextOptions = dataLabelInterfaces.LabelFormattedTextOptions;
 import LabelEnabledDataPoint = dataLabelInterfaces.LabelEnabledDataPoint;
@@ -216,7 +212,7 @@ export function drawDefaultLabelsForDataPointChart(data: any[], context: Selecti
             .transition("")
             .duration(animationDuration)
             // .style(layout.style as any)
-            .style("opacity", (hasSelection ? (d: SelectionDataPoint) => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
+            .style("opacity", (hasSelection ? d => getFillOpacity(d.selected, false, hasSelection, false) : 1) as any)
             .attr(
                 "x", (d: LabelEnabledDataPoint) => d.labelX
             )
@@ -260,7 +256,7 @@ function selectLabels(filteredData: LabelEnabledDataPoint[], context: Selection<
     const getIdentifier = hasKey ?
         (d: any) => d.key
         : hasDataPointIdentity ?
-            (d: SelectionDataPoint) => (d.identity as ISelectionId).getKey()
+            d => (d.identity as ISelectionId).getKey()
             : undefined;
 
     const labels: Selection<any, any, any, any> = isDonut ?
