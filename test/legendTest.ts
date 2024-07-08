@@ -35,13 +35,6 @@ import IVisualHost = powerbi.extensibility.visual.IVisualHost;
 import { manipulation, Rect } from "powerbi-visuals-utils-svgutils";
 import flushAllD3Transitions = manipulation.flushAllD3Transitions;
 
-// powerbi.extensibility.utils.interactivity
-import { interactivitySelectionService, interactivityBaseService } from "powerbi-visuals-utils-interactivityutils";
-import appendClearCatcher = interactivityBaseService.appendClearCatcher;
-import IBehaviorOptions = interactivityBaseService.IBehaviorOptions;
-import IInteractivityService = interactivityBaseService.IInteractivityService;
-import createInteractivityService = interactivitySelectionService.createInteractivitySelectionService;
-
 // powerbi.extensibility.utils.formatting
 import { stringExtensions } from "powerbi-visuals-utils-formattingutils";
 
@@ -64,11 +57,6 @@ import { LegendData, LegendPosition, legendProps, ILegend, LegendDataPoint } fro
 import * as legendPosition from "./../src/legend/legendPosition";
 
 import { assertColorsMatch, findElementTitle } from "./helpers/helpers";
-import MockBehavior from "./mocks/mockBehavior";
-
-import MockOpacityBehavior from "./mocks/mockOpacityBehavior";
-import { LegendBehaviorOptions } from "../src/legend/behavior/legendBehavior";
-import { SelectableDataPoint } from "powerbi-visuals-utils-interactivityutils/lib/interactivitySelectionService";
 
 let incr: number = 0;
 
@@ -87,7 +75,6 @@ describe("legend", () => {
         let element: HTMLElement,
             viewport: powerbi.IViewport,
             legend: ILegend,
-            interactivityService: IInteractivityService<SelectableDataPoint>,
             hostServices: IVisualHost,
             legendData: LegendDataPoint[],
             legendTitleClassSelector = ".legendTitle";
@@ -96,8 +83,7 @@ describe("legend", () => {
             element = testDom("500", "500");
             hostServices = createVisualHost({});
 
-            interactivityService = createInteractivityService(hostServices);
-            legend = createLegend(element, false, interactivityService, true);
+            legend = createLegend(element, false, true);
 
             viewport = {
                 height: parseFloat(element.getAttribute("height")),
@@ -252,141 +238,6 @@ describe("legend", () => {
                     done();
                 }, DefaultWaitForRender);
             }, DefaultWaitForRender);
-        });
-
-        describe("Legend interactivity tests", () => {
-            let icons: NodeListOf<HTMLElement>;
-
-            beforeEach(() => {
-                legend.drawLegend({ dataPoints: legendData }, viewport);
-                icons = element.querySelectorAll(".legendIcon");
-            });
-
-            it("Default state", () => {
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#0000ff");
-                assertColorsMatch(icons[2].style.fill, "#00ff00");
-            });
-
-            // click to clearCatcher fires, test doesn't work
-            xit("Click first legend", () => {
-                d3Click.call(icons[0], icons[0], 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-            });
-
-            xit("Click the last legend item, should just select current and clear others", () => {
-                d3Click.call(icons[0], icons[0], 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-
-                d3Click.call(icons[icons.length - 1], icons[icons.length - 1], 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#00ff00");
-            });
-
-            xit("Control + Click legend item, should multiselect", () => {
-                d3Click.call(icons[icons.length - 1], icons[icons.length - 1], 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#00ff00");
-
-                d3Click.call(icons[0], icons[0], 0, 0, ClickEventType.CtrlKey);
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#00ff00");
-            });
-
-            xit("Click the clear catcher should clear the legend selection", () => {
-                d3Click.call(icons[0], icons[0], 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-
-                d3Click.call(element.querySelector(".clearCatcher"), element.querySelector(".clearCatcher"), 0, 0);
-                assertColorsMatch(icons[0].style.fill, "#ff0000");
-                assertColorsMatch(icons[1].style.fill, "#0000ff");
-                assertColorsMatch(icons[2].style.fill, "#00ff00");
-            });
-
-            it("with opacity legend behavior", () => {
-                let mockDatapoints = [
-                    { label: "California", color: "#ff0000", identity: legendData[0].identity, selected: false },
-                    { label: "Texas", color: "#0000ff", identity: legendData[1].identity, selected: false },
-                    { label: "Washington", color: "#00ff00", identity: legendData[2].identity, selected: false }
-                ];
-
-                let behavior = new MockOpacityBehavior();
-                const svg = select(element.querySelector("div#jasmine-fixtures svg"));
-                const clearCatcher = appendClearCatcher(svg);
-                const itemsSelection = svg.select("#legendGroup").selectAll(".legendItem");
-
-                let behaviorOptions: LegendBehaviorOptions = {
-                    legendItems: itemsSelection,
-                    legendIcons: itemsSelection,
-                    clearCatcher: clearCatcher,
-                    behavior: behavior,
-                    dataPoints: mockDatapoints
-                };
-
-                interactivityService.bind(behaviorOptions);
-                behavior.uploadPoints(mockDatapoints);
-                behavior.selectIndex(1);
-                legend.drawLegend({ dataPoints: legendData }, viewport);
-
-                itemsSelection.each((data, index, nodeList) => {
-                    if (index === 1) {
-                        expect((<any>nodeList[index]).style.fillOpacity).toEqual("1");
-                    } else {
-                        expect((<any>nodeList[index]).style.fillOpacity).toEqual("0.4");
-                    }
-                });
-            });
-
-            describe("with pre-existing selection state", () => {
-                beforeEach(() => {
-                    let mockDatapoints = [
-                        { label: "California", color: "#ff0000", identity: legendData[0].identity, selected: false },
-                        { label: "Texas", color: "#0000ff", identity: legendData[1].identity, selected: false },
-                        { label: "Washington", color: "#00ff00", identity: legendData[2].identity, selected: false }
-                    ];
-
-                    let mockBehavior = new MockBehavior(mockDatapoints);
-                    let behaviorOptions: IBehaviorOptions<LegendDataPoint> = {
-                        behavior: mockBehavior,
-                        dataPoints: mockDatapoints
-                    };
-                    interactivityService.bind(behaviorOptions);
-                    mockBehavior.selectIndex(1);
-
-                    legend.drawLegend({ dataPoints: legendData }, viewport);
-                });
-
-                it("has correct selection fill", () => {
-                    assertColorsMatch(icons[0].style.fill, "#a6a6a6");
-                    assertColorsMatch(icons[1].style.fill, "#0000ff");
-                    assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-                });
-
-                it("click selects corresponding item", () => {
-                    d3Click.call(icons[0], icons[0], 0, 0);
-
-                    assertColorsMatch(icons[0].style.fill, "#ff0000");
-                    assertColorsMatch(icons[1].style.fill, "#a6a6a6");
-                    assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-                });
-
-                it("ctrl+click adds item to current selection", () => {
-                    d3Click.call(icons[0], icons[0], 0, 0, ClickEventType.CtrlKey);
-
-                    assertColorsMatch(icons[0].style.fill, "#ff0000");
-                    assertColorsMatch(icons[1].style.fill, "#0000ff");
-                    assertColorsMatch(icons[2].style.fill, "#a6a6a6");
-                });
-            });
         });
 
         it("legend defaults", () => {
@@ -893,8 +744,7 @@ describe("legend", () => {
             viewport: powerbi.IViewport,
             legend: ILegend,
             colorStyle = "color: {0};",
-            defaultLegendHeight = 70,
-            interactivityService: IInteractivityService<SelectableDataPoint>;
+            defaultLegendHeight = 70;
 
         let legendData: LegendDataPoint[] = [
             {
@@ -928,8 +778,7 @@ describe("legend", () => {
 
         beforeEach(() => {
             element = testDom("500", "500");
-            interactivityService = createInteractivityService(createVisualHost({}));
-            legend = createLegend(element, true, interactivityService);
+            legend = createLegend(element, true);
         });
 
         describe("3 item legend", () => {
@@ -1089,7 +938,6 @@ describe("legend", () => {
     describe("SVGLegend DOM", () => {
         let element: HTMLElement,
             legend: ILegend,
-            interactivityService: IInteractivityService<SelectableDataPoint>,
             viewport: powerbi.IViewport = {
                 height: 100,
                 width: 500,
@@ -1127,9 +975,8 @@ describe("legend", () => {
 
         beforeEach(() => {
             element = testDom("500", "500");
-            interactivityService = createInteractivityService(createVisualHost({}));
 
-            legend = createLegend(element, false, interactivityService);
+            legend = createLegend(element, false);
         });
 
         it("should render 3 legendText elements", (done) => {
