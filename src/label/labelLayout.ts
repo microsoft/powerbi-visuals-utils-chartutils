@@ -39,7 +39,6 @@ import * as Units from "./units";
 import * as DataLabelRectPositioner from "./dataLabelRectPositioner";
 import * as DataLabelPointPositioner from "./dataLabelPointPositioner";
 
-import ISelectionId = powerbi.visuals.ISelectionId;
 import { ISelectableDataPoint } from "../legend/legendInterfaces";
 
 export enum LabelOrientation {
