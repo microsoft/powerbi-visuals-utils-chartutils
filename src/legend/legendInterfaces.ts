@@ -41,6 +41,11 @@ export enum LegendPosition {
     LeftCenter,
 }
 
+export interface ISelectableDataPoint{
+    selected: boolean,
+    identity: ISelectionId;
+}
+
 export interface LegendPosition2D {
     textPosition?: Point;
     glyphPosition?: Point;
@@ -60,11 +65,9 @@ export enum LineStyle {
     dashdot = "dashdot",
 }
 
-export interface LegendDataPoint extends LegendPosition2D {
+export interface LegendDataPoint extends LegendPosition2D, ISelectableDataPoint {
     label: string;
     color: string;
-    selected: boolean;
-    identity: ISelectionId;
     category?: string;
     measure?: any;
     iconOnlyOnLabel?: boolean;

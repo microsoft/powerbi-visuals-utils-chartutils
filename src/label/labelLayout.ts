@@ -40,6 +40,7 @@ import * as DataLabelRectPositioner from "./dataLabelRectPositioner";
 import * as DataLabelPointPositioner from "./dataLabelPointPositioner";
 
 import ISelectionId = powerbi.visuals.ISelectionId;
+import { ISelectableDataPoint } from "../legend/legendInterfaces";
 
 export enum LabelOrientation {
     Vertical = 0,
@@ -322,7 +323,7 @@ export interface LabelDataPointGroup<TLabelDataPoint> {
     labelOrientation?: LabelOrientation;
 }
 
-export interface Label {
+export interface Label extends ISelectableDataPoint {
     /** Text to be displayed in the label */
     text: string;
 
@@ -359,13 +360,9 @@ export interface Label {
     backgroundColor?: string;
 
     backgroundTransparency?: number;
-
-    selected: boolean;
-
-    identity: ISelectionId;
 }
 
-export interface LabelOld {
+export interface LabelOld extends ISelectableDataPoint{
     /** Text to be displayed in the label */
     text: string;
 
@@ -408,10 +405,6 @@ export interface LabelOld {
     backgroundColor?: string;
 
     backgroundTransparency?: number;
-
-    selected: boolean;
-
-    identity: ISelectionId;
 }
 
 export interface GridSubsection {
