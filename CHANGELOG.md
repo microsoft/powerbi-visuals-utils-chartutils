@@ -1,4 +1,4 @@
-## 6.0.5
+## 7.0.0
 * Removed interactivityutils and related code
 
 ## 6.0.4
