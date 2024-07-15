@@ -25,7 +25,6 @@ This command installs the package and adds a package as a dependency to your ```
 The package contains ```d.ts``` declarations file, it's necessary for TypeScript compiler and it helps to develop your visuals fast and confident. You should add the following files to the ```files``` property of ```tsconfig.json```:
 * ```typings/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts```
-* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.d.ts```
@@ -37,7 +36,6 @@ As a result you will have the following file structure:
   "files": [
     "typings/index.d.ts",
     "node_modules/powerbi-visuals-utils-formattingutils/lib/index.d.ts",
-    "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.d.ts",
     "node_modules/powerbi-visuals-utils-svgutils/lib/index.d.ts",
     "node_modules/powerbi-visuals-utils-typeutils/lib/index.d.ts",
     "node_modules/powerbi-visuals-utils-chartutils/lib/index.d.ts"
@@ -53,7 +51,6 @@ To use the package with your custom visuals you should add the following files t
 * ```node_modules/powerbi-visuals-utils-typeutils/lib/index.js```
 * ```node_modules/powerbi-visuals-utils-svgutils/lib/index.js```
 * ```node_modules/powerbi-visuals-utils-formattingutils/lib/index.js```
-* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.js```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.js```
 
 As a result you will have the following file structure:
@@ -70,7 +67,6 @@ As a result you will have the following file structure:
     "node_modules/powerbi-visuals-utils-typeutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-svgutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-formattingutils/lib/index.js",
-    "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.js",
     "node_modules/powerbi-visuals-utils-chartutils/lib/index.js"
   ],
   "style": ...,
@@ -81,12 +77,10 @@ As a result you will have the following file structure:
 ## Including CSS artifacts to the custom visual
 To use the package with your custom visuals you should import the following CSS files to your ```.less``` file:
 
-* ```node_modules/powerbi-visuals-utils-interactivityutils/lib/index.css```
 * ```node_modules/powerbi-visuals-utils-chartutils/lib/index.css```
 
 As a result you will have the following file structure:
 ```less
-@import (less) "node_modules/powerbi-visuals-utils-interactivityutils/lib/index.css";
 @import (less) "node_modules/powerbi-visuals-utils-chartutils/lib/index.css";
 ```
 
