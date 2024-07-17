@@ -12,7 +12,6 @@ This helper function simplifies PowerBI Custom Visual legends creation.
 
 ```typescript
 function createLegend(legendParentElement: HTMLElement,          // top visual element, container in which legend will be created
-        interactive: boolean,                               // indicates that legend should be interactive
         isScrollable: boolean = false,                      // indicates that legend could be scrollable or not
         legendPosition: LegendPosition = LegendPosition.Top // Position of the legend inside of legendParentElement container
         ): ILegend;
