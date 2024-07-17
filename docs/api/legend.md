@@ -32,7 +32,6 @@ function createLegend(legendParentElement: HTMLElement,          // top visual e
 
             this.legend = createLegend(
                 element,
-                options.interactivity && options.interactivity.isInteractiveLegend,
                 true);
         }
 ```
