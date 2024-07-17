@@ -25,19 +25,13 @@
 */
 import { Selection } from "d3-selection";
 import { ILegend, LegendPosition } from "./legendInterfaces";
-import { InteractiveLegend } from "./interactiveLegend";
 import { SVGLegend } from "./svgLegend";
 
 export function createLegend(
     legendParentElement: HTMLElement,
-    interactive: boolean,
     isScrollable: boolean = false,
     legendPosition: LegendPosition = LegendPosition.Top
 ): ILegend {
-
-    if (interactive) {
-        return new InteractiveLegend(legendParentElement);
-    }
 
     return new SVGLegend(legendParentElement, legendPosition, isScrollable);
 }
