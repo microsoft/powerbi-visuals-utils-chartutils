@@ -1,5 +1,6 @@
 ## 7.0.0
 * Removed interactivityutils and related code
+* Removed interactiveLegend class
 
 ## 6.0.4
 * Updated powerbi-visuals-api to 5.9.0 and other utils
