@@ -6,3 +6,4 @@ This package contains the following classes, interfaces and methods:
 * [Axis Helper](../api/axis-helper.md) - provide all necessary methods to maintain chart axes
 * [DataLabelManager](../api/data-label-manager.md) - helps to create and maintain labels
 * [DataLabelUtils](../api/data-label-utils.md) - label manager utils
+* [Legend](../api/legend.md) - helps to create and mantain legend

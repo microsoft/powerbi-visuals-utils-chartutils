@@ -1,3 +1,8 @@
+## 7.0.0
+* Removed interactivityutils and related code
+* Removed interactiveLegend class
+* Changed createLegend function signature -> createLegend(HTMLElement, boolean, LegendPosition)
+
 ## 6.0.4
 * Updated powerbi-visuals-api to 5.9.0 and other utils
 

@@ -9,10 +9,7 @@ import DataLabelManager from "./dataLabel/dataLabelManager";
 import * as dataLabelUtils from "./dataLabel/dataLabelUtils";
 import * as locationConverter from "./dataLabel/locationConverter";
 
-import * as interactiveLegend from "./legend/interactiveLegend";
 import * as legend from "./legend/legend";
-import * as legendBehavior from "./legend/behavior/legendBehavior";
-import OpacityLegendBehavior from "./legend/behavior/opacityLegendBehavior";
 import * as legendData from "./legend/legendData";
 import * as legendInterfaces from "./legend/legendInterfaces";
 import * as legendPosition from "./legend/legendPosition";
@@ -30,11 +27,8 @@ export {
     DataLabelManager,
     dataLabelUtils,
     locationConverter,
-    interactiveLegend,
     label,
     legend,
-    legendBehavior,
-    OpacityLegendBehavior,
     legendData,
     legendInterfaces,
     legendPosition,

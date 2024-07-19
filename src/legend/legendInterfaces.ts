@@ -26,9 +26,8 @@
 
 import powerbi from "powerbi-visuals-api";
 import { Point } from "powerbi-visuals-utils-svgutils";
-import { interactivitySelectionService } from "powerbi-visuals-utils-interactivityutils";
 
-import SelectableDataPoint = interactivitySelectionService.SelectableDataPoint;
+import ISelectionId = powerbi.visuals.ISelectionId;
 
 export enum LegendPosition {
     Top,
@@ -40,6 +39,11 @@ export enum LegendPosition {
     BottomCenter,
     RightCenter,
     LeftCenter,
+}
+
+export interface ISelectableDataPoint{
+    selected: boolean,
+    identity: ISelectionId;
 }
 
 export interface LegendPosition2D {
@@ -61,7 +65,7 @@ export enum LineStyle {
     dashdot = "dashdot",
 }
 
-export interface LegendDataPoint extends SelectableDataPoint, LegendPosition2D {
+export interface LegendDataPoint extends LegendPosition2D, ISelectableDataPoint {
     label: string;
     color: string;
     category?: string;

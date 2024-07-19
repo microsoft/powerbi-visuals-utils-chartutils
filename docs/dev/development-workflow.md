@@ -48,13 +48,13 @@ npm run build
 This command compiles less code to CSS and TypeScript code to JavaScript. The result of the compilation is available in the ```lib``` directory.
 
 ## How to lint the source code
-We use [TSLint](https://github.com/palantir/tslint) as a linter for TypeScript code. To check source code you should run the following command:
+We use [eslint](https://github.com/eslint/eslint) as a linter for TypeScript code. To check source code you should run the following command:
 
 ```bash
 npm run lint
 ```
 
-This command checks style of TypeScript code and provides a list of problems. Please address all of problems reported by TSLint before sending a pull request to the [repository](https://github.com/Microsoft/powerbi-visuals-utils-chartutils).
+This command checks style of TypeScript code and provides a list of problems. Please address all of problems reported by eslint before sending a pull request to the [repository](https://github.com/Microsoft/powerbi-visuals-utils-chartutils).
 
 ## How to run unit tests locally
 We use [Jasmine](https://github.com/jasmine/jasmine) and [Karma](https://github.com/karma-runner/karma) to run unit tests. Please note, Karma requires Google Chrome to run unit tests.
