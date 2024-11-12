@@ -118,7 +118,8 @@ function getValueFnTimeIndex(index): Date {
 function createAxisOptions(
     metaDataColumn: DataViewMetadataColumn,
     dataDomain: any[],
-    getValueFn?): CreateAxisOptions {
+    getValueFn?
+): CreateAxisOptions {
     let axisOptions: CreateAxisOptions = {
         pixelSpan: pixelSpan,
         dataDomain: dataDomain,
@@ -264,11 +265,13 @@ export function buildAxisPropertiesNumeric(
 export function buildAxisPropertiesTime(
     dataDomain: any[],
     isScalar: boolean = true,
-    maxTicks?: number): IAxisProperties {
+    maxTicks?: number
+): IAxisProperties {
     let axisOptions = createAxisOptions(
         metaDataColumnTime,
         dataDomain,
-        getValueFnTime);
+        getValueFnTime
+    );
 
     axisOptions.isScalar = isScalar;
 

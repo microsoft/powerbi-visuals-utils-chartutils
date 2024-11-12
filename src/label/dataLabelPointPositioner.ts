@@ -38,36 +38,25 @@ export const cos45 = Math.cos(45);
 export const sin45 = Math.sin(45);
 
 export function getLabelRect(labelSize: shapesInterfaces.ISize, parentPoint: LabelParentPoint, position: NewPointLabelPosition, offset: number): IRect {
-    switch (position) {
-        case NewPointLabelPosition.Above: {
-            return above(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.Below: {
-            return below(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.Left: {
-            return left(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.Right: {
-            return right(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.BelowLeft: {
-            return belowLeft(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.BelowRight: {
-            return belowRight(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.AboveLeft: {
-            return aboveLeft(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.AboveRight: {
-            return aboveRight(labelSize, parentPoint.point, parentPoint.radius + offset);
-        }
-        case NewPointLabelPosition.Center: {
-            return center(labelSize, parentPoint.point);
-        }
+    const positionToFunctionMap = {
+        [NewPointLabelPosition.Above]: above,
+        [NewPointLabelPosition.Below]: below,
+        [NewPointLabelPosition.Left]: left,
+        [NewPointLabelPosition.Right]: right,
+        [NewPointLabelPosition.BelowLeft]: belowLeft,
+        [NewPointLabelPosition.BelowRight]: belowRight,
+        [NewPointLabelPosition.AboveLeft]: aboveLeft,
+        [NewPointLabelPosition.AboveRight]: aboveRight,
+        [NewPointLabelPosition.Center]: center
+    };
+
+    const positionFunction = positionToFunctionMap[position];
+    if (!positionFunction) {
+        return null;
     }
-    return null;
+
+    // Update the center position call to include the offset parameter
+    return positionFunction(labelSize, parentPoint.point, parentPoint.radius + offset);
 }
 
 export function above(labelSize: shapesInterfaces.ISize, parentPoint: shapesInterfaces.IPoint, offset: number): IRect {
@@ -141,7 +130,8 @@ export function aboveRight(labelSize: shapesInterfaces.ISize, parentPoint: shape
         height: labelSize.height
     };
 }
-export function center(labelSize: shapesInterfaces.ISize, parentPoint: shapesInterfaces.IPoint): IRect {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function center(labelSize: shapesInterfaces.ISize, parentPoint: shapesInterfaces.IPoint, _: number): IRect {
     return {
         left: parentPoint.x - (labelSize.width / 2),
         top: parentPoint.y - (labelSize.height / 2),

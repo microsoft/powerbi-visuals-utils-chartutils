@@ -121,11 +121,11 @@ export function downgradeToOldLabels(labels: Label[]): LabelOld[] {
 }
 
 export function drawDefaultLabels(
-    context: Selection<any, any, any, any>,
+    context: Selection<SVGElement, unknown, SVGElement, unknown>, // TODO: TEST
     dataLabels: Label[],
     numeric: boolean = false,
     hasTooltip: boolean = false
-): Selection<any, any, any, any> {
+): Selection<SVGElement, Label, SVGElement, unknown> {
     return newDrawDefaultLabels(context, downgradeToOldLabels(dataLabels), numeric, hasTooltip);
 }
 

@@ -27,16 +27,14 @@ import { Selection } from "d3-selection";
 import { Axis } from "d3-axis";
 import { ScaleLinear } from "d3-scale";
 
-
 import powerbi from "powerbi-visuals-api";
-// powerbi
 import DataViewMetadataColumn = powerbi.DataViewMetadataColumn;
 
-// powerbi.extensibility.utils.formatting
-import { valueFormatter } from "powerbi-visuals-utils-formattingutils";
+import { valueFormatter, interfaces } from "powerbi-visuals-utils-formattingutils";
 import IValueFormatter = valueFormatter.IValueFormatter;
+import ITextAsSVGMeasurer = interfaces.ITextAsSVGMeasurer;
+import TextProperties = interfaces.TextProperties;
 
-// powerbi.extensibility.utils.type
 import { valueType } from "powerbi-visuals-utils-typeutils";
 import ValueType = valueType.ValueType;
 import PrimitiveValue = valueType.PrimitiveType;
@@ -287,10 +285,58 @@ export interface CreateScaleResult {
     usingDefaultDomain?: boolean;
 }
 
-export interface TickLabelMargins {
-    xMax: number;
-    yLeft: number;
-    yRight: number;
-    stackHeight?: number; // the height of each stacked hierarchy level that is not the leaf (the leaf can be rotated 90)
+export interface GetTickLabelMarginsOptions {
+    viewport: powerbi.IViewport;
+    yMarginLimit: number; 
+    textWidthMeasurer: ITextAsSVGMeasurer;
+    textHeightMeasurer: ITextAsSVGMeasurer;
+    axes: CartesianAxisProperties;
+    bottomMarginLimit: number;
+    properties: TextProperties;
+    scrollbarVisible?: boolean;
+    showOnRight?: boolean;
+    renderXAxis?: boolean;
+    renderY1Axis?: boolean;
+    renderY2Axis?: boolean;
+}
+
+export interface CreateFormatterOptions {
+    scaleDomain: any[];
+    dataDomain: any[];
+    dataType?: powerbi.ValueTypeDescriptor;
+    isScalar: boolean;
+    formatString?: string;
+    bestTickCount: number;
+    tickValues: number[];
+    useTickIntervalForDisplayUnits?: boolean;
+    axisDisplayUnits?: number;
+    axisPrecision?: number;
+}
+
+export interface GetBestNumberOfTicksOptions {
+    min: number;
+    max: number;
+    valuesMetadata: powerbi.DataViewMetadataColumn[];
+    maxTickCount: number;
+    isDateTime?: boolean;
+}
+
+export interface CreateScaleOptions {
+    pixelSpan: number;
+    metaDataColumn: powerbi.DataViewMetadataColumn;
+    outerPadding?: number;
+    isScalar?: boolean; 
+    isVertical?: boolean;
+    forcedTickCount?: number;
+    categoryThickness?: number;
+    shouldClamp?: boolean;
+    maxTickCount?: number;
+    disableNice?: boolean;
+    disableNiceOnlyForScale?: boolean;
+    innerPadding?: number;
+    useRangePoints?: boolean;
+    scaleType?: string;
+    zeroScalarDomain?: any[];
+    dataDomain: any[];
 }
 

@@ -34,7 +34,7 @@ import ISize = shapesInterfaces.ISize;
 // powerbi.extensibility.utils.formatting
 import  { double as Double } from "powerbi-visuals-utils-typeutils";
 
-import { RectOrientation, ContentPositions, OutsidePlacement, IDataLabelSettings, IDataLabelInfo, LabelEnabledDataPoint  } from "./dataLabelInterfaces";
+import { RectOrientation, ContentPositions, OutsidePlacement, IDataLabelSettings, IDataLabelInfo, LabelEnabledDataPoint, ILabelLayout, DataPointLabels  } from "./dataLabelInterfaces";
 
 import * as locationConverter from "./locationConverter";
 import DataLabelArrangeGrid from "./dataLabelArrangeGrid";
@@ -45,7 +45,7 @@ import DataLabelArrangeGrid from "./dataLabelArrangeGrid";
 * can be repositioned or get hidden.
 */
 export default class DataLabelManager {
-    public static DefaultAnchorMargin: number = 0; // For future use
+    public static DefaultAnchorMargin: number = 0;
     public static DefaultMaximumMovingDistance: number = 12;
     public static DefaultMinimumMovingDistance: number = 3;
     public static InflateAmount: number = 5;
@@ -70,21 +70,52 @@ export default class DataLabelManager {
         return this.defaultDataLabelSettings;
     }
 
-    /** Arranges the lables position and visibility*/
-    public hideCollidedLabels(viewport: powerbi.IViewport, data: any[], layout: any, addTransform: boolean = false, hideCollidedLabels: boolean = true): LabelEnabledDataPoint[] {
-
-        // Split size into a grid
+    /** Arranges the labels position and visibility */
+    /**
+     * Hides collided labels within the given viewport.
+     *
+     * @template T - The type of data points.
+     * @param {powerbi.IViewport} viewport - The viewport dimensions.
+     * @param {T[]} data - The array of data points to process.
+     * @param {ILabelLayout} layout - The layout configuration for labels.
+     * @param {boolean} [addTransform=false] - Whether to add a transform to the label positions.
+     * @param {boolean} [hideCollidedLabels=true] - Whether to hide labels that collide with others.
+     * @returns {(T & LabelEnabledDataPoint)[]} - The array of data points with non-colliding labels.
+     */
+    public hideCollidedLabels<T extends DataPointLabels>(
+        viewport: powerbi.IViewport,
+        data: T[],
+        layout: ILabelLayout,
+        addTransform: boolean = false,
+        hideCollidedLabels: boolean = true
+    ): Array<T & LabelEnabledDataPoint> {
+        const transform = this.calculateTransform(viewport, addTransform);
         const arrangeGrid = new DataLabelArrangeGrid(viewport, data, layout);
-        const filteredData = [];
-        const transform: IVector = { x: 0, y: 0 };
+        
+        return this.processDataPoints(data, layout, transform, arrangeGrid, viewport, hideCollidedLabels);
+    }
 
+    private calculateTransform(viewport: powerbi.IViewport, addTransform: boolean): IVector {
         if (addTransform) {
-            transform.x = viewport.width / 2;
-            transform.y = viewport.height / 2;
+            return {
+                x: viewport.width / 2,
+                y: viewport.height / 2
+            };
         }
+        return { x: 0, y: 0 };
+    }
 
-        for (let i = 0, len = data.length; i < len; i++) {
+    private processDataPoints<T extends DataPointLabels>(
+        data: T[],
+        layout: ILabelLayout,
+        transform: IVector,
+        arrangeGrid: DataLabelArrangeGrid,
+        viewport: powerbi.IViewport,
+        hideCollidedLabels: boolean
+    ): (T & LabelEnabledDataPoint)[] {
+        const filteredData: (T & LabelEnabledDataPoint)[] = [];
 
+        for (let i = 0; i < data.length; i++) {
             // Filter unwanted data points
             if (!layout.filter(data[i])) {
                 continue;
@@ -92,15 +123,14 @@ export default class DataLabelManager {
 
             // Set default values where properties values are undefined
             const info = this.getLabelInfo(data[i]);
-
             info.anchorPoint = {
-                x: layout.labelLayout.x(data[i]) + transform.x,
-                y: layout.labelLayout.y(data[i]) + transform.y,
+                x: layout.labelLayout.x(data[i], i) + transform.x,
+                y: layout.labelLayout.y(data[i], i) + transform.y,
             };
 
-            const position: IRect = this.calculateContentPosition(info, info.contentPosition, data[i].size, info.anchorMargin);
+            const position = this.calculateContentPosition(info, data[i].size, info.anchorMargin);
 
-            if (DataLabelManager.isValid(position) && (!this.hasCollisions(arrangeGrid, info, position, viewport) || !hideCollidedLabels)) {
+            if (this.shouldKeepLabel(position, arrangeGrid, info, viewport, hideCollidedLabels)) {
                 data[i].labelX = position.left - transform.x;
                 data[i].labelY = position.top - transform.y;
 
@@ -115,50 +145,45 @@ export default class DataLabelManager {
         return filteredData;
     }
 
+    private shouldKeepLabel(
+        position: IRect,
+        arrangeGrid: DataLabelArrangeGrid,
+        info: IDataLabelInfo,
+        viewport: powerbi.IViewport,
+        hideCollidedLabels: boolean
+    ): boolean {
+        return DataLabelManager.isValid(position) && 
+               (!this.hasCollisions(arrangeGrid, info, position, viewport) || !hideCollidedLabels);
+    }
+
     /**
      * Merges the label element info with the panel element info and returns correct label info.
      * @param source The label info.
      */
     public getLabelInfo(source: IDataLabelInfo): IDataLabelInfo {
         const settings = this.defaultDataLabelSettings;
+        const properties = [
+            'anchorMargin',
+            'anchorRectOrientation', 
+            'contentPosition',
+            'maximumMovingDistance',
+            'minimumMovingDistance',
+            'outsidePlacement',
+            'validContentPositions',
+            'opacity'
+        ];
 
-        source.anchorMargin = source.anchorMargin !== undefined
-            ? source.anchorMargin
-            : settings.anchorMargin;
+        // Copy default values for each property if not defined in source
+        properties.forEach(prop => {
+            source[prop] = source[prop] !== undefined ? source[prop] : settings[prop];
+        });
 
-        source.anchorRectOrientation = source.anchorRectOrientation !== undefined
-            ? source.anchorRectOrientation
-            : settings.anchorRectOrientation;
-
-        source.contentPosition = source.contentPosition !== undefined
-            ? source.contentPosition
-            : settings.contentPosition;
-
-        source.maximumMovingDistance = source.maximumMovingDistance !== undefined
-            ? source.maximumMovingDistance
-            : settings.maximumMovingDistance;
-
-        source.minimumMovingDistance = source.minimumMovingDistance !== undefined
-            ? source.minimumMovingDistance
-            : settings.minimumMovingDistance;
-
-        source.outsidePlacement = source.outsidePlacement !== undefined
-            ? source.outsidePlacement
-            : settings.outsidePlacement;
-
-        source.validContentPositions = source.validContentPositions !== undefined
-            ? source.validContentPositions
-            : settings.validContentPositions;
-
-        source.opacity = source.opacity !== undefined
-            ? source.opacity
-            : settings.opacity;
-
+        // Adjust maximum moving distance by anchor margin
         source.maximumMovingDistance += source.anchorMargin;
 
         return source;
     }
-
+ 
     /**
     * (Private) Calculates element position using anchor point..
     */
@@ -248,149 +273,164 @@ export default class DataLabelManager {
 
     /** (Private) Calculates element position using anchor rect. */
     private calculateContentPositionFromRect(anchorRect: IRect, anchorRectOrientation: RectOrientation, contentPosition: ContentPositions, contentSize: ISize, offset: number): IRect {
-        switch (contentPosition) {
-            case ContentPositions.InsideCenter:
-                return this.handleInsideCenterPosition(anchorRectOrientation, contentSize, anchorRect, offset);
-            case ContentPositions.InsideEnd:
-                return this.handleInsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset);
-            case ContentPositions.InsideBase:
-                return this.handleInsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset);
-            case ContentPositions.OutsideEnd:
-                return this.handleOutsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset);
-            case ContentPositions.OutsideBase:
-                return this.handleOutsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset);
-        }
+        const positionHandlers = {
+            [ContentPositions.InsideCenter]: () => this.handleInsideCenterPosition(anchorRectOrientation, contentSize, anchorRect, offset),
+            [ContentPositions.InsideEnd]: () => this.handleInsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset),
+            [ContentPositions.InsideBase]: () => this.handleInsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset),
+            [ContentPositions.OutsideEnd]: () => this.handleOutsideEndPosition(anchorRectOrientation, contentSize, anchorRect, offset),
+            [ContentPositions.OutsideBase]: () => this.handleOutsideBasePosition(anchorRectOrientation, contentSize, anchorRect, offset)
+        };
 
-        return { left: 0, top: 0, width: -1, height: -1 };
+        const handler = positionHandlers[contentPosition];
+        return handler ? handler() : { left: 0, top: 0, width: -1, height: -1 };
     }
 
     /** (Private) Calculates element inside center position using anchor rect. */
     private handleInsideCenterPosition(anchorRectOrientation: RectOrientation, contentSize: ISize, anchorRect: IRect, offset: number): IRect {
-        switch (anchorRectOrientation) {
-            case RectOrientation.VerticalBottomTop:
-            case RectOrientation.VerticalTopBottom:
-                return locationConverter.middleVertical(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalLeftRight:
-            case RectOrientation.HorizontalRightLeft:
-            default:
-                return locationConverter.middleHorizontal(contentSize, anchorRect, offset);
-        }
+        const isVerticalOrientation = [
+            RectOrientation.VerticalBottomTop,
+            RectOrientation.VerticalTopBottom
+        ].includes(anchorRectOrientation);
+
+        return isVerticalOrientation
+            ? locationConverter.middleVertical(contentSize, anchorRect, offset)
+            : locationConverter.middleHorizontal(contentSize, anchorRect, offset);
     }
 
     /** (Private) Calculates element inside end position using anchor rect. */
     private handleInsideEndPosition(anchorRectOrientation: RectOrientation, contentSize: ISize, anchorRect: IRect, offset: number): IRect {
-        switch (anchorRectOrientation) {
-            case RectOrientation.VerticalBottomTop:
-                return locationConverter.topInside(contentSize, anchorRect, offset);
-            case RectOrientation.VerticalTopBottom:
-                return locationConverter.bottomInside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalRightLeft:
-                return locationConverter.leftInside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalLeftRight:
-            default:
-                return locationConverter.rightInside(contentSize, anchorRect, offset);
-        }
+        const orientationToPositionMap = {
+            [RectOrientation.VerticalBottomTop]: locationConverter.topInside,
+            [RectOrientation.VerticalTopBottom]: locationConverter.bottomInside,
+            [RectOrientation.HorizontalRightLeft]: locationConverter.leftInside,
+            [RectOrientation.HorizontalLeftRight]: locationConverter.rightInside
+        };
+
+        const positionFn = orientationToPositionMap[anchorRectOrientation] || orientationToPositionMap[RectOrientation.HorizontalLeftRight];
+        return positionFn(contentSize, anchorRect, offset);
     }
 
     /** (Private) Calculates element inside base position using anchor rect. */
     private handleInsideBasePosition(anchorRectOrientation: RectOrientation, contentSize: ISize, anchorRect: IRect, offset: number): IRect {
-        switch (anchorRectOrientation) {
-            case RectOrientation.VerticalBottomTop:
-                return locationConverter.bottomInside(contentSize, anchorRect, offset);
-            case RectOrientation.VerticalTopBottom:
-                return locationConverter.topInside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalRightLeft:
-                return locationConverter.rightInside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalLeftRight:
-            default:
-                return locationConverter.leftInside(contentSize, anchorRect, offset);
-        }
+        const orientationToPositionMap = {
+            [RectOrientation.VerticalBottomTop]: locationConverter.bottomInside,
+            [RectOrientation.VerticalTopBottom]: locationConverter.topInside,
+            [RectOrientation.HorizontalRightLeft]: locationConverter.rightInside,
+            [RectOrientation.HorizontalLeftRight]: locationConverter.leftInside
+        };
+
+        const positionFn = orientationToPositionMap[anchorRectOrientation] || orientationToPositionMap[RectOrientation.HorizontalLeftRight];
+        return positionFn(contentSize, anchorRect, offset);
     }
 
     /** (Private) Calculates element outside end position using anchor rect. */
     private handleOutsideEndPosition(anchorRectOrientation: RectOrientation, contentSize: ISize, anchorRect: IRect, offset: number): IRect {
-        switch (anchorRectOrientation) {
-            case RectOrientation.VerticalBottomTop:
-                return locationConverter.topOutside(contentSize, anchorRect, offset);
-            case RectOrientation.VerticalTopBottom:
-                return locationConverter.bottomOutside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalRightLeft:
-                return locationConverter.leftOutside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalLeftRight:
-            default:
-                return locationConverter.rightOutside(contentSize, anchorRect, offset);
-        }
+        const orientationToPositionMap = {
+            [RectOrientation.VerticalBottomTop]: locationConverter.topOutside,
+            [RectOrientation.VerticalTopBottom]: locationConverter.bottomOutside,
+            [RectOrientation.HorizontalRightLeft]: locationConverter.leftOutside,
+            [RectOrientation.HorizontalLeftRight]: locationConverter.rightOutside
+        };
+
+        const positionFn = orientationToPositionMap[anchorRectOrientation] || orientationToPositionMap[RectOrientation.HorizontalLeftRight];
+        return positionFn(contentSize, anchorRect, offset);
     }
 
     /** (Private) Calculates element outside base position using anchor rect. */
     private handleOutsideBasePosition(anchorRectOrientation: RectOrientation, contentSize: ISize, anchorRect: IRect, offset: number): IRect {
-        switch (anchorRectOrientation) {
-            case RectOrientation.VerticalBottomTop:
-                return locationConverter.bottomOutside(contentSize, anchorRect, offset);
-            case RectOrientation.VerticalTopBottom:
-                return locationConverter.topOutside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalRightLeft:
-                return locationConverter.rightOutside(contentSize, anchorRect, offset);
-            case RectOrientation.HorizontalLeftRight:
-            default:
-                return locationConverter.leftOutside(contentSize, anchorRect, offset);
-        }
+        const orientationToPositionMap = {
+            [RectOrientation.VerticalBottomTop]: locationConverter.bottomOutside,
+            [RectOrientation.VerticalTopBottom]: locationConverter.topOutside,
+            [RectOrientation.HorizontalRightLeft]: locationConverter.rightOutside,
+            [RectOrientation.HorizontalLeftRight]: locationConverter.leftOutside
+        };
+
+        const positionFn = orientationToPositionMap[anchorRectOrientation] || orientationToPositionMap[RectOrientation.HorizontalLeftRight];
+        return positionFn(contentSize, anchorRect, offset);
     }
 
     /**  (Private) Calculates element position. */
-    private calculateContentPosition(anchoredElementInfo: IDataLabelInfo, contentPosition: ContentPositions, contentSize: ISize, offset: number): IRect {
+    private calculateContentPosition(anchoredElementInfo: IDataLabelInfo, contentSize: ISize, offset: number): IRect {
+        const { contentPosition, anchorPoint, anchorRect, anchorRectOrientation } = anchoredElementInfo;
+        
+        const isRectBasedPosition = [
+            ContentPositions.InsideBase,
+            ContentPositions.InsideCenter, 
+            ContentPositions.InsideEnd,
+            ContentPositions.OutsideBase,
+            ContentPositions.OutsideEnd
+        ].includes(contentPosition);
 
-        if (contentPosition !== ContentPositions.InsideEnd &&
-            contentPosition !== ContentPositions.InsideCenter &&
-            contentPosition !== ContentPositions.InsideBase &&
-            contentPosition !== ContentPositions.OutsideBase &&
-            contentPosition !== ContentPositions.OutsideEnd) {
-            // Determine position using anchor point.
-            return this.calculateContentPositionFromPoint(
-                anchoredElementInfo.anchorPoint,
+        if (isRectBasedPosition) {
+            return this.calculateContentPositionFromRect(
+                anchorRect,
+                anchorRectOrientation, 
                 contentPosition,
                 contentSize,
-                offset);
+                offset
+            );
         }
 
-        // Determine position using anchor rectangle.
-        return this.calculateContentPositionFromRect(
-            anchoredElementInfo.anchorRect,
-            anchoredElementInfo.anchorRectOrientation,
+        return this.calculateContentPositionFromPoint(
+            anchorPoint,
             contentPosition,
-            contentSize,
-            offset);
+            contentSize, 
+            offset
+        );
     }
 
     /** (Private) Check for collisions. */
     private hasCollisions(arrangeGrid: DataLabelArrangeGrid, info: IDataLabelInfo, position: IRect, size: ISize): boolean {
+        // Check for conflicts with other labels in the arrange grid
         if (arrangeGrid.hasConflict(position)) {
             return true;
         }
 
-        // Since we divide the height by 2 we add it back to the top of the view port so labels won't be cut off
-        let intersection = { left: 0, top: position.height / 2, width: size.width, height: size.height };
-        intersection = shapes.inflate(intersection, { left: DataLabelManager.InflateAmount, top: 0, right: DataLabelManager.InflateAmount, bottom: 0 });
+        // Create viewport intersection rectangle
+        const viewportIntersection = this.createViewportIntersection(position, size);
+        
+        // Get intersection with label position
+        const labelIntersection = shapes.intersect(viewportIntersection, position);
 
-        intersection = shapes.intersect(intersection, position);
-
-        if (shapes.isEmpty(intersection)) {
-            // Empty rectangle means there is a collision
+        // Empty intersection means collision
+        if (shapes.isEmpty(labelIntersection)) {
             return true;
         }
 
-        switch (info.outsidePlacement) {
-            // D3 positions the label in the middle by default.
-            // The algorithem asumed the label was positioned in right so this is why we devide by 2 or 4
+        return this.checkOutsidePlacementCollisions(info.outsidePlacement, labelIntersection, position);
+    }
+
+    private createViewportIntersection(position: IRect, size: ISize): IRect {
+        // Adjust for viewport by adding half height to top
+        const intersection = { 
+            left: 0, 
+            top: position.height / 2,
+            width: size.width, 
+            height: size.height 
+        };
+
+        // Add padding
+        return shapes.inflate(intersection, {
+            left: DataLabelManager.InflateAmount,
+            top: 0,
+            right: DataLabelManager.InflateAmount,
+            bottom: 0
+        });
+    }
+
+    private checkOutsidePlacementCollisions(placement: OutsidePlacement, intersection: IRect, position: IRect): boolean {
+        switch (placement) {
             case OutsidePlacement.Disallowed:
                 return Double.lessWithPrecision(intersection.width, position.width) ||
-                    Double.lessWithPrecision(intersection.height, position.height / 2);
+                       Double.lessWithPrecision(intersection.height, position.height / 2);
 
             case OutsidePlacement.Partial:
                 return Double.lessWithPrecision(intersection.width, position.width / 2) ||
-                    Double.lessWithPrecision(intersection.height, position.height / 4);
+                       Double.lessWithPrecision(intersection.height, position.height / 4);
+
+            default:
+                return false;
         }
-        return false;
     }
 
     public static isValid(rect: IRect): boolean {

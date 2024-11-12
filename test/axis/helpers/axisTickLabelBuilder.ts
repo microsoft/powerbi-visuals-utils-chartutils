@@ -73,32 +73,28 @@ export class AxisTickLabelBuilder {
     }
 
     public buildAxisOptions(values: any[]): IAxisProperties {
-        let axisProperties: IAxisProperties = {
+        return {
             scale: undefined,
-            axis: undefined,
             values: values,
-            axisType: undefined,
-            formatter: undefined,
             axisLabel: "",
             isCategoryAxis: true,
             xLabelMaxWidth: 20,
             outerPadding: 10,
             categoryThickness: 25,
-        };
-
-        return axisProperties;
+        } as IAxisProperties;
     }
 
     public buildTickLabelMargins(
-        rotateX: boolean = false,
-        wordBreak: boolean = false,
-        showOnRight: boolean = false,
-        renderXAxis: boolean = false,
-        renderYAxes: boolean = false,
-        renderY2Axis: boolean = false,
+        rotateX?: boolean,
+        wordBreak?: boolean,
+        showOnRight?: boolean,
+        renderXAxis?: boolean,
+        renderYAxes?: boolean,
+        renderY2Axis?: boolean,
         categoryThickness?: number,
         outerPadding?: number,
-        isScalar: boolean = false) {
+        isScalar?: boolean
+    ) {
 
         this.xAxisProperties.willLabelsFit = !rotateX;
         this.xAxisProperties.willLabelsWordBreak = wordBreak;
@@ -118,19 +114,19 @@ export class AxisTickLabelBuilder {
         if (outerPadding != null)
             this.xAxisProperties.outerPadding = outerPadding;
 
-        let margins = axis.getTickLabelMargins(
-            this.viewPort,
-            this.viewPort.width * 0.3,
-            textMeasurementService.measureSvgTextWidth,
-            textMeasurementService.estimateSvgTextHeight,
-            this.axes,
-            this.viewPort.height * 0.2,
-            this.textProperties,
-            undefined,
+        let margins = axis.getTickLabelMargins({
+            viewport: this.viewPort,
+            yMarginLimit: this.viewPort.width * 0.3,
+            textWidthMeasurer: textMeasurementService.measureSvgTextWidth,
+            textHeightMeasurer: textMeasurementService.estimateSvgTextHeight,
+            axes: this.axes,
+            bottomMarginLimit: this.viewPort.height * 0.2,
+            properties: this.textProperties,
             showOnRight,
             renderXAxis,
-            renderYAxes,
-            renderY2Axis);
+            renderY1Axis: renderYAxes,
+            renderY2Axis
+        });
 
         return margins;
     }

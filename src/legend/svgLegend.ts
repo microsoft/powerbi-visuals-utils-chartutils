@@ -426,7 +426,7 @@ export class SVGLegend implements ILegend {
         }
     }
 
-    private normalizePosition(points: any[]): void {
+    private normalizePosition(points: LegendDataPoint[]): void {
         if (this.legendDataStartIndex >= points.length) {
             this.legendDataStartIndex = points.length - 1;
         }

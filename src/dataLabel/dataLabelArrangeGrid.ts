@@ -38,7 +38,7 @@ import { textMeasurementService,
         interfaces } from "powerbi-visuals-utils-formattingutils";
 import TextProperties = interfaces.TextProperties;
 
-import { IArrangeGridElementInfo, ILabelLayout, IDataLabelInfo } from "./dataLabelInterfaces";
+import { IArrangeGridElementInfo, ILabelLayout, IDataLabelInfo, DataPointLabels } from "./dataLabelInterfaces";
 
 import { LabelTextProperties } from "./dataLabelUtils";
 /**
@@ -46,7 +46,7 @@ import { LabelTextProperties } from "./dataLabelUtils";
  */
 export default class DataLabelArrangeGrid {
 
-    private grid: IArrangeGridElementInfo[][][] = [];
+    private grid: Array<Array<Array<IArrangeGridElementInfo>>> = [];
     // size of a grid cell
     private cellSize: ISize;
     private rowCount: number;
@@ -59,81 +59,113 @@ export default class DataLabelArrangeGrid {
      * Creates new ArrangeGrid.
      * @param size The available size
      */
-    constructor(size: ISize, elements: any[], layout: ILabelLayout) {
+    constructor(size: ISize, elements: DataPointLabels[], layout: ILabelLayout) {
         if (size.width === 0 || size.height === 0) {
-            this.cellSize = size;
-            this.rowCount = this.colCount = 0;
+            this.initializeEmptyGrid(size);
+            return;
         }
 
-        const baseProperties: TextProperties = {
+        const baseProperties = this.createBaseTextProperties();
+        this.initializeCellSize();
+        this.calculateMaxLabelSizes(elements, layout, baseProperties);
+        this.adjustEmptyCellSizes(size);
+        this.calculateGridDimensions(size);
+        this.initializeGrid();
+    }
+
+    private initializeEmptyGrid(size: ISize): void {
+        this.cellSize = size;
+        this.rowCount = this.colCount = 0;
+    }
+
+    private createBaseTextProperties(): TextProperties {
+        return {
             fontFamily: LabelTextProperties.fontFamily,
             fontSize: LabelTextProperties.fontSize,
             fontWeight: LabelTextProperties.fontWeight,
         };
+    }
 
-        // sets the cell size to be twice of the Max with and Max height of the elements
+    private initializeCellSize(): void {
         this.cellSize = { width: 0, height: 0 };
-        for (let i = 0, len = elements.length; i < len; i++) {
-            const child = elements[i];
+    }
 
-            // Fill label field
+    private calculateMaxLabelSizes(elements: DataPointLabels[], layout: ILabelLayout, baseProperties: TextProperties): void {
+        for (const child of elements) {
             child.labeltext = layout.labelText(child);
 
-            const properties: TextProperties = Prototype.inherit(baseProperties);
+            const properties = Prototype.inherit(baseProperties);
             properties.text = child.labeltext;
-            properties.fontSize = child.data
-                ? child.data.labelFontSize
-                : child.labelFontSize
-                    ? child.labelFontSize
-                    : LabelTextProperties.fontSize;
+            properties.fontSize = this.getFontSize(child);
 
-            child.size = {
-                width: textMeasurementService.measureSvgTextWidth(properties),
-                height: textMeasurementService.estimateSvgTextHeight(properties),
-            };
+            child.size = this.measureTextSize(properties);
 
-            const w = child.size.width * 2,
-                h = child.size.height * 2;
-
-            if (w > this.cellSize.width) {
-                this.cellSize.width = w;
-            }
-
-            if (h > this.cellSize.height) {
-                this.cellSize.height = h;
-            }
+            this.updateMaxCellSize(child.size);
         }
+    }
 
+    private getFontSize(child: DataPointLabels): string {
+        if (child.data?.labelFontSize) {
+            return child.data.labelFontSize.toString();
+        }
+        if (child.labelFontSize) {
+            return child.labelFontSize.toString();
+        }
+        return LabelTextProperties.fontSize;
+    }
+
+    private measureTextSize(properties: TextProperties): ISize {
+        return {
+            width: textMeasurementService.measureSvgTextWidth(properties),
+            height: textMeasurementService.estimateSvgTextHeight(properties)
+        };
+    }
+
+    private updateMaxCellSize(size: ISize): void {
+        const width = size.width * 2;
+        const height = size.height * 2;
+
+        if (width > this.cellSize.width) {
+            this.cellSize.width = width;
+        }
+        if (height > this.cellSize.height) {
+            this.cellSize.height = height;
+        }
+    }
+
+    private adjustEmptyCellSizes(size: ISize): void {
         if (this.cellSize.width === 0) {
             this.cellSize.width = size.width;
         }
-
         if (this.cellSize.height === 0) {
             this.cellSize.height = size.height;
         }
+    }
 
+    private calculateGridDimensions(size: ISize): void {
         this.colCount = this.getGridRowColCount(
             this.cellSize.width,
             size.width,
             DataLabelArrangeGrid.ARRANGEGRID_MIN_COUNT,
-            DataLabelArrangeGrid.ARRANGEGRID_MAX_COUNT);
+            DataLabelArrangeGrid.ARRANGEGRID_MAX_COUNT
+        );
 
         this.rowCount = this.getGridRowColCount(
             this.cellSize.height,
             size.height,
             DataLabelArrangeGrid.ARRANGEGRID_MIN_COUNT,
-            DataLabelArrangeGrid.ARRANGEGRID_MAX_COUNT);
+            DataLabelArrangeGrid.ARRANGEGRID_MAX_COUNT
+        );
 
         this.cellSize.width = size.width / this.colCount;
         this.cellSize.height = size.height / this.rowCount;
+    }
 
-        const grid = this.grid;
-
+    private initializeGrid(): void {
         for (let x = 0; x < this.colCount; x++) {
-            grid[x] = [];
-
+            this.grid[x] = [];
             for (let y = 0; y < this.rowCount; y++) {
-                grid[x][y] = [];
+                this.grid[x][y] = [];
             }
         }
     }
@@ -143,13 +175,14 @@ export default class DataLabelArrangeGrid {
      * @param element The label element to register.
      * @param rect The label element position rectangle.
      */
-    public add(element: IDataLabelInfo, rect: IRect) {
-        const indexRect = this.getGridIndexRect(rect),
-            grid = this.grid;
+    public add(element: IDataLabelInfo, rect: IRect): void {
+        const indexRect = this.getGridIndexRect(rect);
+        const grid = this.grid;
 
         for (let x = indexRect.left; x < indexRect.right; x++) {
+            const column = grid[x];
             for (let y = indexRect.top; y < indexRect.bottom; y++) {
-                grid[x][y].push({ element: element, rect: rect });
+                column[y].push({ element, rect });
             }
         }
     }
@@ -160,17 +193,15 @@ export default class DataLabelArrangeGrid {
      * @return True if conflict is detected.
      */
     public hasConflict(rect: IRect): boolean {
-        const indexRect = this.getGridIndexRect(rect),
-            grid = this.grid,
-            isIntersecting = shapes.isIntersecting;
+        const indexRect = this.getGridIndexRect(rect);
+        const grid = this.grid;
 
         for (let x = indexRect.left; x < indexRect.right; x++) {
+            const column = grid[x];
             for (let y = indexRect.top; y < indexRect.bottom; y++) {
-                for (let z = 0; z < grid[x][y].length; z++) {
-                    const item = grid[x][y][z];
-                    if (isIntersecting(item.rect, rect)) {
-                        return true;
-                    }
+                const cell = column[y];
+                if (cell.some(item => shapes.isIntersecting(item.rect, rect))) {
+                    return true;
                 }
             }
         }

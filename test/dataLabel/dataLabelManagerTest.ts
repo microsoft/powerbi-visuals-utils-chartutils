@@ -57,7 +57,7 @@ describe("DataLabelManager", () => {
             expect(result.minimumMovingDistance).toEqual(10);
         });
 
-        it("Get Label info - all values Provided", () => {
+        it("Get Label info - all values provided", () => {
             let result: IDataLabelInfo = labelManager.getLabelInfo({ maximumMovingDistance: 12 });
 
             expect(defaultSettings.anchorMargin).toEqual(0);
