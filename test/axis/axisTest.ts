@@ -497,6 +497,7 @@ describe("axis", () => {
             expect(values[0]).toBe("2015");
         });
 
+        // TODO: This test is failing on local machine, but not on CI
         it("create scalar time scale - single day", () => {
             let dateTime = axisPropertiesBuilder.dataTime[0].getTime();
 
@@ -1190,6 +1191,7 @@ describe("axis", () => {
             }).format(new Date(value))).toBe("10/13/2014");
         });
 
+        // TODO: This test is failing on local machine, but not on CI
         it("createFormatter: dateTime scalar - filtered to single value", () => {
             let min = new Date(2014, 6, 14).getTime();
 

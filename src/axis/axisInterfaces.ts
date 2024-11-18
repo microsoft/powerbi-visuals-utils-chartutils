@@ -290,7 +290,7 @@ export interface GetTickLabelMarginsOptions {
     yMarginLimit: number; 
     textWidthMeasurer: ITextAsSVGMeasurer;
     textHeightMeasurer: ITextAsSVGMeasurer;
-    axes: CartesianAxisProperties;
+    axis: CartesianAxisProperties;
     bottomMarginLimit: number;
     properties: TextProperties;
     scrollbarVisible?: boolean;
