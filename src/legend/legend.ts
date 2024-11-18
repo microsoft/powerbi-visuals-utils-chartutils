@@ -57,7 +57,7 @@ export function isTop(orientation: LegendPosition): boolean {
 }
 
 export function positionChartArea(
-    chartArea: Selection<SVGElement, unknown, SVGElement, unknown>, // TODO: TEST
+    chartArea: Selection<any, any, any, any>,
     legend: ILegend
 ): void {
     const legendMargins = legend.getMargins(),

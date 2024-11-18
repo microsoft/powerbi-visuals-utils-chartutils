@@ -62,7 +62,6 @@ import {
     AxisHelperCategoryDataPoint,
     AxisHelperSeries,
     AxisOrientation,
-    CartesianAxisProperties,
     CreateAxisOptions,
     CreateFormatterOptions,
     CreateScaleOptions,
@@ -318,7 +317,6 @@ export function getMargin(availableWidth: number, availableHeight: number, xMarg
     };
 }
 
-/* eslint-disable-next-line max-lines-per-function*/
 export function getTickLabelMargins(options: GetTickLabelMarginsOptions): IMargin {
     const {
         viewport,
@@ -1228,7 +1226,6 @@ export {
     LabelLayoutStrategy
 };
 
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function createPointScale(pixelSpan: number, dataDomain: any[], outerPaddingRatio: number = 0): ScalePoint<any> {
     return scalePoint()
         .range([0, pixelSpan])

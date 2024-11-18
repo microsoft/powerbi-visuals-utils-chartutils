@@ -242,8 +242,9 @@ export function drawDefaultLabelsForDataPointChart({ // TODO: Test with Adilet /
         selectedLabels
             .style(layout.style.toString());
     }
-    // TODO: Might be a fix of bug with types on top (layout.style.toString())
-    layout?.style && Object.keys(layout.style).forEach(style => selectedLabels.style(style, layout.style[style]));
+    if (layout?.style) {
+        Object.keys(layout.style).forEach(style => selectedLabels.style(style, layout.style[style]));
+    }
 
     return selectedLabels;
 }
@@ -310,7 +311,7 @@ function selectLabels({
 }
 
 export function cleanDataLabels(
-    context: Selection<SVGElement, unknown, SVGElement, unknown>, // TODO: TEST
+    context: Selection<any, any, any, any>,
     removeLines: boolean = false
 ): void {
     const emptyData = []
