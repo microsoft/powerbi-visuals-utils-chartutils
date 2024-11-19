@@ -323,7 +323,7 @@ export function getTickLabelMargins(options: GetTickLabelMarginsOptions): IMargi
         yMarginLimit,
         textWidthMeasurer,
         textHeightMeasurer, 
-        axis,
+        axes,
         bottomMarginLimit,
         properties,
         scrollbarVisible,
@@ -333,9 +333,9 @@ export function getTickLabelMargins(options: GetTickLabelMarginsOptions): IMargi
         renderY2Axis
     } = options;
 
-    const xAxisProperties: IAxisProperties = axis.x;
-    const y1AxisProperties: IAxisProperties = axis.y1;
-    const y2AxisProperties: IAxisProperties = axis.y2;
+    const xAxisProperties: IAxisProperties = axes.x;
+    const y1AxisProperties: IAxisProperties = axes.y1;
+    const y2AxisProperties: IAxisProperties = axes.y2;
 
     const xLabels = xAxisProperties.values;
     const y1Labels = y1AxisProperties.values;
@@ -348,7 +348,7 @@ export function getTickLabelMargins(options: GetTickLabelMarginsOptions): IMargi
     const ordinalLabelOffset = xAxisProperties.categoryThickness ? xAxisProperties.categoryThickness / 2 : 0;
     const scaleIsOrdinal = isOrdinalScale(xAxisProperties.scale);
 
-    const hasHierarchy = !arrayIsEmpty(axis.xStack);
+    const hasHierarchy = !arrayIsEmpty(axes.xStack);
 
     let xLabelOuterPadding = 0;
     if (xAxisProperties.outerPadding !== undefined) {
@@ -461,7 +461,7 @@ export function getTickLabelMargins(options: GetTickLabelMarginsOptions): IMargi
     }
 
     if (hasHierarchy) {
-        bottomMargin += (textHeight + stackedAxisPadding) * (axis.xStack.length - 1);
+        bottomMargin += (textHeight + stackedAxisPadding) * (axes.xStack.length - 1);
     }
 
     return {
