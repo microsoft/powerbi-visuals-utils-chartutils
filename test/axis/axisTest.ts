@@ -1443,8 +1443,7 @@ describe("axis", () => {
             expect(isInRange(margins.right, 30, 32)).toBe(true);
         });
 
-        fit("Hide all axes", () => {
-            debugger
+        it("Hide all axes", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(false, false);
 
             expect(margins.top).toBe(0);
