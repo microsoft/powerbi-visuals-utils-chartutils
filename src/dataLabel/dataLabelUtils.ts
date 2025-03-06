@@ -257,7 +257,7 @@ function selectLabels({
     animationDuration
 }: SelectLabelsProps): Selection<BaseType, any, BaseType, any> {
     // Guard for a case where resizing leaves no labels - then we need to remove the labels "g"
-    if (filteredData.length) {
+    if (!filteredData.length) {
         cleanDataLabels(context, true);
         return null;
     }
