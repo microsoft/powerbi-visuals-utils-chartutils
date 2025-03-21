@@ -4,6 +4,7 @@
 
 ### Module `axis`
 * `getTickLabelMargins` has changed props interface to `GetTickLabelMarginsOptions` and now returns `IMargin` instead of `TickLabelMargins`
+* `TickLabelMargins` interface has been removed
 * `getBestNumberOfTicks` has changed props interface to `GetBestNumberOfTicksOptions`
 * `createFormatter` has changed props interface to `CreateFormatterOptions`
 

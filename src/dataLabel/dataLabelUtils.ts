@@ -205,7 +205,7 @@ export function getLabelPrecision(precision: number, format: string): number {
     return defaultCountLabelPrecision;
 }
 
-export function drawDefaultLabelsForDataPointChart({ // TODO: Test with Adilet / Iulia
+export function drawDefaultLabelsForDataPointChart({
     data,
     context,
     layout,
