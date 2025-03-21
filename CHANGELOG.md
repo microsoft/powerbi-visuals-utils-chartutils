@@ -1,3 +1,20 @@
+## Changelog
+
+## 8.0.0
+
+### Module `axis`
+* `getTickLabelMargins` has changed props interface to `GetTickLabelMarginsOptions` and now returns `IMargin` instead of `TickLabelMargins`
+* `TickLabelMargins` interface has been removed
+* `getBestNumberOfTicks` has changed props interface to `GetBestNumberOfTicksOptions`
+* `createFormatter` has changed props interface to `CreateFormatterOptions`
+
+### Module `dataLabel`
+* `drawDefaultLabelsForDataPointChart` has changed props interface to `DrawDefaultLabelsForDataPointChartOptions`
+
+### Other
+* All code was refactored
+* Packages update
+
 ## 7.0.0
 * Removed interactivityutils and related code
 * Removed interactiveLegend class

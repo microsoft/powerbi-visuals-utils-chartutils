@@ -60,11 +60,10 @@ function getLabelY(label: LabelOld) {
     return label.boundingBox.top + orientationOffset - backgroundOffset;
 }
 
-function labelKeyFunction(label: LabelOld, index: number): any {
+function labelKeyFunction(label: LabelOld, index: number): string | number {
     if (label.key) {
         return label.key;
     }
-
     return index;
 }
 

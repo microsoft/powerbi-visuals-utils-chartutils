@@ -57,8 +57,6 @@ import TextProperties = interfaces.TextProperties;
 import ClassAndSelector = CssConstants.ClassAndSelector;
 import createClassAndSelector = CssConstants.createClassAndSelector;
 
-/* eslint-disable no-case-declarations */
-
 export interface TitleLayout {
     x: number;
     y: number;
@@ -247,7 +245,6 @@ export class SVGLegend implements ILegend {
         this.drawLegendInternal(clonedData, viewport, true /* perform auto width */);
     }
 
-    /* eslint-disable-next-line max-lines-per-function */
     public drawLegendInternal(data: LegendData, viewport: powerbi.IViewport, autoWidth: boolean): void {
         this.parentViewport = viewport;
         this.data = data;
@@ -426,7 +423,7 @@ export class SVGLegend implements ILegend {
         }
     }
 
-    private normalizePosition(points: any[]): void {
+    private normalizePosition(points: LegendDataPoint[]): void {
         if (this.legendDataStartIndex >= points.length) {
             this.legendDataStartIndex = points.length - 1;
         }
@@ -832,28 +829,26 @@ export class SVGLegend implements ILegend {
         // check if we need more space for the margin, or use the default text padding
         const fontSizeBiggerThenDefault = this.legendFontSizeMarginDifference > 0;
         const fontFactor = fontSizeBiggerThenDefault ? this.legendFontSizeMarginDifference : 0;
+        
         // calculate the size needed after font size change
         const verticalLegendHeight = 20 + fontFactor;
         const spaceNeededByTitle = 15 + fontFactor;
         const extraShiftForTextAlignmentToIcon = 4 + fontFactor;
         let totalSpaceOccupiedThusFar = verticalLegendHeight;
+
         // the default space for text and icon radius + the margin after the font size change
-
         const firstDataPointMarkerShape: MarkerShape = dataPoints && dataPoints[0] && dataPoints[0].markerShape;
-
-        const fixedHorizontalIconShift: number = SVGLegend.TextAndIconPadding
+        const fixedHorizontalIconShift: number = SVGLegend.TextAndIconPadding 
             + this.getMarkerShapeWidth(firstDataPointMarkerShape) / 2
             + this.legendFontSizeMarginDifference;
-
         const fixedHorizontalTextShift = fixedHorizontalIconShift * 2;
+
         // check how much space is needed
         const maxHorizontalSpaceAvaliable = autoWidth
-            ? this.parentViewport.width * SVGLegend.LegendMaxWidthFactor
-            - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth
-            : this.lastCalculatedWidth
-            - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth;
-        let numberOfItems: number = dataPoints.length;
+            ? this.parentViewport.width * SVGLegend.LegendMaxWidthFactor - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth
+            : this.lastCalculatedWidth - fixedHorizontalTextShift - SVGLegend.LegendEdgeMariginWidth;
 
+        let numberOfItems: number = dataPoints.length;
         let maxHorizontalSpaceUsed = 0;
         const parentHeight = this.parentViewport.height;
 
@@ -863,18 +858,21 @@ export class SVGLegend implements ILegend {
             title.y = spaceNeededByTitle;
             maxHorizontalSpaceUsed = title.width || 0;
         }
+
         // if an arrow should be added, we add space for it
-        if (this.legendDataStartIndex > 0)
+        if (this.legendDataStartIndex > 0) {
             totalSpaceOccupiedThusFar += SVGLegend.LegendArrowOffset;
+        }
 
         const dataPointsLength = dataPoints.length;
         for (let i = 0; i < dataPointsLength; i++) {
             const dp = dataPoints[i];
             const textProperties = SVGLegend.getTextProperties(dp.label, this.data.fontSize, this.data.fontFamily);
+            const baselineDelta = textMeasurementService.estimateSvgTextBaselineDelta(textProperties);
 
             dp.glyphPosition = {
                 x: fixedHorizontalIconShift,
-                y: (totalSpaceOccupiedThusFar + extraShiftForTextAlignmentToIcon) - textMeasurementService.estimateSvgTextBaselineDelta(textProperties)
+                y: (totalSpaceOccupiedThusFar + extraShiftForTextAlignmentToIcon) - baselineDelta
             };
 
             dp.textPosition = {
@@ -885,15 +883,12 @@ export class SVGLegend implements ILegend {
             // TODO: [PERF] Get rid of this extra measurement, and modify
             // getTailoredTextToReturnWidth + Text
             const width = textMeasurementService.measureSvgTextWidth(textProperties);
-            if (width > maxHorizontalSpaceUsed) {
-                maxHorizontalSpaceUsed = width;
-            }
+            maxHorizontalSpaceUsed = Math.max(maxHorizontalSpaceUsed, width);
 
             if (width > maxHorizontalSpaceAvaliable) {
-                const text = textMeasurementService.getTailoredTextOrDefault(
+                dp.label = textMeasurementService.getTailoredTextOrDefault(
                     textProperties,
                     maxHorizontalSpaceAvaliable);
-                dp.label = text;
             }
 
             totalSpaceOccupiedThusFar += verticalLegendHeight;
@@ -905,13 +900,12 @@ export class SVGLegend implements ILegend {
         }
 
         if (autoWidth) {
-            if (maxHorizontalSpaceUsed < maxHorizontalSpaceAvaliable) {
-                this.lastCalculatedWidth = this.viewport.width = Math.ceil(maxHorizontalSpaceUsed + fixedHorizontalTextShift + SVGLegend.LegendEdgeMariginWidth);
-            } else {
-                this.lastCalculatedWidth = this.viewport.width = Math.ceil(this.parentViewport.width * SVGLegend.LegendMaxWidthFactor);
-            }
-        }
-        else {
+            this.lastCalculatedWidth = this.viewport.width = Math.ceil(
+                maxHorizontalSpaceUsed < maxHorizontalSpaceAvaliable
+                    ? maxHorizontalSpaceUsed + fixedHorizontalTextShift + SVGLegend.LegendEdgeMariginWidth
+                    : this.parentViewport.width * SVGLegend.LegendMaxWidthFactor
+            );
+        } else {
             this.viewport.width = this.lastCalculatedWidth;
         }
 
@@ -979,7 +973,6 @@ export class SVGLegend implements ILegend {
         }
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-empty-function */
     public reset(): void { }
 
     private static getTextProperties(

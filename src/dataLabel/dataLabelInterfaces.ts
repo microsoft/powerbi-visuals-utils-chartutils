@@ -34,6 +34,8 @@ import ISize = shapesInterfaces.ISize;
 import  { valueFormatter } from "powerbi-visuals-utils-formattingutils";
 import IValueFormatter = valueFormatter.IValueFormatter;
 
+import { Selection } from "d3-selection";
+
 /** Defines possible content positions.  */
 export enum ContentPositions {
 
@@ -306,4 +308,26 @@ export interface DataLabelObject extends powerbi.DataViewObject {
     showSeries?: boolean;
     labelDensity?: string;
     labelStyle?: any;
+}
+
+export interface DataPointLabels {
+    size: ISize;
+    labeltext?: string;
+    labelFontSize?: number;
+    labelX?: number;
+    labelY?: number;
+    data?: {
+        labelFontSize?: number;
+    };
+}
+
+export interface DrawDefaultLabelsProps {
+    data: any[], 
+    context: Selection<any, any, any, any>, 
+    layout: ILabelLayout,
+    viewport: powerbi.IViewport, 
+    isAnimator?: boolean, 
+    animationDuration?: number, 
+    hasSelection?: boolean, 
+    hideCollidedLabels?: boolean
 }

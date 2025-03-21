@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "description": "ChartUtils",
   "main": "lib/index.js",
   "module": "lib/index.js",
@@ -28,24 +28,23 @@
     "build:map": "tsc --sourceMap",
     "postbuild": "npm run lessc",
     "test": "karma start",
-    "pretest": "npm run lint",
-    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "lintfix": "npx eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "lint": "npx eslint",
+    "lintfix": "npx eslint --fix",
     "lessc": "lessc src/styles/style.less lib/index.css"
   },
   "devDependencies": {
     "@types/d3-array": "^3.2.1",
     "@types/d3-axis": "^3.0.6",
     "@types/d3-scale": "^4.0.8",
-    "@types/d3-selection": "^3.0.10",
-    "@types/d3-transition": "^3.0.8",
+    "@types/d3-selection": "^3.0.11",
+    "@types/d3-transition": "^3.0.9",
     "@types/jasmine": "^5.1.4",
-    "@typescript-eslint/eslint-plugin": "^6.21.0",
-    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^8.12.2",
+    "@typescript-eslint/parser": "^8.12.2",
     "coverage-istanbul-loader": "3.0.5",
-    "eslint": "^8.57.0",
-    "eslint-plugin-powerbi-visuals": "^0.8.1",
-    "jasmine": "5.2.0",
+    "eslint": "^9.13.0",
+    "eslint-plugin-powerbi-visuals": "^1.0.0",
+    "jasmine": "5.4.0",
     "karma": "^6.4.4",
     "karma-chrome-launcher": "^3.2.0",
     "karma-coverage": "^2.2.1",
@@ -56,14 +55,14 @@
     "karma-webpack": "5.0.1",
     "less": "^4.2.0",
     "lodash.union": "4.6.0",
-    "playwright-chromium": "^1.46.0",
+    "playwright-chromium": "^1.48.2",
     "powerbi-visuals-api": "^5.11.0",
     "powerbi-visuals-utils-colorutils": "^6.0.5",
     "powerbi-visuals-utils-testutils": "^6.1.1",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
-    "typescript": "^4.9.5",
-    "webpack": "^5.93.0"
+    "typescript": "^5.5.0",
+    "webpack": "^5.96.1"
   },
   "dependencies": {
     "d3-array": "^3.2.4",
@@ -73,7 +72,8 @@
     "d3-transition": "^3.0.1",
     "powerbi-visuals-utils-formattingutils": "^6.1.2",
     "powerbi-visuals-utils-svgutils": "^6.0.4",
-    "powerbi-visuals-utils-typeutils": "^6.0.3"
+    "powerbi-visuals-utils-typeutils": "^6.0.3",
+    "typescript-eslint": "^8.12.2"
   },
   "optionalDependencies": {
     "fsevents": "2.3.3"

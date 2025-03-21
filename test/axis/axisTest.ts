@@ -497,6 +497,7 @@ describe("axis", () => {
             expect(values[0]).toBe("2015");
         });
 
+        // TODO: This test is failing on local machine, but not on CI
         it("create scalar time scale - single day", () => {
             let dateTime = axisPropertiesBuilder.dataTime[0].getTime();
 
@@ -993,31 +994,66 @@ describe("axis", () => {
         ];
 
         it("dataViewMetadataColumn with only integers small range", () => {
-            let actual = axis.getBestNumberOfTicks(0, 3, dataViewMetadataColumnWithIntegersOnly, 6);
+            let actual = axis.getBestNumberOfTicks({
+                min: 0,
+                max: 3,
+                valuesMetadata: dataViewMetadataColumnWithIntegersOnly,
+                maxTickCount: 6
+            });
             expect(actual).toBe(4); // [0,1,2,3]
         });
 
         it("dataViewMetadataColumn with only integers large range", () => {
-            let actual = axis.getBestNumberOfTicks(0, 10, dataViewMetadataColumnWithIntegersOnly, 6);
+            let actual = axis.getBestNumberOfTicks({
+                min: 0,
+                max: 10,
+                valuesMetadata: dataViewMetadataColumnWithIntegersOnly,
+                maxTickCount: 6
+            });
             expect(actual).toBe(6);
         });
 
         it("hundred percent dataViewMetadataColumn with only integers", () => {
-            let actual = axis.getBestNumberOfTicks(0, 1, dataViewMetadataColumnWithIntegersOnly, 6);
+            let actual = axis.getBestNumberOfTicks({
+                min: 0,
+                max: 1,
+                valuesMetadata: dataViewMetadataColumnWithIntegersOnly,
+                maxTickCount: 6
+            });
             expect(actual).toBe(6);
         });
 
         it("dataViewMetadataColumn with non integers", () => {
-            let actual = axis.getBestNumberOfTicks(0, 3, dataViewMetadataColumnWithNonInteger, 6);
+            let actual = axis.getBestNumberOfTicks({
+                min: 0,
+                max: 3,
+                valuesMetadata: dataViewMetadataColumnWithNonInteger,
+                maxTickCount: 6
+            });
             expect(actual).toBe(6);
         });
 
         it("dataViewMetadataColumn with NaN min/max", () => {
-            let actual = axis.getBestNumberOfTicks(NaN, 3, dataViewMetadataColumnWithNonInteger, 6);
+            let actual = axis.getBestNumberOfTicks({
+                min: NaN,
+                max: 3,
+                valuesMetadata: dataViewMetadataColumnWithNonInteger,
+                maxTickCount: 6
+            });
             expect(actual).toBe(3);
-            actual = axis.getBestNumberOfTicks(1, NaN, dataViewMetadataColumnWithNonInteger, 6);
+            actual = axis.getBestNumberOfTicks({
+                min: 1,
+                max: NaN,
+                valuesMetadata: dataViewMetadataColumnWithNonInteger,
+                maxTickCount: 6
+            });
             expect(actual).toBe(3);
-            actual = axis.getBestNumberOfTicks(NaN, NaN, dataViewMetadataColumnWithNonInteger, 6);
+            actual = axis.getBestNumberOfTicks({
+                min: NaN,
+                max: NaN,
+                valuesMetadata: dataViewMetadataColumnWithNonInteger,
+                maxTickCount: 6
+            });
             expect(actual).toBe(3);
         });
 
@@ -1051,16 +1087,16 @@ describe("axis", () => {
                 value = 100,
                 tickValues = [0, 50, 100, 150, 200];
 
-            expect(axis.createFormatter(
-                [min, max],
-                [min, max],
-                measureColumn.type,
-                true,
-                measureColumn.format,
-                6,
-                tickValues,
-                "getValueFn",
-                true).format(value)).toBe("$100");
+            expect(axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: measureColumn.type,
+                isScalar: true,
+                formatString: measureColumn.format,
+                bestTickCount: 6,
+                tickValues: tickValues,
+                useTickIntervalForDisplayUnits: false
+            }).format(value)).toBe("$100");
         });
 
         it("createFormatter: value (millions)", () => {
@@ -1068,7 +1104,16 @@ describe("axis", () => {
                 max = 2e6,
                 tickValues = [0, 0.5e6, 1e6, 1.5e6, 2e6];
 
-            let formatter = axis.createFormatter([min, max], [min, max], measureColumn.type, true, measureColumn.format, 6, tickValues, "getValueFn", true);
+            let formatter = axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: measureColumn.type,
+                isScalar: true,
+                formatString: measureColumn.format,
+                bestTickCount: 6,
+                tickValues: tickValues,
+                useTickIntervalForDisplayUnits: true
+            });
             expect(formatter.format(tickValues[0])).toBe("$0.0M");
             expect(formatter.format(tickValues[2])).toBe("$1.0M");
             expect(formatter.format(tickValues[3])).toBe("$1.5M");
@@ -1082,9 +1127,16 @@ describe("axis", () => {
 
             // Used to return "5.63732E+14", not the correct currency value
             let expectedValue = "$564T";
-            expect(axis.createFormatter([min, max], [min, max], measureColumn.type, true, measureColumn.format, 6, tickValues, "getValueFn", true)
-                .format(value))
-                .toBe(expectedValue);
+            expect(axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: measureColumn.type,
+                isScalar: true,
+                formatString: measureColumn.format,
+                bestTickCount: 6,
+                tickValues: tickValues,
+                useTickIntervalForDisplayUnits: true
+            }).format(value)).toBe(expectedValue);
         });
 
         it("createFormatter: 100% stacked", () => {
@@ -1093,9 +1145,16 @@ describe("axis", () => {
                 value = 0.5,
                 tickValues = [0, 0.25, 0.5, 0.75, 1];
 
-            expect(axis.createFormatter([min, max], [min, max], measureColumn.type, true, "0%", 6, tickValues, "getValueFn", true)
-                .format(value))
-                .toBe("50%");
+            expect(axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: measureColumn.type,
+                isScalar: true,
+                formatString: "0%",
+                bestTickCount: 6,
+                tickValues: tickValues,
+                useTickIntervalForDisplayUnits: true
+            }).format(value)).toBe("50%");
         });
 
         it("createFormatter: dateTime scalar", () => {
@@ -1103,9 +1162,16 @@ describe("axis", () => {
                 max = new Date(2014, 11, 14).getTime(),
                 value = new Date(2014, 9, 13).getTime();
 
-            expect(axis.createFormatter([min, max], [min, max], dateColumn.type, true, dateColumn.format, 6, [/*not used by datetime*/], "getValueFn", true)
-                .format(new Date(value)))
-                .toBe("Oct 2014");
+            expect(axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: dateColumn.type,
+                isScalar: true,
+                formatString: dateColumn.format,
+                bestTickCount: 6,
+                tickValues: [/*not used by datetime*/], 
+                useTickIntervalForDisplayUnits: true
+            }).format(new Date(value))).toBe("Oct 2014");
         });
 
         it("createFormatter: dateTime ordinal", () => {
@@ -1113,17 +1179,32 @@ describe("axis", () => {
                 max = new Date(2014, 11, 14).getTime(),
                 value = new Date(2014, 9, 13).getTime();
 
-            expect(axis.createFormatter([min, max], [min, max], dateColumn.type, false, dateColumn.format, 6, [/*not used by datetime*/], "getValueFn", true)
-                .format(new Date(value)))
-                .toBe("10/13/2014");
+            expect(axis.createFormatter({
+                scaleDomain: [min, max],
+                dataDomain: [min, max],
+                dataType: dateColumn.type,
+                isScalar: false,
+                formatString: dateColumn.format,
+                bestTickCount: 6,
+                tickValues: [/*not used by datetime*/],
+                useTickIntervalForDisplayUnits: true
+            }).format(new Date(value))).toBe("10/13/2014");
         });
 
+        // TODO: This test is failing on local machine, but not on CI
         it("createFormatter: dateTime scalar - filtered to single value", () => {
             let min = new Date(2014, 6, 14).getTime();
 
-            expect(axis.createFormatter([min, min], [min, min], dateColumn.type, true, dateColumn.format, 6, [/*not used by datetime*/], "getValueFn", true)
-                .format(new Date(min)))
-                .toBe("Jul 14");
+            expect(axis.createFormatter({
+                scaleDomain: [min, min],
+                dataDomain: [min, min],
+                dataType: dateColumn.type,
+                isScalar: true,
+                formatString: dateColumn.format,
+                bestTickCount: 6,
+                tickValues: [/*not used by datetime*/],
+                useTickIntervalForDisplayUnits: true
+            }).format(new Date(min))).toBe("Jul 14");
         });
 
         describe("createFormatter: value (detected precision)", () => {
@@ -1133,9 +1214,16 @@ describe("axis", () => {
                     value = 1,
                     tickValues = [0, 0.5, 1, 1.5, 2];
 
-                expect(axis.createFormatter([min, max], [min, max], measureColumn.type, true, measureColumn.format, 6, tickValues, "getValueFn", true)
-                    .format(value))
-                    .toBe("$1.0");
+                expect(axis.createFormatter({
+                    scaleDomain: [min, max],
+                    dataDomain: [min, max],
+                    dataType: measureColumn.type,
+                    isScalar: true,
+                    formatString: measureColumn.format,
+                    bestTickCount: 6,
+                    tickValues: tickValues, 
+                    useTickIntervalForDisplayUnits: true
+                }).format(value)).toBe("$1.0");
             });
 
             it("precision(0)", () => {
@@ -1144,9 +1232,16 @@ describe("axis", () => {
                     value = 1,
                     tickValues = [0, 1, 2, 3, 4];
 
-                expect(axis.createFormatter([min, max], [min, max], measureColumn.type, true, measureColumn.format, 6, tickValues, "getValueFn", true)
-                    .format(value))
-                    .toBe("$1");
+                expect(axis.createFormatter({
+                    scaleDomain: [min, max],
+                    dataDomain: [min, max],
+                    dataType: measureColumn.type,
+                    isScalar: true,
+                    formatString: measureColumn.format,
+                    bestTickCount: 6,
+                    tickValues: tickValues,
+                    useTickIntervalForDisplayUnits: true
+                }).format(value)).toBe("$1");
             });
         });
 
@@ -1262,9 +1357,17 @@ describe("axis", () => {
                     tickValues = [0, 0.5, 1, 1.5, 2];
 
                 let specifiedPrecision = 2;
-                expect(axis.createFormatter([min, max], [min, max], measureColumn.type, true, measureColumn.format, 6, tickValues, "getValueFn", true, undefined, specifiedPrecision)
-                    .format(value))
-                    .toBe("$1.00");
+                expect(axis.createFormatter({
+                    scaleDomain: [min, max],
+                    dataDomain: [min, max],
+                    dataType: measureColumn.type,
+                    isScalar: true,
+                    formatString: measureColumn.format,
+                    bestTickCount: 6,
+                    tickValues,
+                    useTickIntervalForDisplayUnits: true,
+                    axisPrecision: specifiedPrecision
+                }).format(value)).toBe("$1.00");
             });
         });
     });
@@ -1335,119 +1438,119 @@ describe("axis", () => {
         it("Dual y-axes", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, true);
 
-            expect(margins.xMax).toBe(10);
-            expect(isInRange(margins.yLeft, 15, 16)).toBe(true);
-            expect(isInRange(margins.yRight, 30, 32)).toBe(true);
+            expect(margins.top).toBe(10);
+            expect(isInRange(margins.left, 15, 16)).toBe(true);
+            expect(isInRange(margins.right, 30, 32)).toBe(true);
         });
 
         it("Hide all axes", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(false, false);
 
-            expect(margins.xMax).toBe(0);
-            expect(margins.yLeft).toBe(0);
-            expect(margins.yRight).toBe(0);
+            expect(margins.top).toBe(0);
+            expect(margins.left).toBe(0);
+            expect(margins.right).toBe(0);
         });
 
         it("Disable the secondary axis", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, false);
 
-            expect(margins.xMax).toBe(10);
-            expect(isInRange(margins.yLeft, 15, 16)).toBe(true);
-            expect(isInRange(margins.yRight, 11, 14)).toBe(true);
+            expect(margins.top).toBe(10);
+            expect(isInRange(margins.left, 15, 16)).toBe(true);
+            expect(isInRange(margins.right, 11, 14)).toBe(true);
         });
 
         it("Switch the y-axes", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(false, false, true, true, true, true);
 
-            expect(margins.xMax).toBe(10);
-            expect(margins.yLeft).toBe(32);
-            expect(margins.yRight).toBe(16);
+            expect(margins.top).toBe(10);
+            expect(margins.left).toBe(32);
+            expect(margins.right).toBe(16);
         });
 
         it("Switch the y-axes, and disable the secondary axis", () => {
             let margins = axisHelperTickLabelBuilder.buildTickLabelMargins(true, false, true, true, true, false);
 
-            expect(margins.xMax).toBe(25);
+            expect(margins.top).toBe(25);
 
             // 16 for phantomjs(2.1.1) and 17 for phantomjs(2.0.0)
-            expect(isInRange(margins.yLeft, 16, 17)).toBe(true);
+            expect(isInRange(margins.left, 16, 17)).toBe(true);
 
             // 11 for Mac OS and 12 for Windows
-            expect(isInRange(margins.yRight, 15, 16)).toBe(true);
+            expect(isInRange(margins.right, 15, 16)).toBe(true);
         });
 
         it("xOverflowLeft", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["CrazyOutdoorDuneBuggiesWithFluxCapacitors", "Cars", "Trucks", "Boats", "RVs"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, false);
 
-            expect(margins.xMax).toBe(10);
-            expect(margins.yLeft).toBe(35);
-            expect(margins.yRight).toBe(0);
+            expect(margins.top).toBe(10);
+            expect(margins.left).toBe(35);
+            expect(margins.right).toBe(0);
         });
 
         it("xOverflowLeft, with rotate", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["CrazyOutdoorDuneBuggiesWithFluxCapacitors", "Cars", "Trucks", "Boats", "RVs"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(true, false, false, true, true, false);
-            expect(margins.xMax).toBe(25);
-            expect(margins.yLeft).toBe(35);
-            expect(margins.yRight).toBe(0);
+            expect(margins.top).toBe(25);
+            expect(margins.left).toBe(35);
+            expect(margins.right).toBe(0);
         });
 
         it("xOverflowLeft, with rotate, disable both Y axes", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["CrazyOutdoorDuneBuggiesWithFluxCapacitors", "Cars", "Trucks", "Boats", "RVs"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(true, false, false, true, false, false);
 
-            expect(margins.xMax).toBe(25);
-            expect(margins.yLeft).toBe(35);
-            expect(margins.yRight).toBe(0);
+            expect(margins.top).toBe(25);
+            expect(margins.left).toBe(35);
+            expect(margins.right).toBe(0);
         });
 
         it("xOverflowRight, disable the secondary axis", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["Cars", "Trucks", "Boats", "RVs", "CrazyOutdoorDuneBuggies"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, false);
 
-            expect(margins.xMax).toBe(10);
-            expect(margins.yLeft).toBe(16);
-            expect(isInRange(margins.yRight, 33, 37)).toBe(true);
+            expect(margins.top).toBe(10);
+            expect(margins.left).toBe(16);
+            expect(isInRange(margins.right, 33, 37)).toBe(true);
         });
 
         it("xOverflowRight, line chart, small overhang, disable the secondary axis", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["Cars", "Trucks", "Boats"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, false, null, 10, true);
 
-            expect(margins.xMax).toBe(10);
-            expect(margins.yLeft).toBe(16);
-            expect(isInRange(margins.yRight, 17, 19)).toBe(true);
+            expect(margins.top).toBe(10);
+            expect(margins.left).toBe(16);
+            expect(isInRange(margins.right, 17, 19)).toBe(true);
         });
 
         it("xOverflowRight, disable both Y axes", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["Cars", "Trucks", "Boats", "RVs", "CrazyOutdoorDuneBuggies"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, false, false, true, false, false);
 
-            expect(margins.xMax).toBe(10);
-            expect(margins.yLeft).toBe(0);
-            expect(isInRange(margins.yRight, 33, 37)).toBe(true);
+            expect(margins.top).toBe(10);
+            expect(margins.left).toBe(0);
+            expect(isInRange(margins.right, 33, 37)).toBe(true);
         });
 
         it("xOverflowRight, with rotate, disable both Y axes", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder(undefined, ["Cars", "Trucks", "Boats", "RVs", "CrazyOutdoorDuneBuggies"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(true, false, false, true, false, false);
 
-            expect(margins.xMax).toBe(25);
-            expect(isInRange(margins.yLeft, 2, 3)).toBe(true);
-            expect(margins.yRight).toBe(0);
+            expect(margins.top).toBe(25);
+            expect(isInRange(margins.left, 2, 3)).toBe(true);
+            expect(margins.right).toBe(0);
         });
 
         it("Check bottom margin for word breaking is based on number of text lines shown", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder({ height: 300, width: 150 }, ["Stardust-IPA", "83742123123123 (Jun-14-2011) Robotics", "Q4-was-the-best-ever"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, true, false, true, true, false);
-            expect(margins.xMax).toBeGreaterThan(3 * localTickLabelBuilder.getFontSize() - 1);
+            expect(margins.top).toBeGreaterThan(3 * localTickLabelBuilder.getFontSize() - 1);
         });
 
         it("Scalar axis, overflow right", () => {
             let localTickLabelBuilder = new AxisTickLabelBuilder({ height: 200, width: 200 }, ["Jan 2015", "Feb 2015", "Mar 2015", "April 2015"]);
             let margins = localTickLabelBuilder.buildTickLabelMargins(false, false, false, true, true, false, undefined, undefined, true);
-            expect(margins.yRight).toBeGreaterThan(0);
+            expect(margins.right).toBeGreaterThan(0);
         });
     });
 
@@ -1480,7 +1583,7 @@ describe("axis", () => {
         });
 
         it("Check that customized domain is set on null domain", () => {
-            let customizedDomain = [undefined, undefined];
+            let customizedDomain = [];
             let existingDomain = undefined;
             let newDomain = axis.applyCustomizedDomain(customizedDomain, existingDomain);
             expect(newDomain).toBeUndefined();
