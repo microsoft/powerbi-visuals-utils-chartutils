@@ -103,7 +103,10 @@ export function drawDefaultLabels(
         .style("fill", (d: LabelOld) => d.fill)
         .style("font-size", (d: LabelOld) => pixelConverter.fromPoint(d.fontSize || DefaultLabelFontSizeInPt))
         .style("font-family", (d: LabelOld) => d.fontFamily ? d.fontFamily : undefined)
-        .style("text-anchor", (d: LabelOld) => d.textAnchor);
+        .style("text-anchor", (d: LabelOld) => d.textAnchor)
+        .style("font-weight", (d: LabelOld) => d.fontWeight)
+        .style("font-style", (d: LabelOld) => d.fontStyle)
+        .style("text-decoration", (d: LabelOld) => d.textDecoration)
 
     if (hasTooltip) {
         labels.append("title").text((d: LabelOld) => d.tooltip);
