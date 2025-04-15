@@ -1,5 +1,11 @@
 ## Changelog
 
+## 8.1.0
+
+* Added `fontWeight`, `fontStyle`, `textDecoration` to `LegendData` interface
+* Added `fontWeight`, `fontStyle`, `textDecoration` to `LabelOld` interface
+* Updated packages
+
 ## 8.0.0
 
 ### Module `axis`

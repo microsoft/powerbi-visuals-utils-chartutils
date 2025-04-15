@@ -84,6 +84,9 @@ export interface LegendData {
     labelColor?: string;
     fontSize?: number;
     fontFamily?: string;
+    fontWeight?: string;
+    fontStyle?: string;
+    textDecoration?: string;
 }
 
 export const legendProps = {
@@ -93,6 +96,9 @@ export const legendProps = {
     showTitle: "showTitle",
     labelColor: "labelColor",
     fontSize: "fontSize",
+    fontWeight: "fontWeight",
+    fontStyle: "fontStyle",
+    textDecoration: "textDecoration",
 };
 
 export interface ILegend {

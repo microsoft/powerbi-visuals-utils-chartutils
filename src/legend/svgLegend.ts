@@ -305,6 +305,9 @@ export class SVGLegend implements ILegend {
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize))
             .style("font-family", data.fontFamily)
+            .style("font-weight", data.fontWeight)
+            .style("font-style", data.fontStyle)
+            .style("text-decoration", data.textDecoration)
             .text((d: TitleLayout) => d.text)
             .attr("x", (d: TitleLayout) => d.x)
             .attr("y", (d: TitleLayout) => d.y)
@@ -392,7 +395,10 @@ export class SVGLegend implements ILegend {
             .text((d: LegendDataPoint) => d.label)
             .style("fill", data.labelColor)
             .style("font-size", PixelConverter.fromPoint(data.fontSize))
-            .style("font-family", data.fontFamily);
+            .style("font-family", data.fontFamily)
+            .style("font-weight", data.fontWeight)
+            .style("font-style", data.fontStyle)
+            .style("text-decoration", data.textDecoration);
 
         legendItems
             .exit()
