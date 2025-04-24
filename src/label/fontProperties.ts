@@ -35,6 +35,7 @@ export interface FontProperties {
     readonly variant?: string;
     readonly weight?: string;
     readonly whiteSpace?: string;
+    readonly decoration?: string;
 }
 
 export interface MutableFontProperties {

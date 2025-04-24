@@ -113,9 +113,12 @@ export function downgradeToOldLabels(labels: Label[]): LabelOld[] {
         const inheritedLabel: Label = { ...label };
         inheritedLabel.fontProperties = null;
         const oldLabel: LabelOld = <any>inheritedLabel;
-        oldLabel.fill = label.fontProperties ? label.fontProperties.color : undefined;
-        oldLabel.fontSize = (label.fontProperties && label.fontProperties.size) ? label.fontProperties.size.pt : undefined;
-        oldLabel.fontFamily = label.fontProperties ? label.fontProperties.family : undefined;
+        oldLabel.fill = label?.fontProperties?.color;
+        oldLabel.fontSize = label?.fontProperties?.size?.pt;
+        oldLabel.fontFamily = label?.fontProperties?.family;
+        oldLabel.fontWeight = label?.fontProperties?.weight;
+        oldLabel.fontStyle = label?.fontProperties?.style;
+        oldLabel.textDecoration = label?.fontProperties?.decoration;
         return oldLabel;
     });
 }

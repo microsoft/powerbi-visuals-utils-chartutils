@@ -389,6 +389,15 @@ export interface LabelOld extends ISelectableDataPoint{
     /** A text anchor used to override the default label text-anchor (middle) */
     textAnchor?: string;
 
+    /** The font weight of the data label */
+    fontWeight?: string;
+
+    /** The font style of the data label */
+    fontStyle?: string;
+
+    /** The text decoration of the data label */
+    textDecoration?: string;
+
     /** points for reference line rendering */
     leaderLinePoints?: number[][];
 
