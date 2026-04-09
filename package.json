@@ -1,6 +1,6 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "8.2.0",
+  "version": "8.2.1",
   "description": "ChartUtils",
   "main": "lib/index.js",
   "module": "lib/index.js",

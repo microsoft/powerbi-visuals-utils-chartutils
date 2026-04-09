@@ -1,5 +1,13 @@
 ## Changelog
 
+## 8.2.1
+
+* Updated packages
+
+## 8.2.0
+
+* Updated packages
+
 ## 8.1.0
 
 * Added `fontWeight`, `fontStyle`, `textDecoration` to `LegendData` interface
