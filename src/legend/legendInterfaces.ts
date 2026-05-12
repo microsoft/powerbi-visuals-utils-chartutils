@@ -39,6 +39,8 @@ export enum LegendPosition {
     BottomCenter,
     RightCenter,
     LeftCenter,
+    TopRight,
+    BottomRight,
 }
 
 export interface ISelectableDataPoint{

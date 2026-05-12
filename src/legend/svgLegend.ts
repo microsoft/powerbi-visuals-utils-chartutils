@@ -39,6 +39,7 @@ import {
 } from "powerbi-visuals-utils-svgutils";
 
 import { ILegend, LegendData, LegendDataPoint, LegendPosition } from "./legendInterfaces";
+import { isBottom, isRight, isTopOrBottom, isCentered, isRightAligned } from "./legend";
 
 import * as Markers from "./markers";
 
@@ -168,14 +169,11 @@ export class SVGLegend implements ILegend {
             "width", legendViewport.width || (orientation === LegendPosition.None ? 0 : this.parentViewport.width)
         );
 
-        const isRight = orientation === LegendPosition.Right || orientation === LegendPosition.RightCenter,
-            isBottom = orientation === LegendPosition.Bottom || orientation === LegendPosition.BottomCenter;
-
         this.svg.style(
-            "margin-left", isRight ? (this.parentViewport.width - legendViewport.width) + "px" : null
+            "margin-left", isRight(orientation) ? (this.parentViewport.width - legendViewport.width) + "px" : null
         );
         this.svg.style(
-            "margin-top", isBottom ? (this.parentViewport.height - legendViewport.height) + "px" : null,
+            "margin-top", isBottom(orientation) ? (this.parentViewport.height - legendViewport.height) + "px" : null,
         );
     }
 
@@ -185,6 +183,8 @@ export class SVGLegend implements ILegend {
             case LegendPosition.Bottom:
             case LegendPosition.TopCenter:
             case LegendPosition.BottomCenter:
+            case LegendPosition.TopRight:
+            case LegendPosition.BottomRight:
                 const pixelHeight = PixelConverter.fromPointToPixel(this.data && this.data.fontSize
                     ? this.data.fontSize
                     : SVGLegend.DefaultFontSizeInPt);
@@ -259,7 +259,7 @@ export class SVGLegend implements ILegend {
 
         // Adding back the workaround for Legend Left/Right position for Map
         const mapControls = this.element.getElementsByClassName("mapControl");
-        if (mapControls.length > 0 && !this.isTopOrBottom(this.orientation)) {
+        if (mapControls.length > 0 && !isTopOrBottom(this.orientation)) {
             for (let i = 0; i < mapControls.length; ++i) {
                 const element = <HTMLElement>mapControls[i];
                 element.style.display = "inline-block";
@@ -274,17 +274,21 @@ export class SVGLegend implements ILegend {
 
         const group = this.group;
 
-        // transform the wrapping group if position is centered
-        if (this.isCentered(this.orientation)) {
+        // transform the wrapping group if position is centered or right-aligned
+        if (isCentered(this.orientation)) {
             let centerOffset = 0;
-            if (this.isTopOrBottom(this.orientation)) {
+            if (isTopOrBottom(this.orientation)) {
                 centerOffset = Math.max(0, (this.parentViewport.width - this.visibleLegendWidth) / 2);
                 group.attr("transform", svgManipulation.translate(centerOffset, 0));
             }
             else {
-                centerOffset = Math.max((this.parentViewport.height - this.visibleLegendHeight) / 2);
+                centerOffset = Math.max(0, (this.parentViewport.height - this.visibleLegendHeight) / 2);
                 group.attr("transform", svgManipulation.translate(0, centerOffset));
             }
+        }
+        else if (isRightAligned(this.orientation)) {
+            const rightOffset = Math.max(0, this.parentViewport.width - this.visibleLegendWidth);
+            group.attr("transform", svgManipulation.translate(rightOffset, 0));
         }
         else {
             group.attr("transform", null);
@@ -444,7 +448,7 @@ export class SVGLegend implements ILegend {
         const hasTitle = !!title;
 
         if (hasTitle) {
-            const isHorizontal = this.isTopOrBottom(this.orientation);
+            const isHorizontal = isTopOrBottom(this.orientation);
 
             const textProperties = SVGLegend.getTextProperties(title, this.data.fontSize, this.data.fontFamily);
             let text = title;
@@ -498,7 +502,7 @@ export class SVGLegend implements ILegend {
         let navArrows: NavigationArrow[];
         let numberOfItems: number;
 
-        if (this.isTopOrBottom(this.orientation)) {
+        if (isTopOrBottom(this.orientation)) {
             navArrows = this.isScrollable ? this.calculateHorizontalNavigationArrowsLayout(title) : [];
             numberOfItems = this.calculateHorizontalLayout(dataPoints, title, navArrows);
         }
@@ -786,6 +790,20 @@ export class SVGLegend implements ILegend {
         }
 
         this.visibleLegendWidth = occupiedWidth;
+
+        // When the legend is right-aligned (TopRight/BottomRight):
+        //  - If everything fits, the group is translated to the right edge in
+        //    drawLegendInternal and items render right-aligned with no arrow.
+        //  - If items overflow, native visuals fall back to left-aligned rendering
+        //    with the "next" arrow at the right edge of the viewport — matching the
+        //    standard Top/Bottom overflow behavior. We achieve that here by setting
+        //    visibleLegendWidth to the full parent width so the translation in
+        //    drawLegendInternal becomes 0; the arrow keeps its default x set by
+        //    updateNavigationArrowLayout (parentViewport.width - LegendArrowWidth).
+        if (isRightAligned(this.orientation) && numberOfItems !== dataPointsLength) {
+            this.visibleLegendWidth = this.parentViewport.width;
+        }
+
         this.updateNavigationArrowLayout(navigationArrows, dataPointsLength, numberOfItems);
 
         return numberOfItems;
@@ -953,30 +971,6 @@ export class SVGLegend implements ILegend {
 
         path.attr("d", (d: NavigationArrow) => d.path)
             .attr("transform", (d: NavigationArrow) => d.rotateTransform);
-    }
-
-    private isTopOrBottom(orientation: LegendPosition): boolean {
-        switch (orientation) {
-            case LegendPosition.Top:
-            case LegendPosition.Bottom:
-            case LegendPosition.BottomCenter:
-            case LegendPosition.TopCenter:
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    private isCentered(orientation: LegendPosition): boolean {
-        switch (orientation) {
-            case LegendPosition.BottomCenter:
-            case LegendPosition.LeftCenter:
-            case LegendPosition.RightCenter:
-            case LegendPosition.TopCenter:
-                return true;
-            default:
-                return false;
-        }
     }
 
     public reset(): void { }

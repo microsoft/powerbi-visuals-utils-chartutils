@@ -32,3 +32,5 @@ export const topCenter: string = "TopCenter";
 export const bottomCenter: string = "BottomCenter";
 export const leftCenter: string = "LeftCenter";
 export const rightCenter: string = "RightCenter";
+export const topRight: string = "TopRight";
+export const bottomRight: string = "BottomRight";
