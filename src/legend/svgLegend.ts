@@ -793,13 +793,16 @@ export class SVGLegend implements ILegend {
 
         // When the legend is right-aligned (TopRight/BottomRight):
         //  - If everything fits, the group is translated to the right edge in
-        //    drawLegendInternal and items render right-aligned with no arrow.
-        //  - If items overflow, native visuals fall back to left-aligned rendering
-        //    with the "next" arrow at the right edge of the viewport — matching the
-        //    standard Top/Bottom overflow behavior. We achieve that here by setting
-        //    visibleLegendWidth to the full parent width so the translation in
-        //    drawLegendInternal becomes 0; the arrow keeps its default x set by
-        //    updateNavigationArrowLayout (parentViewport.width - LegendArrowWidth).
+        //    drawLegendInternal and items render right-aligned.
+        //  - If items overflow, we unconditionally fall back to left-aligned
+        //    rendering by setting visibleLegendWidth to the full parent width so
+        //    the translation in drawLegendInternal becomes 0. This matches the
+        //    standard Top/Bottom overflow layout.
+        //    When scrolling is enabled (isScrollable), updateNavigationArrowLayout
+        //    will additionally place the "next" arrow at the right edge of the
+        //    viewport (parentViewport.width - LegendArrowWidth); when scrolling
+        //    is disabled, navigationArrows is empty and no arrow is rendered, but
+        //    the left-aligned fallback still applies.
         if (isRightAligned(this.orientation) && numberOfItems !== dataPointsLength) {
             this.visibleLegendWidth = this.parentViewport.width;
         }
