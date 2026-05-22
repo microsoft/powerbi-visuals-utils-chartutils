@@ -38,12 +38,12 @@ jobs:
         run: npm run lint
 
       - name: Create lib archive
-        run: zip -r lib.zip lib *.md LICENSE SECURITY.md package.json package-lock.json \
-          -x 'lib/test/*' 'lib/src/*'
+        run: |
+          zip -r lib.zip lib *.md LICENSE SECURITY.md package.json package-lock.json -x 'lib/test/*' 'lib/src/*'
 
       - name: Upload production artifacts
         run: |
-          gh release upload $TAG_NAME "lib.zip#release"
+          gh release upload $TAG_NAME "lib.zip"
           gh release edit $TAG_NAME --draft=false
         env:
           TAG_NAME: ${{ github.event.release.tag_name }}
