@@ -1,5 +1,9 @@
 ## Changelog
 
+## 8.2.2
+
+* Updated packages
+
 ## 8.2.1
 
 * Updated packages
