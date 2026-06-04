@@ -39,7 +39,19 @@ export enum LegendPosition {
     BottomCenter,
     RightCenter,
     LeftCenter,
+    /**
+     * Horizontal legend above the chart, items right-aligned to the chart area.
+     * On overflow falls back to left-aligned layout with a navigation arrow
+     * (when the legend is scrollable), instead of keeping right alignment with
+     * horizontal clipping/scroll. This mirrors the native Power BI legend behavior.
+     */
     TopRight,
+    /**
+     * Horizontal legend below the chart, items right-aligned to the chart area.
+     * On overflow falls back to left-aligned layout with a navigation arrow
+     * (when the legend is scrollable), instead of keeping right alignment with
+     * horizontal clipping/scroll. This mirrors the native Power BI legend behavior.
+     */
     BottomRight,
 }
 
