@@ -1,5 +1,13 @@
 ## Changelog
 
+## 8.3.0
+
+### Module `legend`
+* Added `LegendPosition.TopRight` and `LegendPosition.BottomRight` — horizontal legend with items right-aligned to the chart area; falls back to left-aligned with a navigation arrow on overflow.
+* Added matching `legendPosition` string constants `topRight` and `bottomRight`.
+* Exported orientation helpers: `isLeft`, `isRight`, `isTop`, `isBottom`, `isTopOrBottom`, `isCentered`, `isRightAligned`. `isTop`/`isBottom` now also match the new right-aligned variants.
+* Fixed clipping of vertical centered legends (`LeftCenter`/`RightCenter`) when items overflowed (missing `Math.max(0, ...)` clamp).
+
 ## 8.2.2
 
 * Updated packages

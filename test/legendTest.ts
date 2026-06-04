@@ -715,6 +715,127 @@ describe("legend", () => {
             expect(iconY + iconHeight / 2).toBeLessThan((labelY * 2 + labelHeight) * 0.6);
         });
 
+        describe("Centered vertical legend overflow (regression for Math.max(0, ...) clamp)", () => {
+            function parseTranslateY(transform: string | null): number {
+                if (!transform) {
+                    return 0;
+                }
+                const match = /translate\(\s*[-+0-9.eE]+\s*[, ]\s*([-+0-9.eE]+)/.exec(transform);
+                return match ? parseFloat(match[1]) : 0;
+            }
+
+            function expectGroupNotClipped(position: LegendPosition): void {
+                const legendData = getLotsOfLegendData();
+
+                legend.changeOrientation(position);
+                // Force overflow: tall list of items in a short vertical area.
+                legend.drawLegend({ dataPoints: legendData }, { height: 50, width: 200 });
+
+                flushAllD3Transitions();
+
+                const group = element.querySelector("#legendGroup");
+                expect(group).not.toBeNull();
+
+                const translateY = parseTranslateY(group.getAttribute("transform"));
+                // Before the fix this value went negative (group shifted above the
+                // SVG, clipping the title and "previous" arrow).
+                expect(translateY).toBeGreaterThanOrEqual(0);
+            }
+
+            it("LeftCenter with overflowing items does not translate group above 0", () => {
+                expectGroupNotClipped(LegendPosition.LeftCenter);
+            });
+
+            it("RightCenter with overflowing items does not translate group above 0", () => {
+                expectGroupNotClipped(LegendPosition.RightCenter);
+            });
+        });
+
+        describe("Right-aligned horizontal legend (TopRight / BottomRight)", () => {
+            function parseTranslate(transform: string | null): { x: number; y: number } {
+                if (!transform) {
+                    return { x: 0, y: 0 };
+                }
+                const match = /translate\(\s*([-+0-9.eE]+)\s*[, ]\s*([-+0-9.eE]+)?/.exec(transform);
+                if (!match) {
+                    return { x: 0, y: 0 };
+                }
+                return { x: parseFloat(match[1]), y: match[2] ? parseFloat(match[2]) : 0 };
+            }
+
+            function fittingDataPoints(): LegendDataPoint[] {
+                return [
+                    { label: "A", color: "#ff0000", identity: createSelectionIdentity("a"), selected: false },
+                    { label: "B", color: "#00ff00", identity: createSelectionIdentity("b"), selected: false },
+                ];
+            }
+
+            it("TopRight: when items fit, the legend group is translated to the right edge and no nav arrow is rendered", () => {
+                legend.changeOrientation(LegendPosition.TopRight);
+                legend.drawLegend({ dataPoints: fittingDataPoints() }, { height: 100, width: 1000 });
+
+                flushAllD3Transitions();
+
+                const group = element.querySelector("#legendGroup");
+                expect(group).not.toBeNull();
+
+                const translate = parseTranslate(group.getAttribute("transform"));
+                // Items fit, so the group should be shifted right by a positive amount.
+                expect(translate.x).toBeGreaterThan(0);
+                expect(translate.y).toBe(0);
+
+                // No overflow -> no navigation arrows.
+                expect(element.querySelectorAll(".navArrow").length).toBe(0);
+            });
+
+            it("BottomRight: when items fit, the legend group is translated to the right edge", () => {
+                legend.changeOrientation(LegendPosition.BottomRight);
+                legend.drawLegend({ dataPoints: fittingDataPoints() }, { height: 100, width: 1000 });
+
+                flushAllD3Transitions();
+
+                const group = element.querySelector("#legendGroup");
+                const translate = parseTranslate(group.getAttribute("transform"));
+                expect(translate.x).toBeGreaterThan(0);
+                expect(element.querySelectorAll(".navArrow").length).toBe(0);
+            });
+
+            it("TopRight: when items overflow, falls back to left-aligned with a navigation arrow", () => {
+                const legendData = getLotsOfLegendData();
+
+                legend.changeOrientation(LegendPosition.TopRight);
+                // Narrow viewport forces overflow.
+                legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 200 });
+
+                flushAllD3Transitions();
+
+                const group = element.querySelector("#legendGroup");
+                const translate = parseTranslate(group.getAttribute("transform"));
+
+                // Fallback: group is not translated to the right edge anymore.
+                expect(translate.x).toBe(0);
+
+                // The "next" navigation arrow should be visible at the right side.
+                const arrows = element.querySelectorAll(".navArrow");
+                expect(arrows.length).toBeGreaterThan(0);
+            });
+
+            it("BottomRight: when items overflow, falls back to left-aligned with a navigation arrow", () => {
+                const legendData = getLotsOfLegendData();
+
+                legend.changeOrientation(LegendPosition.BottomRight);
+                legend.drawLegend({ dataPoints: legendData }, { height: 100, width: 200 });
+
+                flushAllD3Transitions();
+
+                const group = element.querySelector("#legendGroup");
+                const translate = parseTranslate(group.getAttribute("transform"));
+
+                expect(translate.x).toBe(0);
+                expect(element.querySelectorAll(".navArrow").length).toBeGreaterThan(0);
+            });
+        });
+
         function validateLegendDOM(expectedData: LegendDataPoint[]): void {
             let len = expectedData.length;
             let labels = element.querySelectorAll(".legendText");

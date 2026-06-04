@@ -46,10 +46,58 @@ export function isLeft(orientation: LegendPosition): boolean {
     }
 }
 
+export function isRight(orientation: LegendPosition): boolean {
+    switch (orientation) {
+        case LegendPosition.Right:
+        case LegendPosition.RightCenter:
+            return true;
+        default:
+            return false;
+    }
+}
+
 export function isTop(orientation: LegendPosition): boolean {
     switch (orientation) {
         case LegendPosition.Top:
         case LegendPosition.TopCenter:
+        case LegendPosition.TopRight:
+            return true;
+        default:
+            return false;
+    }
+}
+
+export function isBottom(orientation: LegendPosition): boolean {
+    switch (orientation) {
+        case LegendPosition.Bottom:
+        case LegendPosition.BottomCenter:
+        case LegendPosition.BottomRight:
+            return true;
+        default:
+            return false;
+    }
+}
+
+export function isTopOrBottom(orientation: LegendPosition): boolean {
+    return isTop(orientation) || isBottom(orientation);
+}
+
+export function isCentered(orientation: LegendPosition): boolean {
+    switch (orientation) {
+        case LegendPosition.TopCenter:
+        case LegendPosition.BottomCenter:
+        case LegendPosition.LeftCenter:
+        case LegendPosition.RightCenter:
+            return true;
+        default:
+            return false;
+    }
+}
+
+export function isRightAligned(orientation: LegendPosition): boolean {
+    switch (orientation) {
+        case LegendPosition.TopRight:
+        case LegendPosition.BottomRight:
             return true;
         default:
             return false;
