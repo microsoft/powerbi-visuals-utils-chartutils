@@ -184,7 +184,7 @@ export class SVGLegend implements ILegend {
             case LegendPosition.TopCenter:
             case LegendPosition.BottomCenter:
             case LegendPosition.TopRight:
-            case LegendPosition.BottomRight:
+            case LegendPosition.BottomRight: {
                 const pixelHeight = PixelConverter.fromPointToPixel(this.data && this.data.fontSize
                     ? this.data.fontSize
                     : SVGLegend.DefaultFontSizeInPt);
@@ -192,17 +192,18 @@ export class SVGLegend implements ILegend {
                 const fontHeightSize = SVGLegend.TopLegendHeight + (pixelHeight - SVGLegend.DefaultFontSizeInPt);
                 this.viewport = { height: fontHeightSize, width: 0 };
                 return;
+            }
             case LegendPosition.Right:
             case LegendPosition.Left:
             case LegendPosition.RightCenter:
-            case LegendPosition.LeftCenter:
+            case LegendPosition.LeftCenter: {
                 const width = this.lastCalculatedWidth
                     ? this.lastCalculatedWidth
                     : this.parentViewport.width * SVGLegend.LegendMaxWidthFactor;
 
                 this.viewport = { height: 0, width: width };
                 return;
-
+            }
             case LegendPosition.None:
                 this.viewport = { height: 0, width: 0 };
         }

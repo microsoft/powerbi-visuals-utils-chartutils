@@ -925,7 +925,7 @@ describe("axis", () => {
             expect(actual).toEqual(expected);
         });
 
-        xit("getRecommendedTickValues: very precise decimal values and funny d3 zero tick values", () => {
+        it.skip("getRecommendedTickValues: very precise decimal values and funny d3 zero tick values", () => {
             // Zero value originally returned from d3 ticks() call is "-1.7763568394002505e-17" (i.e. -1e-33)
             let expected = [-0.15000000000000002, -0.10000000000000002, -0.05000000000000002, 0, 0.04999999999999998, 0.09999999999999998];
             let scale = axis.createLinearScale(400, [-0.150000000000002, .10000000008000006]);
@@ -1620,7 +1620,7 @@ describe("axis", () => {
             expect(actualThickness).toBe(expectedThickness);
         });
 
-        xit("with a time scale returns the correct value", () => {
+        it.skip("with a time scale returns the correct value", () => {
             // Arrange
             let range = [0, 100];
             let scale = scaleTime();
@@ -1633,7 +1633,7 @@ describe("axis", () => {
             expect(actualThickness).toBe(expectedThickness);
         });
 
-        xit("with an ordinal scale with multiple items returns the correct value", () => {
+        it.skip("with an ordinal scale with multiple items returns the correct value", () => {
             // Arrange
             let domain: string[] = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
             let rangeBand: [number, number] = [0, 100];

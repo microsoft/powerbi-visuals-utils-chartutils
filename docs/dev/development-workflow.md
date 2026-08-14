@@ -11,7 +11,7 @@ To start development and improvement of the source code you should have the foll
 * [git](https://git-scm.com)
 * [node.js](https://nodejs.org) (we recommend the latest LTS version)
 * [npm](https://www.npmjs.com) (the minimal supported version is 3.0.0)
-* [Google Chrome browser](https://www.google.com/chrome) (it's necessary to run unit tests locally)
+* [Playwright Chromium](https://playwright.dev/docs/browsers), installed as described in [How to run unit tests locally](#how-to-run-unit-tests-locally)
 
 ## Installation
 Firstly, you should clone a copy of the repository by using one of the following commands:
@@ -57,18 +57,29 @@ npm run lint
 This command checks style of TypeScript code and provides a list of problems. Please address all of problems reported by eslint before sending a pull request to the [repository](https://github.com/Microsoft/powerbi-visuals-utils-chartutils).
 
 ## How to run unit tests locally
-We use [Jasmine](https://github.com/jasmine/jasmine) and [Karma](https://github.com/karma-runner/karma) to run unit tests. Please note, Karma requires Google Chrome to run unit tests.
+We use [Vitest](https://vitest.dev/) in browser mode to run unit tests. Tests are executed in headless Chromium provided by [Playwright](https://playwright.dev/), so make sure the browser is installed:
+
+```bash
+npx playwright install --with-deps chromium
+```
+
 To run unit tests locally on your machine you should run the following command:
 
 ```bash
 npm run test
 ```
 
-## How to debug unit tests locally
-To debug unit tests in Google Chrome browser you should run the following command:
+To collect code coverage run:
 
 ```bash
-npm run test -- --single-run=false
+npm run test:coverage
+```
+
+## How to debug unit tests locally
+To run unit tests in watch mode you should run the following command:
+
+```bash
+npm run test:watch
 ```
 
 This command runs unit tests in the browser and watches tests files, in other words, you have an ability to run unit tests automatically after any changing.

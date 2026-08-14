@@ -1,5 +1,21 @@
 ## Changelog
 
+## 8.4.0
+* Migrated the test infrastructure from Karma + Jasmine + webpack to Vite/Vitest browser mode (Playwright Chromium).
+* Removed `karma.conf.ts`, `webpack.config.js` and the related dependencies; added `vitest.config.mts` and `test/tsconfig.json`.
+* Added `test:watch`, `test:coverage` and `test:typecheck` npm scripts.
+* Updated `tsconfig.json` to `ES2020` / `bundler` module resolution and compilation of the whole `src` folder.
+* ChartUtils now requires a JavaScript runtime with ES2020 support.
+* Lint stack migrated to ESLint 10 flat config with type-aware linting.
+* Enabled the `alwaysStrict`, `noImplicitThis`, `strictBindCallApply` and `useUnknownInCatchVariables` compiler options and pinned `strict` explicitly.
+* Development TypeScript upgraded to 6.x.
+* Updated `powerbi-visuals-utils-formattingutils`, `powerbi-visuals-utils-svgutils`, `powerbi-visuals-utils-typeutils`, `powerbi-visuals-utils-colorutils` and `powerbi-visuals-utils-testutils` to 7.x.
+* Removed the unused `jsnext:main` field and the decorator compiler options.
+* The build now removes stale `lib` output before compiling.
+* The published package now also ships `README.md`, `LICENSE` and `CHANGELOG.md`.
+* CI now tests Node.js 20 and 22, installs Playwright Chromium and collects Vitest coverage.
+* Release workflow now runs linting, test type-checking and browser tests before publishing artifacts.
+
 ## 8.3.0
 
 ### Module `legend`

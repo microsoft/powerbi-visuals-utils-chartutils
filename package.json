@@ -1,10 +1,9 @@
 {
   "name": "powerbi-visuals-utils-chartutils",
-  "version": "8.3.0",
+  "version": "8.4.0",
   "description": "ChartUtils",
   "main": "lib/index.js",
   "module": "lib/index.js",
-  "jsnext:main": "lib/index.js",
   "types": "lib/index.d.ts",
   "sideEffects": false,
   "repository": {
@@ -21,48 +20,47 @@
   },
   "homepage": "https://github.com/Microsoft/powerbi-visuals-utils-chartutils#readme",
   "files": [
-    "lib"
+    "lib/**/*",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
   ],
   "scripts": {
+    "prebuild": "node -e \"require('fs').rmSync('lib', { recursive: true, force: true })\"",
     "build": "tsc",
     "build:map": "tsc --sourceMap",
     "postbuild": "npm run lessc",
-    "test": "karma start",
-    "lint": "npx eslint",
-    "lintfix": "npx eslint --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:typecheck": "tsc -p test/tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "lessc": "lessc src/styles/style.less lib/index.css"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/d3-array": "^3.2.2",
     "@types/d3-axis": "^3.0.6",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-selection": "^3.0.11",
     "@types/d3-transition": "^3.0.9",
-    "@types/jasmine": "^5.1.15",
-    "@typescript-eslint/eslint-plugin": "^8.59.4",
-    "@typescript-eslint/parser": "^8.59.4",
-    "coverage-istanbul-loader": "3.0.5",
-    "eslint": "^9.39.4",
+    "@types/lodash.union": "^4.6.9",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
+    "@vitest/browser": "^4.1.10",
+    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^10.6.0",
     "eslint-plugin-powerbi-visuals": "^1.1.1",
-    "jasmine": "5.6.0",
-    "karma": "^6.4.4",
-    "karma-chrome-launcher": "^3.2.0",
-    "karma-coverage": "^2.2.1",
-    "karma-coverage-istanbul-reporter": "^3.0.3",
-    "karma-jasmine": "^5.1.0",
-    "karma-sourcemap-loader": "^0.4.0",
-    "karma-typescript": "^5.5.4",
-    "karma-webpack": "5.0.1",
     "less": "^4.6.4",
     "lodash.union": "4.6.0",
-    "playwright-chromium": "^1.60.0",
+    "playwright": "^1.61.1",
     "powerbi-visuals-api": "^5.11.0",
-    "powerbi-visuals-utils-colorutils": "^6.0.5",
-    "powerbi-visuals-utils-testutils": "^6.1.1",
-    "ts-loader": "^9.5.7",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
-    "webpack": "^5.107.1"
+    "powerbi-visuals-utils-colorutils": "^7.0.0",
+    "powerbi-visuals-utils-testutils": "^7.0.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
   },
   "dependencies": {
     "d3-array": "^3.2.4",
@@ -70,16 +68,8 @@
     "d3-scale": "^4.0.2",
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
-    "powerbi-visuals-utils-formattingutils": "^6.1.2",
-    "powerbi-visuals-utils-svgutils": "^6.0.4",
-    "powerbi-visuals-utils-typeutils": "^6.0.3",
-    "typescript-eslint": "^8.59.4"
-  },
-  "optionalDependencies": {
-    "fsevents": "2.3.3"
-  },
-  "overrides": {
-    "elliptic": "^6.6.1",
-    "lodash-es": "^4.17.21"
+    "powerbi-visuals-utils-formattingutils": "^7.0.0",
+    "powerbi-visuals-utils-svgutils": "^7.0.0",
+    "powerbi-visuals-utils-typeutils": "^7.0.0"
   }
 }

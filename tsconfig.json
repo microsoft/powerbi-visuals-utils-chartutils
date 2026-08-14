@@ -1,24 +1,25 @@
 {
-    "compilerOptions": {
-      "allowJs": false,
-      "emitDecoratorMetadata": true,
-      "experimentalDecorators": true,
-      "declaration": true,
-      "sourceMap": true,
-      "module": "ES2015",
-      "moduleResolution": "node",
-      "target": "ES2015",
-      "lib": [
-        "es2015",
-        "dom"
-      ],
-      "outDir": "./lib"
-    },
-    "files": [
-      "src/index.ts",
-      "src/dataLabel/dataLabelStyle.ts"
+  "compilerOptions": {
+    "allowJs": false,
+    "declaration": true,
+    "sourceMap": true,
+    "module": "ES2020",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "skipLibCheck": true,
+    "strict": false,
+    "alwaysStrict": true,
+    "noImplicitThis": true,
+    "strictBindCallApply": true,
+    "useUnknownInCatchVariables": true,
+    "lib": [
+      "es2020",
+      "dom"
     ],
-    "include": [
-      "src/index.ts"
-    ]
-  }
+    "rootDir": "./src",
+    "outDir": "./lib"
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
+}
