@@ -11,7 +11,7 @@ To use the package you should have the following things:
 * [node.js](https://nodejs.org) (we recommend the latest LTS version)
 * [npm](https://www.npmjs.com/) (the minimal supported version is 3.0.0)
 * The custom visual created by [PowerBI-visuals-tools](https://github.com/Microsoft/PowerBI-visuals-tools)
-* A JavaScript runtime with ES2020 support (required by ChartUtils 8.4.0 and later)
+* A JavaScript runtime with ES2020 support (required by ChartUtils 9.0.0 and later)
 
 ## Installation
 To install the package you should run the following command in the directory with your current custom visual:

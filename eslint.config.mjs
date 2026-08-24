@@ -11,17 +11,10 @@ export default [
     powerbiVisualsConfigs.configs.recommended,
     {
         files: ["**/*.{js,jsx,ts,tsx}"],
-        languageOptions: {
-            parserOptions: {
-                project: "./tsconfig.json",
-                tsconfigRootDir: import.meta.dirname
-            }
-        },
         rules: {
-            "@typescript-eslint/explicit-module-boundary-types": "off",
+            // 182 pre-existing occurrences, mostly in the public API surface; tightening this is its own change.
             "@typescript-eslint/no-explicit-any": "off",
-            "@typescript-eslint/no-inferrable-types": "off",
-            "no-useless-assignment": "off"
+            "no-useless-assignment": "warn"
         }
     },
 ];

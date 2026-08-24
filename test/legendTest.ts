@@ -40,9 +40,6 @@ import { stringExtensions } from "powerbi-visuals-utils-formattingutils";
 
 // powerbi.extensibility.utils.test
 import { testDom, createVisualHost, createSelectionId, d3Click } from "powerbi-visuals-utils-testutils";
-const DefaultWaitForRender = 10;
-const waitForRender = (timeout: number = DefaultWaitForRender): Promise<void> =>
-    new Promise<void>((resolve) => setTimeout(resolve, timeout));
 // import ClickEventType = powerbi.extensibility.utils.test.helpers.ClickEventType;
 enum ClickEventType {
     Default = 0,
@@ -114,56 +111,56 @@ describe("legend", () => {
             ];
         });
 
-        it("legend dom validation one legend item count validation", async () => {
+        it("legend dom validation one legend item count validation", () => {
             legend.drawLegend({
                 dataPoints: [
                     legendData[0],
                 ]
             }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendItem").length).toBe(1);
             expect(element.querySelectorAll(".legendText").length).toBe(1);
             expect(element.querySelectorAll(".legendIcon").length).toBe(1);
         });
 
-        it("legend dom validation three legend items count validation", async () => {
+        it("legend dom validation three legend items count validation", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendItem").length).toBe(3);
             expect(element.querySelectorAll(".legendText").length).toBe(3);
             expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation three legend items first item text", async () => {
+        it("legend dom validation three legend items first item text", () => {
             legend.reset();
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelector(".legendText").textContent).toBe("California");
         });
 
-        it("legend dom validation three legend items last item text", async () => {
+        it("legend dom validation three legend items last item text", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendText")[legendData.length - 1].textContent).toBe("Washington");
         });
 
-        it("legend dom validation three legend items colors count", async () => {
+        it("legend dom validation three legend items colors count", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation three legend items with shared label and color", async () => {
+        it("legend dom validation three legend items with shared label and color", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false },
@@ -172,14 +169,14 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendItem").length).toBe(3);
             expect(element.querySelectorAll(".legendText").length).toBe(3);
             expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it.skip("legend dom validation three legend items but two share same identity", async () => {
+        it.skip("legend dom validation three legend items but two share same identity", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
@@ -188,14 +185,14 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendItem").length).toBe(2);
             expect(element.querySelectorAll(".legendText").length).toBe(2);
             expect(element.querySelectorAll(".legendIcon").length).toBe(2);
         });
 
-        it("legend dom validation three legend items but two share same identity but are on different layers", async () => {
+        it("legend dom validation three legend items but two share same identity but are on different layers", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false, layerNumber: 0 },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(2), selected: false, layerNumber: 1 },
@@ -204,18 +201,18 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendItem").length).toBe(3);
             expect(element.querySelectorAll(".legendText").length).toBe(3);
             expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation incremental build", async () => {
+        it("legend dom validation incremental build", () => {
             // Draw the legend once with the 3 states
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             validateLegendDOM(legendData);
 
@@ -229,7 +226,7 @@ describe("legend", () => {
             legend.reset();
             legend.drawLegend({ dataPoints: updatedData }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             validateLegendDOM(updatedData);
         });
@@ -898,15 +895,15 @@ describe("legend", () => {
             legend = createLegend(element, false);
         });
 
-        it("should render 3 legendText elements", async () => {
+        it("should render 3 legendText elements", () => {
             legend.drawLegend({ dataPoints }, viewport);
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             expect(element.querySelectorAll(".legendText").length).toBe(3);
         });
 
-        it("should apply fontFamily via CSS for each legendText element", async () => {
+        it("should apply fontFamily via CSS for each legendText element", () => {
             const fontFamily: string = "Tahoma";
 
             legend.drawLegend(
@@ -917,7 +914,7 @@ describe("legend", () => {
                 viewport,
             );
 
-            await waitForRender();
+            flushAllD3Transitions();
 
             element.querySelectorAll(".legendText").forEach((legendTextElement: Element) => {
                 expect(select(legendTextElement).style("font-family")).toBe(fontFamily);

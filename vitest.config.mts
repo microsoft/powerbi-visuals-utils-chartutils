@@ -3,7 +3,10 @@ import { playwright } from "@vitest/browser-playwright";
 
 export default defineConfig({
     test: {
-        include: ["test/**/*Test.ts", "test/**/*Tests.ts"],
+        include: [
+            "test/**/*{Test,Tests}.ts",
+            "test/**/*.{test,spec}.ts"
+        ],
         globals: true,
         setupFiles: ["./test/setup.ts"],
         browser: {
