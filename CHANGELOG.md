@@ -24,6 +24,7 @@
 * The published package now also ships `README.md`, `LICENSE` and `CHANGELOG.md`.
 * CI now tests Node.js 20 and 22, installs Playwright Chromium and collects Vitest coverage.
 * Release workflow now runs linting, test type-checking and browser tests before publishing artifacts.
+* Removed the advanced `codeql-analysis.yml` workflow, which cannot upload results while CodeQL default setup is enabled on the repository.
 
 ## 8.3.0
 
