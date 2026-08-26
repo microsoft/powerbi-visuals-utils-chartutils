@@ -422,8 +422,10 @@ describe("DataLabelRectPositioner tests", () => {
 
         function testLabelOverflowing(isValid: boolean, rectangles: IRect[], labelDataPoint: LabelDataPoint, hasMultiplyDataSeries: boolean): void {
             for (const rect of rectangles) {
-                expect(DataLabelRectPositioner.isValidLabelOverflowing(rect, labelDataPoint, hasMultiplyDataSeries))
-                    .toBe(isValid, `Testing rect: ${JSON.stringify(rect)}`);
+                expect(
+                    DataLabelRectPositioner.isValidLabelOverflowing(rect, labelDataPoint, hasMultiplyDataSeries),
+                    `Testing rect: ${JSON.stringify(rect)}`
+                ).toBe(isValid);
             }
         }
     });

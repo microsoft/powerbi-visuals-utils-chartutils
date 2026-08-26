@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: build
 
 on:
@@ -11,26 +8,27 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x, 22.x]
+
+    env:
+      CI: true
 
     steps:
-    - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
+    - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1.4.6
+      uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
       with:
         node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
     - run: npm audit
       continue-on-error: true
-    - run: npm ci
-    - run: npm outdated
-      continue-on-error: true
-    - run: npm run build --if-present
     - run: npm run lint
-    - run: npm test
-      env:
-        CI: true
+    - run: npm run build
+    - run: npm run test:typecheck
+    - run: npx playwright install --with-deps chromium
+    - run: npm run test:coverage

@@ -40,7 +40,6 @@ import { stringExtensions } from "powerbi-visuals-utils-formattingutils";
 
 // powerbi.extensibility.utils.test
 import { testDom, createVisualHost, createSelectionId, d3Click } from "powerbi-visuals-utils-testutils";
-const DefaultWaitForRender = 10;
 // import ClickEventType = powerbi.extensibility.utils.test.helpers.ClickEventType;
 enum ClickEventType {
     Default = 0,
@@ -112,61 +111,56 @@ describe("legend", () => {
             ];
         });
 
-        it("legend dom validation one legend item count validation", (done) => {
+        it("legend dom validation one legend item count validation", () => {
             legend.drawLegend({
                 dataPoints: [
                     legendData[0],
                 ]
             }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendItem").length).toBe(1);
-                expect(element.querySelectorAll(".legendText").length).toBe(1);
-                expect(element.querySelectorAll(".legendIcon").length).toBe(1);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendItem").length).toBe(1);
+            expect(element.querySelectorAll(".legendText").length).toBe(1);
+            expect(element.querySelectorAll(".legendIcon").length).toBe(1);
         });
 
-        it("legend dom validation three legend items count validation", (done) => {
+        it("legend dom validation three legend items count validation", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendItem").length).toBe(3);
-                expect(element.querySelectorAll(".legendText").length).toBe(3);
-                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendItem").length).toBe(3);
+            expect(element.querySelectorAll(".legendText").length).toBe(3);
+            expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation three legend items first item text", (done) => {
+        it("legend dom validation three legend items first item text", () => {
             legend.reset();
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelector(".legendText").textContent).toBe("California");
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelector(".legendText").textContent).toBe("California");
         });
 
-        it("legend dom validation three legend items last item text", (done) => {
+        it("legend dom validation three legend items last item text", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendText")[legendData.length - 1].textContent).toBe("Washington");
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendText")[legendData.length - 1].textContent).toBe("Washington");
         });
 
-        it("legend dom validation three legend items colors count", (done) => {
+        it("legend dom validation three legend items colors count", () => {
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation three legend items with shared label and color", (done) => {
+        it("legend dom validation three legend items with shared label and color", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false },
@@ -175,15 +169,14 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendItem").length).toBe(3);
-                expect(element.querySelectorAll(".legendText").length).toBe(3);
-                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendItem").length).toBe(3);
+            expect(element.querySelectorAll(".legendText").length).toBe(3);
+            expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        xit("legend dom validation three legend items but two share same identity", (done) => {
+        it.skip("legend dom validation three legend items but two share same identity", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(0), selected: false },
@@ -192,15 +185,14 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendItem").length).toBe(2);
-                expect(element.querySelectorAll(".legendText").length).toBe(2);
-                expect(element.querySelectorAll(".legendIcon").length).toBe(2);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendItem").length).toBe(2);
+            expect(element.querySelectorAll(".legendText").length).toBe(2);
+            expect(element.querySelectorAll(".legendIcon").length).toBe(2);
         });
 
-        it("legend dom validation three legend items but two share same identity but are on different layers", (done) => {
+        it("legend dom validation three legend items but two share same identity but are on different layers", () => {
             let legendData: LegendDataPoint[] = [
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(1), selected: false, layerNumber: 0 },
                 { label: "ACCESS_VIOLA...", color: "#ff0000", identity: createSelectionIdentity(2), selected: false, layerNumber: 1 },
@@ -209,35 +201,34 @@ describe("legend", () => {
 
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendItem").length).toBe(3);
-                expect(element.querySelectorAll(".legendText").length).toBe(3);
-                expect(element.querySelectorAll(".legendIcon").length).toBe(3);
-                done();
-            }, DefaultWaitForRender);
+            flushAllD3Transitions();
+
+            expect(element.querySelectorAll(".legendItem").length).toBe(3);
+            expect(element.querySelectorAll(".legendText").length).toBe(3);
+            expect(element.querySelectorAll(".legendIcon").length).toBe(3);
         });
 
-        it("legend dom validation incremental build", (done) => {
+        it("legend dom validation incremental build", () => {
             // Draw the legend once with the 3 states
             legend.drawLegend({ dataPoints: legendData }, viewport);
 
-            setTimeout(() => {
-                validateLegendDOM(legendData);
+            flushAllD3Transitions();
 
-                // Draw the legend against with a new state at the start
-                let updatedData: LegendDataPoint[] = [
-                    { label: "Alaska", color: "#fff000", identity: createSelectionIdentity(2), selected: false },
-                    { label: "California", color: "#fff00d", identity: createSelectionIdentity(4), selected: false },
-                    { label: "Texas", color: "#fffe00", identity: createSelectionIdentity(8), selected: false },
-                    { label: "Washington", color: "#0000dd", identity: createSelectionIdentity(16), selected: false }
-                ];
-                legend.reset();
-                legend.drawLegend({ dataPoints: updatedData }, viewport);
-                setTimeout(() => {
-                    validateLegendDOM(updatedData);
-                    done();
-                }, DefaultWaitForRender);
-            }, DefaultWaitForRender);
+            validateLegendDOM(legendData);
+
+            // Draw the legend against with a new state at the start
+            let updatedData: LegendDataPoint[] = [
+                { label: "Alaska", color: "#fff000", identity: createSelectionIdentity(2), selected: false },
+                { label: "California", color: "#fff00d", identity: createSelectionIdentity(4), selected: false },
+                { label: "Texas", color: "#fffe00", identity: createSelectionIdentity(8), selected: false },
+                { label: "Washington", color: "#0000dd", identity: createSelectionIdentity(16), selected: false }
+            ];
+            legend.reset();
+            legend.drawLegend({ dataPoints: updatedData }, viewport);
+
+            flushAllD3Transitions();
+
+            validateLegendDOM(updatedData);
         });
 
         it("legend defaults", () => {
@@ -650,7 +641,7 @@ describe("legend", () => {
             expect(element.querySelectorAll(".navArrow").length).toBe(1);
         });
 
-        xit("Intelligent Layout: Both arrows are Horizontally Centered", () => {
+        it.skip("Intelligent Layout: Both arrows are Horizontally Centered", () => {
             let legendData = getLotsOfLegendData();
 
             legend.changeOrientation(LegendPosition.Top);
@@ -904,17 +895,15 @@ describe("legend", () => {
             legend = createLegend(element, false);
         });
 
-        it("should render 3 legendText elements", (done) => {
+        it("should render 3 legendText elements", () => {
             legend.drawLegend({ dataPoints }, viewport);
 
-            setTimeout(() => {
-                expect(element.querySelectorAll(".legendText").length).toBe(3);
+            flushAllD3Transitions();
 
-                done();
-            }, DefaultWaitForRender);
+            expect(element.querySelectorAll(".legendText").length).toBe(3);
         });
 
-        it("should apply fontFamily via CSS for each legendText element", (done) => {
+        it("should apply fontFamily via CSS for each legendText element", () => {
             const fontFamily: string = "Tahoma";
 
             legend.drawLegend(
@@ -925,13 +914,11 @@ describe("legend", () => {
                 viewport,
             );
 
-            setTimeout(() => {
-                element.querySelectorAll(".legendText").forEach((legendTextElement: Element) => {
-                    expect(select(legendTextElement).style("font-family")).toBe(fontFamily);
-                });
+            flushAllD3Transitions();
 
-                done();
-            }, DefaultWaitForRender);
+            element.querySelectorAll(".legendText").forEach((legendTextElement: Element) => {
+                expect(select(legendTextElement).style("font-family")).toBe(fontFamily);
+            });
         });
     });
 });

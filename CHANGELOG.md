@@ -1,5 +1,31 @@
 ## Changelog
 
+## 9.0.0
+
+### Breaking changes
+
+* Updated `tsconfig.json` to `ES2020` / `bundler` module resolution and compilation of the whole `src` folder.
+* ChartUtils now requires a JavaScript runtime with ES2020 support.
+* Updated the runtime dependencies `powerbi-visuals-utils-formattingutils`, `powerbi-visuals-utils-svgutils` and `powerbi-visuals-utils-typeutils` to 7.x.
+* Removed the unused `jsnext:main` field from the package manifest.
+
+### Tooling and packaging
+
+* Migrated the test infrastructure from Karma + Jasmine + webpack to Vite/Vitest browser mode (Playwright Chromium).
+* Removed `karma.conf.ts`, `webpack.config.js` and the related dependencies; added `vitest.config.mts` and `test/tsconfig.json`.
+* Added `test:watch`, `test:coverage` and `test:typecheck` npm scripts.
+* Lint stack migrated to ESLint 10 flat config.
+* Enabled the `alwaysStrict`, `noImplicitThis`, `strictBindCallApply` and `useUnknownInCatchVariables` compiler options and pinned `strict` explicitly.
+* Development TypeScript upgraded to 6.x.
+* Updated the development-only dependencies `powerbi-visuals-utils-colorutils` and `powerbi-visuals-utils-testutils` to 7.x.
+* Enabled `skipLibCheck`, which is now required rather than cosmetic: TypeScript 6 rejects the legacy `declare module X {}` form used by the `powerbi-visuals-api` 5.11.1 declaration files (80 `TS1540` errors). It cannot be removed until an upstream fix ships.
+* Removed the decorator compiler options.
+* The build now removes stale `lib` output before compiling.
+* The published package now also ships `README.md`, `LICENSE` and `CHANGELOG.md`.
+* CI now tests Node.js 20 and 22, installs Playwright Chromium and collects Vitest coverage.
+* Release workflow now runs linting, test type-checking and browser tests before publishing artifacts.
+* Removed the advanced `codeql-analysis.yml` workflow, which cannot upload results while CodeQL default setup is enabled on the repository.
+
 ## 8.3.0
 
 ### Module `legend`
