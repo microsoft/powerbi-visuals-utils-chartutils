@@ -1,5 +1,8 @@
 ## Changelog
 
+## 9.0.1
+* Updated dependencies to address npm audit vulnerabilities.
+
 ## 9.0.0
 
 ### Breaking changes
