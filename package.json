@@ -60,7 +60,7 @@
     "powerbi-visuals-utils-colorutils": "^7.0.0",
     "powerbi-visuals-utils-testutils": "^7.0.1",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.10"
+    "vitest": "^5.0.5"
   },
   "dependencies": {
     "d3-array": "^3.2.4",
